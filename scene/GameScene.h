@@ -56,7 +56,9 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	// 自キャラ
-	Player* player_ = nullptr;
+	std::unique_ptr<Player> player_;
+	// 3Dモデルの生成
+	std::unique_ptr<Model> modelPlayerHead_;
 
 	/// <summary>
 	/// ゲームシーン用
