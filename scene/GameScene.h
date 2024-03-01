@@ -9,6 +9,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include"Stage.h"
+#include<memory>
 
 /// <summary>
 /// ゲームシーン
@@ -57,6 +59,8 @@ private: // メンバ変数
 
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	std::unique_ptr<Stage> stage_;
 
 	/// <summary>
 	/// ゲームシーン用

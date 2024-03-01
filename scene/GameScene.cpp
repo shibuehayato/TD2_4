@@ -28,11 +28,22 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	// 自キャラの初期化
 	player_->Initialize( model_,textureHandle_);
+
+	//ステージの生成と初期化
+	stage_ = std::make_unique<Stage>();
+	stage_->Initialize(model_);
+	//-------------------------//
+
+
 }
 
 void GameScene::Update() {
 // 自キャラの更新
 	player_->Update();
+
+	//ステージの更新
+	stage_->Update();
+
 }
 
 void GameScene::Draw() {
@@ -63,6 +74,10 @@ void GameScene::Draw() {
 	/// </summary>
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+
+	//ステージの描画
+	stage_->Draw(viewProjection_);
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
