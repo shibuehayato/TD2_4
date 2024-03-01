@@ -1,6 +1,7 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
+#include"Input.h"
 class Stage
 {
 public:
@@ -15,9 +16,11 @@ public:
 
 private:
 	//モデルの大きさや回転や座標を入れる変数
-	WorldTransform worldTransform_[10];
+	WorldTransform worldTransform_[281];
 	//モデルの変数
-	Model* model_[10] = { nullptr };
+	Model* model_[281] = { nullptr};
+
+	Input* input_ = nullptr;
 
 };
 

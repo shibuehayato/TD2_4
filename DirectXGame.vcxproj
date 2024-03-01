@@ -112,11 +112,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\MyMath.cpp" />
     <ClCompile Include="math\WorldTransformEx.cpp" />
-    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
