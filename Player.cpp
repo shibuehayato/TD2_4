@@ -1,27 +1,22 @@
 ﻿#include "Player.h"
 #include <cassert>
 
-Player::Player() {}
+void Player::Initialize(Model* head)
+{
+	assert(head);
+	HeadModel_ = head;
 
-Player::~Player() {}
-
-void Player::Initialize(Model *model,uint32_t textureHandle) {
-
-	assert(model);
-
-	model_ = model;
-
-	textureHandle_ = textureHandle;
-
-	worldTransform_.Initialize();
+	worldTransformHead_.translation_ = { 0,0,0 };
+	worldTransformHead_.Initialize();
 }
 
 void Player::Update() {
 
 	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	worldTransformHead_.UpdateMatrix();
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	// 3Dモデル描画
+	HeadModel_->Draw(worldTransformHead_, viewProjection);
 }

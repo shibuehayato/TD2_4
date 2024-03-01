@@ -6,7 +6,6 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() { 
 	delete model_;
-	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -25,8 +24,11 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 自キャラの生成
-	player_ = new Player();
+	player_ = std::make_unique<Player>();
+	// 3Dモデルの生成
+	modelPlayerHead_.reset(Model::CreateFromOBJ("cube", true));
 	// 自キャラの初期化
+	player_->Initialize(modelPlayerHead_.get());
 	player_->Initialize( model_,textureHandle_);
 
 	//ステージの生成と初期化
@@ -72,6 +74,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
