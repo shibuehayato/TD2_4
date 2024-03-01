@@ -29,7 +29,7 @@ void GameScene::Initialize() {
 	modelPlayerHead_.reset(Model::CreateFromOBJ("cube", true));
 	// 自キャラの初期化
 	player_->Initialize(modelPlayerHead_.get());
-	player_->Initialize( model_,textureHandle_);
+
 
 	//ステージの生成と初期化
 	stage_ = std::make_unique<Stage>();
