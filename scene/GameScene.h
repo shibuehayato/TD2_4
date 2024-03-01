@@ -9,6 +9,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include"Wall.h"
 
 /// <summary>
 /// ゲームシーン
@@ -57,6 +58,11 @@ private: // メンバ変数
 
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	//壁
+	std::unique_ptr<Wall> wall_;
+	//壁3Dモデルデータ
+	std::unique_ptr<Model> modelWall_;
 
 	/// <summary>
 	/// ゲームシーン用

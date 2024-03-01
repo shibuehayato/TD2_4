@@ -28,6 +28,11 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	// 自キャラの初期化
 	player_->Initialize( model_,textureHandle_);
+
+	//壁の生成
+	wall_ = std::make_unique<Wall>();
+	//壁3Dモデルの生成
+	modelWall_.reset(Model::CreateFromOBJ("Wall", true));
 }
 
 void GameScene::Update() {
