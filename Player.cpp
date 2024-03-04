@@ -6,7 +6,7 @@ void Player::Initialize(Model* head)
 	assert(head);
 	HeadModel_ = head;
 
-	worldTransformHead_.translation_ = { 0,0,0 };
+	worldTransformHead_.translation_ = { 0,0,-15.0f };
 	worldTransformHead_.Initialize();
 }
 

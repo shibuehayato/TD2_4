@@ -1,6 +1,8 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "AxisIndicator.h"
+#include <ImGuiManager.h>
 
 GameScene::GameScene() {}
 
@@ -20,6 +22,8 @@ void GameScene::Initialize() {
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 
+	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
+	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -45,11 +49,21 @@ void GameScene::Initialize() {
 	skydome_ = std::make_unique<Skydome>();
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_.get());
+
+	// 軸方向表示を有効にする
+	AxisIndicator::GetInstance()->SetVisible(true);
+	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 }
 
 void GameScene::Update() {
 
 	debugCamera_->Update();
+
+	ImGui::Begin("viewprojection");
+	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
+	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+	ImGui::End();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
