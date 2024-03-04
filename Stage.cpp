@@ -296,7 +296,7 @@ void Stage::Update()
 	{
 		worldTransform_[i].UpdateMatrix();
 	}
-	if (input_->PushKey(DIK_SPACE))
+	if (input_->PushKey(DIK_A))
 	{
 		worldTransform_[5].translation_.x -= 0.1f;
 	}

@@ -30,6 +30,7 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(modelPlayerHead_.get());
 
+	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
 
 	//ステージの生成と初期化
 	stage_ = std::make_unique<Stage>();
@@ -40,6 +41,27 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	debugCamera_->Update();
+
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+		isDebugCameraAcctive_ = true;
+	}
+	if (isDebugCameraAcctive_) {
+
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	}
+	else {
+
+		// ビュープロジェクション行列の更新と転送
+		viewProjection_.UpdateMatrix();
+	}
+#endif
+
 // 自キャラの更新
 	player_->Update();
 

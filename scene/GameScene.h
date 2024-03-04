@@ -11,6 +11,7 @@
 #include "Player.h"
 #include"Stage.h"
 #include<memory>
+#include"DebugCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -47,6 +48,11 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+
+	std::unique_ptr<DebugCamera> debugCamera_;
+
+	bool isDebugCameraAcctive_=false;
+
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
