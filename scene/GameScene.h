@@ -9,6 +9,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -59,6 +60,11 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelPlayerHead_;
+
+	// 天球
+	std::unique_ptr<Skydome> skydome_;
+	// 3Dモデルの生成
+	std::unique_ptr<Model> modelSkydome_;
 
 	/// <summary>
 	/// ゲームシーン用
