@@ -26,7 +26,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
-	modelPlayerHead_.reset(Model::CreateFromOBJ("cube", true));
+	modelPlayerHead_.reset(Model::CreateFromOBJ("Player", true));
 	// 自キャラの初期化
 	player_->Initialize(modelPlayerHead_.get());
 }
