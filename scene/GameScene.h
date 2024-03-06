@@ -12,6 +12,8 @@
 #include"Stage.h"
 #include<memory>
 #include"DebugCamera.h"
+#include<list>
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -44,6 +46,12 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void LoadWallPopData();
+
+	void UpdateWallPopCommands();
+
+	void WallGeneration(const Vector3& position);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -68,7 +76,15 @@ private: // メンバ変数
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelPlayerHead_;
 
+	//ステージの壁についての変数
 	std::unique_ptr<Stage> stage_;
+	std::list<std::unique_ptr<Stage>> stages_;
+	std::unique_ptr<Model> modelwall_;
+
+	// 壁発生コマンド
+	std::stringstream wallPopCommands;
+	//ステージを分けるためのフラグ
+	bool istutorial_ = false;
 
 	/// <summary>
 	/// ゲームシーン用
