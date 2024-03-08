@@ -148,8 +148,8 @@
     <ClInclude Include="math\Vector4.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="scene\GameScene.h" />
-    <ClInclude Include="Stage.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="Stage.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
+	// 自キャラの生成 bz
 	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
 	modelPlayerHead_.reset(Model::CreateFromOBJ("Player", true));

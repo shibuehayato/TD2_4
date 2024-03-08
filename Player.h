@@ -13,4 +13,8 @@ private:
 	WorldTransform worldTransformHead_;
 	// モデル
 	Model* HeadModel_ = nullptr;
+	// 速さ
+	float speed = 0;
+	// 移動量を保管する
+	Vector3 KeepMove = { 0,0,0 };
 };
