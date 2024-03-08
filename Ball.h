@@ -6,26 +6,17 @@
 class Ball
 {
 public:
-	void Initialize(Model* ball, Model* cube);
+	void Initialize(Model* ball);
 
 	void Update();
 
 	void Draw(const ViewProjection& viewProjection);
 
-	//親となるワールドトランスフォーム
-	void SetParent(const WorldTransform* parent);
-
+	
 private:
-	WorldTransform worldTransform_;
 	WorldTransform ballWorldTransform_;
-	WorldTransform cubeWorldTransform_;
 
 	Model* ballModel_=nullptr;
-	Model* cubeModel_=nullptr;
 
-	enum {
-		kModelIndexBall,
-		kModelIndexCube,
-	};
 };
 

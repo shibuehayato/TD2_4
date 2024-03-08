@@ -93,7 +93,6 @@ private: // メンバ変数
 
 	//玉
 	std::unique_ptr<Model> modelBall_;
-	std::unique_ptr<Model> modelCube_;
 	std::unique_ptr <Ball> ball_;
 
 	// 壁発生コマンド

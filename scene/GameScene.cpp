@@ -39,9 +39,8 @@ void GameScene::Initialize() {
 	ball_ = std::make_unique<Ball>();
 	//3Dモデルの生成
 	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
-	modelCube_.reset(Model::CreateFromOBJ("BallCube", true));
-	//弾の初期化
-	ball_->Initialize(modelBall_.get(),modelCube_.get());
+	//の初期化
+	ball_->Initialize(modelBall_.get());
 
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
@@ -160,7 +159,8 @@ void GameScene::Draw() {
 	
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-	player_->Draw(viewProjection_);
+	//玉
+	ball_->Draw(viewProjection_);
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
