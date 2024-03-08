@@ -34,9 +34,10 @@ void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
 
 	modelwall_.reset(Model::CreateFromOBJ("Block", true));
-
+	
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
+	Stage1LoadWallPopData();
 	
 	//ステージの生成と初期化
 	/*stage_ = std::make_unique<Stage>();
@@ -48,6 +49,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+
 
 	debugCamera_->Update();
 
@@ -75,8 +78,18 @@ void GameScene::Update() {
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
 	{
+		
 		istutorial_ = true;
+		isstage1_ = false;
 	}
+	//ステージ1のフラグを立てるためのif文
+	if (input_->TriggerKey(DIK_B))
+	{
+		
+		isstage1_ = true;
+		istutorial_ = false;
+	}
+	
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -85,11 +98,27 @@ void GameScene::Update() {
 		for (const std::unique_ptr<Stage>& stage : stages_) {
 			if (stage != nullptr) {
 				stage->Update();
+				
 			}
 		}
 		//複数の壁を出すための関数
 		UpdateWallPopCommands();
 	}
+
+	if (isstage1_)
+	{
+		//ステージの更新
+		for (const std::unique_ptr<Stage1>& stage1 : stages1_) {
+			if (stage1 != nullptr) {
+				stage1->Update();
+
+			}
+		}
+		//複数の壁を出すための関数
+		Stage1UpdateWallPopCommands();
+	}
+
+	
 }
 
 void GameScene::Draw() {
@@ -133,6 +162,18 @@ void GameScene::Draw() {
 		}
 	}
 
+	if (isstage1_)
+	{
+		//ステージの描画
+		for (const auto& stage1 : stages1_) {
+
+			stage1->Draw(viewProjection_);
+
+		}
+	}
+
+	//stage1_->Draw(viewProjection_);
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -163,24 +204,103 @@ void GameScene::WallGeneration(const Vector3& position) {
 	stages_.push_back(static_cast<std::unique_ptr<Stage>>(stage));
 }
 
+void GameScene::Stage1LoadWallPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//wallPop2.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage1wallPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::Stage1UpdateWallPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage1wallPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage1WallGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage1WallGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Stage1* stage1 = new Stage1();
+
+
+
+	stage1->Initialize(modelwall_.get(), position);
+	stage1->SetGameScene(this);
+
+	stages1_.push_back(static_cast<std::unique_ptr<Stage1>>(stage1));
+}
+
 void GameScene::LoadWallPopData()
 {
 	// ファイルを開く
 	std::ifstream file2;
-	std::string filename2 = "Resources//wallPop.csv";
-	file2.open(filename2);
+	std::string filename = "Resources//wallPop.csv";
+	file2.open(filename);
 	assert(file2.is_open());
-
 	// ファイルの内容を文字列ストリームにコピー
 	wallPopCommands << file2.rdbuf();
+	
 
 	// ファイルを閉じる
 	file2.close();
-
 }
 
 void GameScene::UpdateWallPopCommands()
 {
+	
 	bool iswait = false;
 	int32_t waitTimer = 0;
 
@@ -228,4 +348,5 @@ void GameScene::UpdateWallPopCommands()
 			WallGeneration(Vector3(x, y, z));
 		}
 	}
+
 }

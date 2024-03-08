@@ -14,6 +14,7 @@
 #include"DebugCamera.h"
 #include<list>
 #include <sstream>
+#include"Stage1.h"
 
 /// <summary>
 /// ゲームシーン
@@ -52,6 +53,12 @@ public: // メンバ関数
 
 	void WallGeneration(const Vector3& position);
 
+	void Stage1LoadWallPopData();
+
+	void Stage1UpdateWallPopCommands();
+
+	void Stage1WallGeneration(const Vector3& position);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -81,10 +88,15 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Stage>> stages_;
 	std::unique_ptr<Model> modelwall_;
 
+	std::list<std::unique_ptr<Stage1>> stages1_;
+
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
+	// 壁発生コマンド
+	std::stringstream stage1wallPopCommands;
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
+	bool isstage1_ = false;
 
 	/// <summary>
 	/// ゲームシーン用

@@ -6,7 +6,8 @@
 
 class GameScene;
 
-class Stage
+
+class Stage1
 {
 public:
 	//初期化
@@ -40,9 +41,6 @@ private:
 
 	Input* input_ = nullptr;
 
-	//uint32_t textureHandle_;
-
 	GameScene* gameScene_ = nullptr;
-
 };
 
