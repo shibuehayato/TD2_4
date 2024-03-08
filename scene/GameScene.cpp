@@ -34,7 +34,15 @@ void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
 
 	modelwall_.reset(Model::CreateFromOBJ("Block", true));
-	
+
+	//玉の生成
+	ball_ = std::make_unique<Ball>();
+	//3Dモデルの生成
+	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
+	modelCube_.reset(Model::CreateFromOBJ("BallCube", true));
+	//弾の初期化
+	ball_->Initialize(modelBall_.get(),modelCube_.get());
+
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
 	Stage1LoadWallPopData();
@@ -74,6 +82,8 @@ void GameScene::Update() {
 
 // 自キャラの更新
 	player_->Update();
+
+	ball_->Update();
 
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
@@ -150,7 +160,8 @@ void GameScene::Draw() {
 	
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-	
+	player_->Draw(viewProjection_);
+
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
 	{

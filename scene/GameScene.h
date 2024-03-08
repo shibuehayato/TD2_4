@@ -15,6 +15,7 @@
 #include<list>
 #include <sstream>
 #include"Stage1.h"
+#include"Ball.h"
 
 /// <summary>
 /// ゲームシーン
@@ -89,6 +90,11 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelwall_;
 
 	std::list<std::unique_ptr<Stage1>> stages1_;
+
+	//玉
+	std::unique_ptr<Model> modelBall_;
+	std::unique_ptr<Model> modelCube_;
+	std::unique_ptr <Ball> ball_;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
