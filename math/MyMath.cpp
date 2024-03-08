@@ -252,3 +252,22 @@ Vector3 Normalize(const Vector3 v1)
 
 	return num;
 }
+
+float Dot(const Vector3& v1, const Vector3& v2)
+{
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+Vector3 Multiplication(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 num;
+
+	float a[3] = { v1.x, v1.y, v1.z };
+	float b[3] = { v2.x, v2.y, v2.z };
+
+	num.x = a[0] * b[0];
+	num.y = a[1] * b[1];
+	num.z = a[2] * b[2];
+
+	return num;
+}

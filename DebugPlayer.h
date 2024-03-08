@@ -2,18 +2,20 @@
 #include <WorldTransform.h>
 #include <ViewProjection.h>
 #include <Model.h>
+#include <Input.h>
 #include<Mymath.h>
 
-
-class Wall
+class DebugPlayer
 {
 public:
 
-	void Initialize(Model*Wall);
+	void Initialize(Model* Wall);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
+
+	void WallOnCollision();
 
 
 	// ワールド座標を取得
@@ -34,12 +36,20 @@ public:
 		//Vector3 worldPos = TransformNormal(offset, worldTransform_.matWorld_);
 		//return worldPos;
 	}
+
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransform_.scale_; };
+
+
 private:
+	Input* input_=nullptr;
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
 	Model* Model_ = nullptr;
+
+	//スピード
+	Vector3 speed_;
 };
 

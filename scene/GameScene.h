@@ -10,6 +10,7 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include"Wall.h"
+#include"DebugPlayer.h"
 
 /// <summary>
 /// ゲームシーン
@@ -42,6 +43,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void CheckAllCollision();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -61,10 +64,16 @@ private: // メンバ変数
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelPlayerHead_;
 
+	// 仮自キャラ
+	std::unique_ptr<DebugPlayer> debugPlayer_;
+	// 仮3Dモデルの生成
+	std::unique_ptr<Model> modelDebugPlayer_;
+
 	//壁
 	std::unique_ptr<Wall> wall_;
 	//壁3Dモデルデータ
 	std::unique_ptr<Model> modelWall_;
+
 
 	/// <summary>
 	/// ゲームシーン用
