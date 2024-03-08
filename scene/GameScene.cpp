@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <fstream>
 #include "AxisIndicator.h"
 #include <ImGuiManager.h>
 
@@ -36,9 +37,14 @@ void GameScene::Initialize() {
 
 	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
 
+	modelwall_.reset(Model::CreateFromOBJ("Block", true));
+
+	//複数の壁を読み込むための関数
+	LoadWallPopData();
+	
 	//ステージの生成と初期化
-	stage_ = std::make_unique<Stage>();
-	stage_->Initialize(model_);
+	/*stage_ = std::make_unique<Stage>();
+	stage_->Initialize(model_);*/
 	//-------------------------//
 
 
@@ -86,9 +92,25 @@ void GameScene::Update() {
 // 自キャラの更新
 	player_->Update();
 
-	//ステージの更新
-	stage_->Update();
+	//チュートリアルのフラグを立てるためのif文
+	if (input_->TriggerKey(DIK_A))
+	{
+		istutorial_ = true;
+	}
 
+	//チュートリアルのフラグがたったら実行する
+	if (istutorial_)
+	{
+		//ステージの更新
+		for (const std::unique_ptr<Stage>& stage : stages_) {
+			if (stage != nullptr) {
+				stage->Update();
+			}
+		}
+		//複数の壁を出すための関数
+		UpdateWallPopCommands();
+	}
+}
 	
 	// 天球の更新
 	skydome_->Update();
@@ -123,9 +145,18 @@ void GameScene::Draw() {
 	
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+	
+	//チュートリアルのフラグがたったら実行する
+	if (istutorial_)
+	{
+		//ステージの描画
+		for (const auto& stage : stages_) {
+			
+				stage->Draw(viewProjection_);
+			
+		}
+	}
 
-	//ステージの描画
-	stage_->Draw(viewProjection_);
 
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
@@ -146,4 +177,83 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::WallGeneration(const Vector3& position) {
+	// 敵の生成
+	Stage* stage = new Stage();
+
+	
+	
+	stage->Initialize(modelwall_.get(), position);
+	stage->SetGameScene(this);
+
+	stages_.push_back(static_cast<std::unique_ptr<Stage>>(stage));
+}
+
+void GameScene::LoadWallPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename2 = "Resources//wallPop.csv";
+	file2.open(filename2);
+	assert(file2.is_open());
+
+	// ファイルの内容を文字列ストリームにコピー
+	wallPopCommands << file2.rdbuf();
+
+	// ファイルを閉じる
+	file2.close();
+
+}
+
+void GameScene::UpdateWallPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(wallPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+	
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			WallGeneration(Vector3(x, y, z));
+		}
+	}
 }
