@@ -5,7 +5,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
+GameScene::~GameScene() {
 	delete model_;
 }
 
@@ -31,7 +31,7 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(modelPlayerHead_.get());
 
-	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 
 	modelwall_.reset(Model::CreateFromOBJ("Block", true));
 
@@ -45,13 +45,13 @@ void GameScene::Initialize() {
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
 	Stage1LoadWallPopData();
-	
+
 	//ステージの生成と初期化
 	/*stage_ = std::make_unique<Stage>();
 	stage_->Initialize(model_);*/
 	//-------------------------//
 
-	
+
 
 }
 
@@ -79,7 +79,7 @@ void GameScene::Update() {
 	}
 #endif
 
-// 自キャラの更新
+	// 自キャラの更新
 	player_->Update();
 
 	ball_->Update();
@@ -87,18 +87,18 @@ void GameScene::Update() {
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
 	{
-		
+
 		istutorial_ = true;
 		isstage1_ = false;
 	}
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
 	{
-		
+
 		isstage1_ = true;
 		istutorial_ = false;
 	}
-	
+
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -107,7 +107,7 @@ void GameScene::Update() {
 		for (const std::unique_ptr<Stage>& stage : stages_) {
 			if (stage != nullptr) {
 				stage->Update();
-				
+
 			}
 		}
 		//複数の壁を出すための関数
@@ -127,7 +127,7 @@ void GameScene::Update() {
 		Stage1UpdateWallPopCommands();
 	}
 
-	
+
 }
 
 void GameScene::Draw() {
@@ -142,7 +142,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -156,7 +156,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	
+
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 	//玉
@@ -167,9 +167,9 @@ void GameScene::Draw() {
 	{
 		//ステージの描画
 		for (const auto& stage : stages_) {
-			
-				stage->Draw(viewProjection_);
-			
+
+			stage->Draw(viewProjection_);
+
 		}
 	}
 
@@ -207,8 +207,8 @@ void GameScene::WallGeneration(const Vector3& position) {
 	// 敵の生成
 	Stage* stage = new Stage();
 
-	
-	
+
+
 	stage->Initialize(modelwall_.get(), position);
 	stage->SetGameScene(this);
 
@@ -303,7 +303,7 @@ void GameScene::LoadWallPopData()
 	assert(file2.is_open());
 	// ファイルの内容を文字列ストリームにコピー
 	wallPopCommands << file2.rdbuf();
-	
+
 
 	// ファイルを閉じる
 	file2.close();
@@ -311,7 +311,7 @@ void GameScene::LoadWallPopData()
 
 void GameScene::UpdateWallPopCommands()
 {
-	
+
 	bool iswait = false;
 	int32_t waitTimer = 0;
 
@@ -340,7 +340,7 @@ void GameScene::UpdateWallPopCommands()
 			// コメント行は飛ばす
 			continue;
 		}
-	
+
 		// POPコマンド
 		if (word2.find("POP") == 0) {
 			// x座標

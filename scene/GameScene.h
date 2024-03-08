@@ -67,7 +67,7 @@ private: // メンバ変数
 
 	std::unique_ptr<DebugCamera> debugCamera_;
 
-	bool isDebugCameraAcctive_=false;
+	bool isDebugCameraAcctive_ = false;
 
 
 	// テクスチャハンドル
