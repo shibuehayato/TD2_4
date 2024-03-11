@@ -10,8 +10,8 @@ void Ball::Initialize(Model* ball)
 
 	ballWorldTransform_.Initialize();
 
-	ballWorldTransform_.translation_ = { 0,0,0 };
-	ballWorldTransform_.scale_ = { 10,10,10 };
+	ballWorldTransform_.translation_ = { 7.5f,0,4 };
+	ballWorldTransform_.scale_ = { 1,1,1 };
 }
 
 void Ball::Update()

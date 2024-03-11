@@ -39,7 +39,7 @@ void GameScene::Initialize() {
 	ball_ = std::make_unique<Ball>();
 	//3Dモデルの生成
 	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
-	//の初期化
+	//玉の初期化
 	ball_->Initialize(modelBall_.get());
 
 	//複数の壁を読み込むための関数
@@ -82,8 +82,7 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	ball_->Update();
-
+	
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
 	{
@@ -125,6 +124,8 @@ void GameScene::Update() {
 		}
 		//複数の壁を出すための関数
 		Stage1UpdateWallPopCommands();
+		ball_->Update();
+
 	}
 
 
@@ -159,8 +160,7 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-	//玉
-	ball_->Draw(viewProjection_);
+	
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -181,6 +181,8 @@ void GameScene::Draw() {
 			stage1->Draw(viewProjection_);
 
 		}
+		//玉
+		ball_->Draw(viewProjection_);
 	}
 
 	//stage1_->Draw(viewProjection_);
