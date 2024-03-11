@@ -17,6 +17,7 @@
 #include"Stage1.h"
 #include"Ball.h"
 #include "Skydome.h"
+#include"Mymath.h"
 
 /// <summary>
 /// ゲームシーン
@@ -60,6 +61,8 @@ public: // メンバ関数
 	void Stage1UpdateWallPopCommands();
 
 	void Stage1WallGeneration(const Vector3& position);
+
+	void CheckAllCollisions();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

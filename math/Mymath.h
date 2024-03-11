@@ -31,3 +31,5 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
 
 Vector3 Normalize(const Vector3 v1);
+
+float Dot(const Vector3& v1, const Vector3& v2);

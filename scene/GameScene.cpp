@@ -387,3 +387,28 @@ void GameScene::UpdateWallPopCommands()
 	}
 
 }
+
+void GameScene::CheckAllCollisions() {
+	// 判定対象AとBの座標
+	Vector3 PosA, PosB;
+	Vector3 RadiusA, RadiusB;
+	float PositionMeasure;
+	float RadiusMeasure;
+
+
+		// プレイヤーの座標
+		PosA =player_->GetWorldPosition() ;
+		RadiusA =player_->GetRadius();
+		//玉の座標
+		PosB = ball_->GetWorldPosition();
+		RadiusB =ball_->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			ball_->OnCollision();
+		}
+}

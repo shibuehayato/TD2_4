@@ -6,30 +6,39 @@ void Ball::Initialize(Model* ball)
 {
 	assert(ball);
 
-	ballModel_ = ball;
+	Model_ = ball;
 
-	ballWorldTransform_.Initialize();
+	WorldTransform_.Initialize();
 
-	ballWorldTransform_.translation_ = { 7.5f,0,4 };
-	ballWorldTransform_.scale_ = { 1,1,1 };
+	WorldTransform_.translation_ = { 7.5f,0,4 };
+	WorldTransform_.scale_ = { 1,1,1 };
+
+	isDead_ = false;
 }
 
 void Ball::Update()
 {
 
 	ImGui::Begin("window");
-	ImGui::DragFloat3("balltransrate", &ballWorldTransform_.translation_.x, 0.01f);
-	ImGui::DragFloat3("ballangle", &ballWorldTransform_.rotation_.x, 0.01f);
-	ImGui::DragFloat3("ballsize", &ballWorldTransform_.scale_.x, 0.01f);
+	ImGui::DragFloat3("balltransrate", &WorldTransform_.translation_.x, 0.01f);
+	ImGui::DragFloat3("ballangle", &WorldTransform_.rotation_.x, 0.01f);
+	ImGui::DragFloat3("ballsize", &WorldTransform_.scale_.x, 0.01f);
 	ImGui::End();
 
 	// 行列を定数バッファに転送
-	ballWorldTransform_.UpdateMatrix();
+	WorldTransform_.UpdateMatrix();
 }
 
 void Ball::Draw(const ViewProjection& ViewProjection)
 {
 	// 3Dモデルを描画
-	ballModel_->Draw(ballWorldTransform_, ViewProjection);
+	Model_->Draw(WorldTransform_, ViewProjection);
+}
+
+void Ball::OnCollision()
+{
+	//isDead_ = true;
+
+	WorldTransform_.translation_.x++;
 }
 
