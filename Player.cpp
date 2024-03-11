@@ -41,7 +41,7 @@ void Player::Update() {
 				IsMove = true;
 			}
 
-			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010f)) {
+			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010)) {
 				KeepMove.x = 0;
 				KeepMove.z = 0;
 				IsMove = false;
