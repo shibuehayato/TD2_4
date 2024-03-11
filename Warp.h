@@ -1,21 +1,14 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
-
-class GameScene;
-
-
-class Barrier
+class Warp
 {
 public:
-	void Initialize(Model* model,Vector3 position);
+	void Initialize(Model* model);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
-
-	//ゲームシーンからアドレスをもらうための関数
-	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -26,9 +19,7 @@ public:
 private:
 	WorldTransform worldTransform_;
 
-	Model* model_ =  nullptr ;
-
-	GameScene* gameScene_ = nullptr;
+	Model* model_ = nullptr;
 
 };
 

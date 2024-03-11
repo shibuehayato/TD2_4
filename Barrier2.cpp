@@ -1,7 +1,7 @@
-#include "Barrier.h"
+#include "Barrier2.h"
 #include<cassert>
 #include"GameScene.h"
-void Barrier::Initialize(Model* model, Vector3 position)
+void Barrier2::Initialize(Model* model, Vector3 position)
 {
 	assert(model);
 	model_ = model;
@@ -30,16 +30,19 @@ void Barrier::Initialize(Model* model, Vector3 position)
 
 }
 
-void Barrier::Update()
+void Barrier2::Update()
 {
 	worldTransform_.UpdateMatrix();
 	/*for (int i = 0; i < 50; i++)
 	{
 		worldTransform_[i].UpdateMatrix();
 	}*/
+	ImGui::Begin("Barrier2");
+	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
+	ImGui::End();
 }
 
-void Barrier::Draw(ViewProjection& viewProjection)
+void Barrier2::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection);
 	/*for (int i = 0; i < 50; i++)
@@ -48,7 +51,7 @@ void Barrier::Draw(ViewProjection& viewProjection)
 	}*/
 }
 
-Vector3 Barrier::GetPosition()
+Vector3 Barrier2::GetPosition()
 {
 	Vector3 worldPos;
 
@@ -59,7 +62,7 @@ Vector3 Barrier::GetPosition()
 	return worldPos;
 }
 
-Vector3 Barrier::GetScale()
+Vector3 Barrier2::GetScale()
 {
 	Vector3 worldScale;
 

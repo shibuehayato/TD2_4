@@ -22,6 +22,10 @@
 #include"Pitfall.h"
 #include"Ball.h"
 #include "Skydome.h"
+#include"Barrier.h"
+#include"Warp.h"
+#include"Warp2.h"
+#include"Barrier2.h"
 
 /// <summary>
 /// ゲームシーン
@@ -78,6 +82,18 @@ public: // メンバ関数
 
 	void WindGeneration(const Vector3& position);
 
+	void LoadBarrierPopData();
+
+	void UpdateBarrierPopCommands();
+
+	void BarrierGeneration(const Vector3& position);
+
+	void LoadBarrier2PopData();
+
+	void UpdateBarrier2PopCommands();
+
+	void Barrier2Generation(const Vector3& position);
+
 	//--------------------------------------------//
 
 private: // メンバ変数
@@ -121,6 +137,14 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Wind>> winds_;
 	//落とし穴の宣言
 	std::unique_ptr<Pitfall> pitfall_;
+	//バリアの宣言
+	std::list<std::unique_ptr<Barrier>> barriers_;
+    //ワープの宣言
+	std::unique_ptr<Warp> warp_;
+	//2つ目のワープの宣言
+	std::unique_ptr<Warp2> warp2_;
+	//2つめのバリアの宣言
+	std::list <std::unique_ptr<Barrier2>> barriers2_;
 
 	//玉
 	std::unique_ptr<Model> modelBall_;
@@ -134,6 +158,10 @@ private: // メンバ変数
 	std::stringstream flamePopCommands;
 	//風のギミックの発生コマンド
 	std::stringstream windPopCommands;
+	//バリアの発生コマンド
+	std::stringstream barrierPopCommands;
+	//2つめのバリアの発生コマンド
+	std::stringstream barrier2PopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;

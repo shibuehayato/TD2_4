@@ -1,14 +1,14 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
-
+#include"ImGuiManager.h"
 class GameScene;
 
 
-class Barrier
+class Barrier2
 {
 public:
-	void Initialize(Model* model,Vector3 position);
+	void Initialize(Model* model, Vector3 position);
 
 	void Update();
 
@@ -26,9 +26,11 @@ public:
 private:
 	WorldTransform worldTransform_;
 
-	Model* model_ =  nullptr ;
+	Model* model_ = nullptr;
 
 	GameScene* gameScene_ = nullptr;
 
 };
+
+
 

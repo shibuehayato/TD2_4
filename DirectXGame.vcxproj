@@ -109,6 +109,7 @@
     <ClCompile Include="2d\ImGuiManager.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Barrier.cpp" />
+    <ClCompile Include="Barrier2.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="Flame.cpp" />
@@ -123,6 +124,8 @@
     <ClCompile Include="SmallSwitch.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stage1.cpp" />
+    <ClCompile Include="Warp.cpp" />
+    <ClCompile Include="Warp2.cpp" />
     <ClCompile Include="Wind.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +149,7 @@
     <ClInclude Include="audio\Audio.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Barrier.h" />
+    <ClInclude Include="Barrier2.h" />
     <ClInclude Include="base\DirectXCommon.h" />
     <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\TextureManager.h" />
@@ -165,6 +169,8 @@
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage1.h" />
+    <ClInclude Include="Warp.h" />
+    <ClInclude Include="Warp2.h" />
     <ClInclude Include="Wind.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #include "Wind.h"
 #include<cassert>
+#include"GameScene.h"
 void Wind::Initialize(Model* model, Vector3 position)
 {
 	assert(model);
