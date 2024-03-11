@@ -113,10 +113,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\MyMath.cpp" />
     <ClCompile Include="math\WorldTransformEx.cpp" />
+    <ClCompile Include="NormalSwitch.cpp" />
+    <ClCompile Include="Pitfall.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="SmallSwitch.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stage1.cpp" />
+    <ClCompile Include="Wind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -148,10 +152,14 @@
     <ClInclude Include="math\Vector2.h" />
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="math\Vector4.h" />
+    <ClInclude Include="NormalSwitch.h" />
+    <ClInclude Include="Pitfall.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="SmallSwitch.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage1.h" />
+    <ClInclude Include="Wind.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

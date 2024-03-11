@@ -15,6 +15,11 @@
 #include<list>
 #include <sstream>
 #include"Stage1.h"
+#include"Flame.h"
+#include"SmallSwitch.h"
+#include"NormalSwitch.h"
+#include"Wind.h"
+#include"Pitfall.h"
 
 /// <summary>
 /// ゲームシーン
@@ -46,7 +51,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-
+	//複数化に必要な関数
 	void LoadWallPopData();
 
 	void UpdateWallPopCommands();
@@ -58,6 +63,20 @@ public: // メンバ関数
 	void Stage1UpdateWallPopCommands();
 
 	void Stage1WallGeneration(const Vector3& position);
+
+	void LoadFlamePopData();
+
+	void UpdateFlamePopCommands();
+
+	void FlameGeneration(const Vector3& position);
+
+	void LoadWindPopData();
+
+	void UpdateWindPopCommands();
+
+	void WindGeneration(const Vector3& position);
+
+	//--------------------------------------------//
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -87,13 +106,29 @@ private: // メンバ変数
 	std::unique_ptr<Stage> stage_;
 	std::list<std::unique_ptr<Stage>> stages_;
 	std::unique_ptr<Model> modelwall_;
-
 	std::list<std::unique_ptr<Stage1>> stages1_;
+
+	//ギミックの宣言
+	//炎の壁の宣言
+	std::list<std::unique_ptr<Flame>> flames_;
+	//小スイッチの宣言
+	std::unique_ptr<SmallSwitch> smallswitch_;
+	//中スイッチの宣言
+	std::unique_ptr<NormalSwitch> normalswitch_;
+	//風のギミックの宣言
+	std::list<std::unique_ptr<Wind>> winds_;
+	//落とし穴の宣言
+	std::unique_ptr<Pitfall> pitfall_;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
 	// 壁発生コマンド
 	std::stringstream stage1wallPopCommands;
+	//炎発生コマンド
+	std::stringstream flamePopCommands;
+	//風のギミックの発生コマンド
+	std::stringstream windPopCommands;
+
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
