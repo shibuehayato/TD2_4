@@ -146,11 +146,18 @@ void GameScene::Update() {
 		}
 		//複数の壁を出すための関数
 		Stage1UpdateWallPopCommands();
-		ball_->Update();
 
+		if (ball_) {
+			ball_->Update();
+		}
 	}
 
+	//当たり判定
+	CheckAllCollisions();
 
+	if (ball_&&ball_->IsDead()) {
+		ball_.reset();
+	}
 }
 
 void GameScene::Draw() {
@@ -204,9 +211,10 @@ void GameScene::Draw() {
 
 		}
 		//玉
-		ball_->Draw(viewProjection_);
+		if (ball_) {
+			ball_->Draw(viewProjection_);
+		}
 	}
-
 
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
@@ -395,13 +403,13 @@ void GameScene::CheckAllCollisions() {
 	float PositionMeasure;
 	float RadiusMeasure;
 
-
+	if (ball_) {
 		// プレイヤーの座標
-		PosA =player_->GetWorldPosition() ;
-		RadiusA =player_->GetRadius();
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
 		//玉の座標
 		PosB = ball_->GetWorldPosition();
-		RadiusB =ball_->GetRadius();
+		RadiusB = ball_->GetRadius();
 		// 座標AとBの距離を求める
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
@@ -411,4 +419,5 @@ void GameScene::CheckAllCollisions() {
 		if (PositionMeasure <= RadiusMeasure) {
 			ball_->OnCollision();
 		}
+	}
 }

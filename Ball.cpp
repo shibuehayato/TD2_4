@@ -37,8 +37,6 @@ void Ball::Draw(const ViewProjection& ViewProjection)
 
 void Ball::OnCollision()
 {
-	//isDead_ = true;
-
-	WorldTransform_.translation_.x++;
+	isDead_ = true;
 }
 
