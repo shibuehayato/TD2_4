@@ -16,6 +16,7 @@
 #include <sstream>
 #include"Stage1.h"
 #include"Ball.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -102,6 +103,11 @@ private: // メンバ変数
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
+
+	// 天球
+	std::unique_ptr<Skydome> skydome_;
+	// 3Dモデルの生成
+	std::unique_ptr<Model> modelSkydome_;
 
 	/// <summary>
 	/// ゲームシーン用
