@@ -213,8 +213,10 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 自キャラの描画
-	player_->Draw(viewProjection_);
-
+	if (istutorial_ || isstage1_)
+	{
+		player_->Draw(viewProjection_);
+	}
 	
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -240,23 +242,24 @@ void GameScene::Draw() {
 		for (const auto& flame : flames_) {
 			flame->Draw(viewProjection_);
 		}
-	}
 		//玉
 		ball_->Draw(viewProjection_);
-	
 
-	//小スイッチの描画
-	smallswitch_->Draw(viewProjection_);
 
-	//中スイッチの描画
-	normalswitch_->Draw(viewProjection_);
+		//小スイッチの描画
+		smallswitch_->Draw(viewProjection_);
 
-	//風のギミックの描画
-	for (const auto& wind : winds_) {
-		wind->Draw(viewProjection_);
+		//中スイッチの描画
+		normalswitch_->Draw(viewProjection_);
+
+		//風のギミックの描画
+		for (const auto& wind : winds_) {
+			wind->Draw(viewProjection_);
+		}
+		//落とし穴の描画
+		pitfall_->Draw(viewProjection_);
 	}
-	//落とし穴の描画
-	pitfall_->Draw(viewProjection_);
+	
 	//stage1_->Draw(viewProjection_);
 
 	// 天球の描画
