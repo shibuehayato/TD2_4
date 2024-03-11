@@ -2,10 +2,12 @@
 #include "TextureManager.h"
 #include <cassert>
 #include <fstream>
+#include "AxisIndicator.h"
+#include <ImGuiManager.h>
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
+GameScene::~GameScene() {
 	delete model_;
 }
 
@@ -21,20 +23,29 @@ void GameScene::Initialize() {
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 
+	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
+	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
+	// 自キャラの生成 bz
 	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
-	modelPlayerHead_.reset(Model::CreateFromOBJ("cube", true));
+	modelPlayerHead_.reset(Model::CreateFromOBJ("Player", true));
 	// 自キャラの初期化
 	player_->Initialize(modelPlayerHead_.get());
 
-	debugCamera_ = std::make_unique<DebugCamera>(1280,720);
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 
 	modelwall_.reset(Model::CreateFromOBJ("Block", true));
-	
+
+	//玉の生成
+	ball_ = std::make_unique<Ball>();
+	//3Dモデルの生成
+	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
+	//玉の初期化
+	ball_->Initialize(modelBall_.get());
+
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
 	Stage1LoadWallPopData();
@@ -61,6 +72,17 @@ void GameScene::Initialize() {
 	pitfall_ = std::make_unique<Pitfall>();
 	pitfall_->Initialize(model_);
 
+	// 3Dモデルの生成
+	modelSkydome_.reset(Model::CreateFromOBJ("Skydome", true));
+	// 天球の生成
+	skydome_ = std::make_unique<Skydome>();
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_.get());
+
+	// 軸方向表示を有効にする
+	AxisIndicator::GetInstance()->SetVisible(true);
+	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 }
 
 void GameScene::Update() {
@@ -68,6 +90,11 @@ void GameScene::Update() {
 
 
 	debugCamera_->Update();
+
+	ImGui::Begin("viewprojection");
+	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
+	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+	ImGui::End();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
@@ -87,7 +114,7 @@ void GameScene::Update() {
 	}
 #endif
 
-// 自キャラの更新
+	// 自キャラの更新
 	player_->Update();
 
 	for (const std::unique_ptr<Flame>& flame : flames_) {
@@ -105,21 +132,24 @@ void GameScene::Update() {
 	//落とし穴の更新
 	pitfall_->Update();
 
+	// 天球の更新
+	skydome_->Update();
+
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
 	{
-		
+
 		istutorial_ = true;
 		isstage1_ = false;
 	}
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
 	{
-		
+
 		isstage1_ = true;
 		istutorial_ = false;
 	}
-	
+
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -128,7 +158,7 @@ void GameScene::Update() {
 		for (const std::unique_ptr<Stage>& stage : stages_) {
 			if (stage != nullptr) {
 				stage->Update();
-				
+
 			}
 		}
 		//複数の壁を出すための関数
@@ -148,9 +178,11 @@ void GameScene::Update() {
 		Stage1UpdateWallPopCommands();
 		//複数の炎ギミックを出すための関数
 		UpdateFlamePopCommands();
+		ball_->Update();
+
 	}
 
-	
+
 }
 
 void GameScene::Draw() {
@@ -165,7 +197,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -179,7 +211,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	
+
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
@@ -189,9 +221,9 @@ void GameScene::Draw() {
 	{
 		//ステージの描画
 		for (const auto& stage : stages_) {
-			
-				stage->Draw(viewProjection_);
-			
+
+			stage->Draw(viewProjection_);
+
 		}
 	}
 
@@ -209,6 +241,9 @@ void GameScene::Draw() {
 			flame->Draw(viewProjection_);
 		}
 	}
+		//玉
+		ball_->Draw(viewProjection_);
+	}
 
 	//小スイッチの描画
 	smallswitch_->Draw(viewProjection_);
@@ -223,6 +258,9 @@ void GameScene::Draw() {
 	//落とし穴の描画
 	pitfall_->Draw(viewProjection_);
 	//stage1_->Draw(viewProjection_);
+
+	// 天球の描画
+	skydome_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -246,8 +284,8 @@ void GameScene::WallGeneration(const Vector3& position) {
 	// 敵の生成
 	Stage* stage = new Stage();
 
-	
-	
+
+
 	stage->Initialize(modelwall_.get(), position);
 	stage->SetGameScene(this);
 
@@ -500,7 +538,7 @@ void GameScene::LoadWallPopData()
 	assert(file2.is_open());
 	// ファイルの内容を文字列ストリームにコピー
 	wallPopCommands << file2.rdbuf();
-	
+
 
 	// ファイルを閉じる
 	file2.close();
@@ -508,7 +546,7 @@ void GameScene::LoadWallPopData()
 
 void GameScene::UpdateWallPopCommands()
 {
-	
+
 	bool iswait = false;
 	int32_t waitTimer = 0;
 
@@ -537,7 +575,7 @@ void GameScene::UpdateWallPopCommands()
 			// コメント行は飛ばす
 			continue;
 		}
-	
+
 		// POPコマンド
 		if (word2.find("POP") == 0) {
 			// x座標

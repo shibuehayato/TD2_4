@@ -20,6 +20,8 @@
 #include"NormalSwitch.h"
 #include"Wind.h"
 #include"Pitfall.h"
+#include"Ball.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -85,7 +87,7 @@ private: // メンバ変数
 
 	std::unique_ptr<DebugCamera> debugCamera_;
 
-	bool isDebugCameraAcctive_=false;
+	bool isDebugCameraAcctive_ = false;
 
 
 	// テクスチャハンドル
@@ -120,6 +122,10 @@ private: // メンバ変数
 	//落とし穴の宣言
 	std::unique_ptr<Pitfall> pitfall_;
 
+	//玉
+	std::unique_ptr<Model> modelBall_;
+	std::unique_ptr <Ball> ball_;
+
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
 	// 壁発生コマンド
@@ -132,6 +138,11 @@ private: // メンバ変数
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
+
+	// 天球
+	std::unique_ptr<Skydome> skydome_;
+	// 3Dモデルの生成
+	std::unique_ptr<Model> modelSkydome_;
 
 	/// <summary>
 	/// ゲームシーン用

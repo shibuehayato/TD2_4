@@ -107,6 +107,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2d\ImGuiManager.cpp" />
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="Flame.cpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Pitfall.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="SmallSwitch.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Stage1.cpp" />
@@ -141,6 +143,7 @@
     <ClInclude Include="3d\ViewProjection.h" />
     <ClInclude Include="3d\WorldTransform.h" />
     <ClInclude Include="audio\Audio.h" />
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="base\DirectXCommon.h" />
     <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\TextureManager.h" />
@@ -157,6 +160,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="SmallSwitch.h" />
+    <ClInclude Include="Skydome.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Wind.h" />
