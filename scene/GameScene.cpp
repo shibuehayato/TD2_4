@@ -92,6 +92,9 @@ void GameScene::Update() {
 // 自キャラの更新
 	player_->Update();
 
+	// 天球の更新
+	skydome_->Update();
+
 	//チュートリアルのフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_A))
 	{
@@ -110,10 +113,6 @@ void GameScene::Update() {
 		//複数の壁を出すための関数
 		UpdateWallPopCommands();
 	}
-}
-	
-	// 天球の更新
-	skydome_->Update();
 }
 
 void GameScene::Draw() {
