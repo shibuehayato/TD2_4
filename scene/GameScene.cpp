@@ -243,7 +243,7 @@ void GameScene::Draw() {
 	}
 		//玉
 		ball_->Draw(viewProjection_);
-	}
+	
 
 	//小スイッチの描画
 	smallswitch_->Draw(viewProjection_);
