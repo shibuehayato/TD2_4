@@ -18,6 +18,7 @@
 #include"Ball.h"
 #include "Skydome.h"
 #include"Mymath.h"
+#include"Recovery.h"
 
 /// <summary>
 /// ゲームシーン
@@ -98,6 +99,11 @@ private: // メンバ変数
 	//玉
 	std::unique_ptr<Model> modelBall_;
 	std::unique_ptr <Ball> ball_;
+
+	//回復
+	std::unique_ptr<Model> modelRecovery_;
+	std::unique_ptr <Recovery> recovery_;
+	float recoveryTime_ = 0;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;

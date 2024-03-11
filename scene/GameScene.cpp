@@ -45,6 +45,14 @@ void GameScene::Initialize() {
 	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
 	//玉の初期化
 	ball_->Initialize(modelBall_.get());
+	
+	//回復の生成
+	recovery_ = std::make_unique<Recovery>();
+	//3Dモデルの生成
+	modelRecovery_.reset(Model::CreateFromOBJ("Recovery", true));
+	//回復の初期化
+	recovery_->Initialize(modelRecovery_.get());
+	recoveryTime_ = 0;
 
 	//複数の壁を読み込むための関数
 	LoadWallPopData();
@@ -147,17 +155,43 @@ void GameScene::Update() {
 		//複数の壁を出すための関数
 		Stage1UpdateWallPopCommands();
 
+		//玉
 		if (ball_) {
 			ball_->Update();
+		}
+		if (ball_ && ball_->IsDead()) {
+			ball_.reset();
+		}
+		
+		//回復
+		if (recovery_) {
+			recovery_->Update();
+		//消す
+			if (recovery_->IsDead()) {
+				recovery_.reset();
+			}
+		}
+
+		if (!recovery_) {
+			recoveryTime_++;
+
+			if (recoveryTime_ >= 180) {
+				//位置
+				float posX = -14;
+				float posZ = -7;
+				//回復の生成
+				recovery_ = std::make_unique<Recovery>();
+				recovery_->SetPositionX(posX);
+				recovery_->SetPositionZ(posZ);
+				//回復の初期化
+				recovery_->Initialize(modelRecovery_.get());
+				recoveryTime_ = 0;
+			}
 		}
 	}
 
 	//当たり判定
 	CheckAllCollisions();
-
-	if (ball_&&ball_->IsDead()) {
-		ball_.reset();
-	}
 }
 
 void GameScene::Draw() {
@@ -213,6 +247,10 @@ void GameScene::Draw() {
 		//玉
 		if (ball_) {
 			ball_->Draw(viewProjection_);
+		}
+		//回復
+		if (recovery_) {
+			recovery_->Draw(viewProjection_);
 		}
 	}
 
@@ -403,6 +441,7 @@ void GameScene::CheckAllCollisions() {
 	float PositionMeasure;
 	float RadiusMeasure;
 
+#pragma region プレイヤーと玉
 	if (ball_) {
 		// プレイヤーの座標
 		PosA = player_->GetWorldPosition();
@@ -420,4 +459,26 @@ void GameScene::CheckAllCollisions() {
 			ball_->OnCollision();
 		}
 	}
+#pragma endregion
+
+#pragma region プレイヤーと回復
+	if (recovery_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//回復の座標
+		PosB = recovery_->GetWorldPosition();
+		RadiusB = recovery_->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			recovery_->OnCollision();
+		}
+	}
+#pragma endregion
 }
+

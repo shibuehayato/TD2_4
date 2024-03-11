@@ -2,11 +2,11 @@
 #include <cassert>
 #include <imgui.h>
 
-void Ball::Initialize(Model* ball)
+void Ball::Initialize(Model* model)
 {
-	assert(ball);
+	assert(model);
 
-	Model_ = ball;
+	Model_ = model;
 
 	WorldTransform_.Initialize();
 
