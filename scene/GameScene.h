@@ -22,6 +22,7 @@
 #include"Pitfall.h"
 #include"Ball.h"
 #include "Skydome.h"
+#include"Mymath.h"
 
 /// <summary>
 /// ゲームシーン
@@ -79,6 +80,8 @@ public: // メンバ関数
 	void WindGeneration(const Vector3& position);
 
 	//--------------------------------------------//
+
+	void CheckAllCollisions();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

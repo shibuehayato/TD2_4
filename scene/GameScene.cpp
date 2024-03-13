@@ -178,11 +178,18 @@ void GameScene::Update() {
 		Stage1UpdateWallPopCommands();
 		//複数の炎ギミックを出すための関数
 		UpdateFlamePopCommands();
-		ball_->Update();
 
+		if (ball_) {
+			ball_->Update();
+		}
 	}
 
+	//当たり判定
+	CheckAllCollisions();
 
+	if (ball_&&ball_->IsDead()) {
+		ball_.reset();
+	}
 }
 
 void GameScene::Draw() {
@@ -243,7 +250,9 @@ void GameScene::Draw() {
 			flame->Draw(viewProjection_);
 		}
 		//玉
-		ball_->Draw(viewProjection_);
+		if (ball_) {
+			ball_->Draw(viewProjection_);
+		}
 
 
 		//小スイッチの描画
@@ -598,4 +607,30 @@ void GameScene::UpdateWallPopCommands()
 		}
 	}
 
+}
+
+void GameScene::CheckAllCollisions() {
+	// 判定対象AとBの座標
+	Vector3 PosA, PosB;
+	Vector3 RadiusA, RadiusB;
+	float PositionMeasure;
+	float RadiusMeasure;
+
+	if (ball_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//玉の座標
+		PosB = ball_->GetWorldPosition();
+		RadiusB = ball_->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			ball_->OnCollision();
+		}
+	}
 }
