@@ -129,12 +129,12 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	//チュートリアルのフラグを立てるためのif文
-	if (input_->TriggerKey(DIK_A))
+	/*if (input_->TriggerKey(DIK_A))
 	{
 
 		istutorial_ = true;
 		isstage1_ = false;
-	}
+	}*/
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
 	{
