@@ -34,6 +34,15 @@ void DebugPlayer::Update()
 		worldTransform_.translation_.y += speed_.y;
 	}
 
+	//z
+	if (input_->PushKey(DIK_I)) {
+		worldTransform_.translation_.z += speed_.y;
+	}
+	if (input_->PushKey(DIK_K)) {
+		worldTransform_.translation_.z -= speed_.y;
+	}
+
+
 	//if (input_->PushKey(DIK_A)) {
 	//	worldTransform_.translation_.x -= speed_.x*10;
 	//}

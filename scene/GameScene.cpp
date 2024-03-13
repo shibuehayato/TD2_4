@@ -148,9 +148,6 @@ void GameScene::Update() {
 	wall_->Update();
 
 
-	//当たり判定
-	CheckAllCollision();
-}
 
 
 	//チュートリアルのフラグがたったら実行する
@@ -503,10 +500,6 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 #pragma endregion
-}
-
-void GameScene::CheckAllCollision()
-{
 
 	//球体だからかずれまくってる
 	//// 判定対象AとBの座標
@@ -533,9 +526,9 @@ void GameScene::CheckAllCollision()
 
 	//立方体で作る
 	// 壁座標
-	Vector3 PosA = wall_->GetWorldPosition();
+	 PosA = wall_->GetWorldPosition();
 	// プレイヤー座標
-	Vector3 PosB = debugPlayer_->GetWorldPosition();
+	 PosB = debugPlayer_->GetWorldPosition();
 
 	Vector3 HalfSizeA = wall_->GetRadius();
 	Vector3 HalfSizeB = debugPlayer_->GetRadius();
