@@ -30,12 +30,6 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return WorldTransform_.scale_; };
 
-	void SetPositionX(const float& pos) {
-		WorldTransform_.translation_.x = pos;
-	}
-	void SetPositionZ(const float& pos) {
-		WorldTransform_.translation_.z = pos;
-	}
 
 private:
 	WorldTransform WorldTransform_ ;

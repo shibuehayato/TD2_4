@@ -176,13 +176,8 @@ void GameScene::Update() {
 			recoveryTime_++;
 
 			if (recoveryTime_ >= 180) {
-				//位置
-				float posX = -14;
-				float posZ = -7;
 				//回復の生成
 				recovery_ = std::make_unique<Recovery>();
-				recovery_->SetPositionX(posX);
-				recovery_->SetPositionZ(posZ);
 				//回復の初期化
 				recovery_->Initialize(modelRecovery_.get());
 				recoveryTime_ = 0;
