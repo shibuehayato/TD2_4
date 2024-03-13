@@ -10,7 +10,7 @@ void Wall::Initialize(Model* Wall)
 	worldTransform_.Initialize();
 
 	worldTransform_.translation_={ 0,0,0 };
-	worldTransform_.scale_={ 8.0f,8.0f,8.0f };
+	worldTransform_.scale_={ 1,1,1 };
 	worldTransform_.rotation_ = { 0,0,0 };
 }
 
