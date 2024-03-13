@@ -633,4 +633,9 @@ void GameScene::CheckAllCollisions() {
 			ball_->OnCollision();
 		}
 	}
+
+#pragma region 自キャラと壁の当たり判定
+
+#pragma endregion
+
 }
