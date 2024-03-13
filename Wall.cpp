@@ -11,7 +11,7 @@ void Wall::Initialize(Model* Wall)
 
 	worldTransform_.translation_={ 0,0,0 };
 	worldTransform_.scale_={ 8.0f,8.0f,8.0f };
-	worldTransform_.rotation_ = { 0,4.7f,0 };
+	worldTransform_.rotation_ = { 0,0,0 };
 }
 
 void Wall::Update()

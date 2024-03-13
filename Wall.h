@@ -36,6 +36,13 @@ public:
 	}
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransform_.scale_; };
+	/*Vector3 GetRadius() {
+		Vector3 size{};
+		size.x = worldTransform_.scale_.x;
+		size.y = worldTransform_.scale_.y;
+		size.z = worldTransform_.scale_.z;
+		return size;
+	};*/
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
