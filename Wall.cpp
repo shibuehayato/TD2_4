@@ -16,13 +16,13 @@ void Wall::Initialize(Model* Wall)
 
 void Wall::Update()
 {
-	worldTransform_.UpdateMatrix();
-
 	ImGui::Begin("window");
 	ImGui::DragFloat3("transrate", &worldTransform_.translation_.x,0.01f);
 	ImGui::DragFloat3("angle", &worldTransform_.rotation_.x,0.01f);
 	ImGui::DragFloat3("size", &worldTransform_.scale_.x,0.01f);
 	ImGui::End();
+
+	worldTransform_.UpdateMatrix();
 }
 
 void Wall::Draw(ViewProjection& viewProjection)
