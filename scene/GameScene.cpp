@@ -113,30 +113,6 @@ void GameScene::Draw() {
 
 void GameScene::CheckAllCollision()
 {
-
-	//球体だからかずれまくってる
-	//// 判定対象AとBの座標
-	//Vector3 PosA, PosB;
-	//Vector3 RadiusA, RadiusB;
-	//float PositionMeasure;
-	//float RadiusMeasure;
-	//// 壁座標
-	//PosA = wall_->GetWorldPosition();
-	//RadiusA = wall_->GetRadius();
-	////仮のプレイヤー全ての当たり判定
-	//PosB = debugPlayer_->GetWorldPosition();
-	//RadiusB = debugPlayer_->GetRadius();
-	//// 座標AとBの距離を求める
-	//PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-	//	(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-	//	(PosB.z - PosA.z) * (PosB.z - PosA.z);
-	//RadiusMeasure = (Dot(RadiusA, RadiusB));
-	//// 弾と弾の交差判定
-	//if (PositionMeasure <= RadiusMeasure) {
-	//	debugPlayer_->WallOnCollision();
-	//}
-
-
 	//立方体で作る
 	// 壁座標
 	Vector3 PosA = wall_->GetWorldPosition();
