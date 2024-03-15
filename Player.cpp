@@ -50,7 +50,7 @@ void Player::Update() {
 	}
 
 	// 移動量
-	Vector3 move = { 0,0,0 };
+	move = { 0,0,0 };
 	move.x -= KeepMove.x;
 	move.z -= KeepMove.z;
 	if (IsMove == true) {
@@ -86,4 +86,10 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewProjection) { 
 	// 3Dモデル描画
 	HeadModel_->Draw(worldTransformHead_, viewProjection);
+}
+
+void Player::WallOnCollision()
+{
+	move.x *= -1;
+	move.z *= -1;
 }

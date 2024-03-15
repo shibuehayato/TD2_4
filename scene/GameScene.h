@@ -93,10 +93,22 @@ private: // メンバ変数
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelPlayerHead_;
 
+	// 仮自キャラ
+	//std::unique_ptr<DebugPlayer> debugPlayer_;
+	// 仮3Dモデルの生成
+	//std::unique_ptr<Model> modelDebugPlayer_;
+
+
 	//ステージの壁についての変数
 	std::unique_ptr<Stage> stage_;
 	std::list<std::unique_ptr<Stage>> stages_;
 	std::unique_ptr<Model> modelwall_;
+
+	//当たり判定壁
+	//std::unique_ptr<Wall> wall_;
+	//壁3Dモデルデータ
+	//std::unique_ptr<Model> modelWall_;
+
 
 	std::list<std::unique_ptr<Stage1>> stages1_;
 
@@ -117,20 +129,14 @@ private: // メンバ変数
 	bool istutorial_ = false;
 	bool isstage1_ = false;
 
+
 	// 天球
 	std::unique_ptr<Skydome> skydome_;
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelSkydome_;
 
-	// 仮自キャラ
-	std::unique_ptr<DebugPlayer> debugPlayer_;
-	// 仮3Dモデルの生成
-	std::unique_ptr<Model> modelDebugPlayer_;
-
-	//壁
-	std::unique_ptr<Wall> wall_;
-	//壁3Dモデルデータ
-	std::unique_ptr<Model> modelWall_;
+	
+	
 
 
 	/// <summary>

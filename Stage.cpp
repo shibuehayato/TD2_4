@@ -403,11 +403,5 @@ Vector3 Stage::GetPosition()
 
 Vector3 Stage::GetScale()
 {
-	Vector3 worldScale;
-
-	worldScale.x = worldTransform_.scale_.x;
-	worldScale.y = worldTransform_.scale_.y;
-	worldScale.z = worldTransform_.scale_.z;
-
-	return worldScale;
+	return worldTransform_.scale_;
 }

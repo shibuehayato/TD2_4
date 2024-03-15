@@ -8,6 +8,8 @@ public:
 	void Update();
 	void Draw(ViewProjection viewProjection);
 
+	void WallOnCollision();
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
 
@@ -34,4 +36,6 @@ private:
 	Vector3 KeepMove = { 0,0,0 };
 	// 移動できるかフラグ
 	bool IsMove = false;
+
+	Vector3 move;
 };
