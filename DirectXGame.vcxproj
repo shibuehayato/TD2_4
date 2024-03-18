@@ -126,6 +126,7 @@
     <ClCompile Include="Recovery.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="scene\IScene.cpp" />
+    <ClCompile Include="scene\TitleScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="SmallSwitch.cpp" />
     <ClCompile Include="Tutorial.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Recovery.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="scene\IScene.h" />
+    <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="SmallSwitch.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="Tutorial.h" />

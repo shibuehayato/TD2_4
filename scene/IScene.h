@@ -21,7 +21,7 @@ protected:
 public:
 	// 継承先で実装される関数
 	// 抽象クラスなので純粋仮想関数とする
-	virtual void Init() = 0;
+	virtual void Initialize() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
@@ -29,4 +29,7 @@ public:
 	virtual ~IScene();
 
 	// シーン番号のゲッター
+	int GetSceneNo();
+
+	void SetKeys(char* keys, char* preKeys);
 };
