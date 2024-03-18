@@ -55,14 +55,11 @@ void GameScene::Initialize() {
 	LoadWindPopData();
 	LoadBarrierPopData();
 	LoadBarrier2PopData();
-	
-	//ステージの生成と初期化
-	/*stage_ = std::make_unique<Stage>();
-	stage_->Initialize(model_);*/
-	//-------------------------//
+	LoadPitfallPopData();
 
-	/*flame_ = std::make_unique<Flame>();
-	flame_->Initialize(model_);*/
+	//--------------------//
+	
+	
 
 	//小さいスイッチの生成と初期化
 	smallswitch_ = std::make_unique<SmallSwitch>();
@@ -72,12 +69,7 @@ void GameScene::Initialize() {
 	normalswitch_ = std::make_unique<NormalSwitch>();
 	normalswitch_->Initialize(model_);
 
-	//wind_ = std::make_unique<Wind>();
-	//wind_->Initialize(model_);
-
-	//落とし穴の生成と初期化
-	pitfall_ = std::make_unique<Pitfall>();
-	pitfall_->Initialize(model_);
+	
 
 	warp_ = std::make_unique<Warp>();
 	warp_->Initialize(model_);
@@ -86,10 +78,7 @@ void GameScene::Initialize() {
 	warp2_ = std::make_unique<Warp2>();
 	warp2_->Initialize(model_);
 
-	//バリアの生成と初期化
-	/*barrier_ = std::make_unique<Barrier>();
-	barrier_->Initialize(model_);*/
-
+	
 	// 3Dモデルの生成
 	modelSkydome_.reset(Model::CreateFromOBJ("Skydome", true));
 	// 天球の生成
@@ -101,6 +90,29 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+
+	
+
+	//右矢印の生成と初期化
+	rightarrow_ = std::make_unique<RightArrow>();
+	rightarrow_->Initialize(model_);
+	//---------------------------------//
+
+	//左矢印の生成と初期化
+	leftarrow_ = std::make_unique<LeftArrow>();
+	leftarrow_->Initialize(model_);
+	//
+
+	//上矢印の生成と初期化
+	uparrow_ = std::make_unique<UpArrow>();
+	uparrow_->Initialize(model_);
+	//下方向の生成と初期化
+	downarrow_ = std::make_unique_for_overwrite<DownArrow>();
+	downarrow_->Initialize(model_);
+
+	rotatingarrow_ = std::make_unique<RotatingArrow>();
+	rotatingarrow_->Initialize(model_);
+
 }
 
 void GameScene::Update() {
@@ -135,35 +147,10 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	for (const std::unique_ptr<Flame>& flame : flames_) {
-		flame->Update();
-	}
-	//小スイッチの更新
-	smallswitch_->Update();
-    //中スイッチの更新
-	normalswitch_->Update();
-	//風のギミックの更新
-	for (const std::unique_ptr<Wind>& wind : winds_) {
-		wind->Update();
-	}
-	UpdateWindPopCommands();
-	//落とし穴の更新
-	pitfall_->Update();
-	//バリアの更新
-	for (const std::unique_ptr<Barrier>& barrier : barriers_) {
-		barrier->Update();
-		UpdateBarrierPopCommands();
-	}
+	
+	
 
-	//2つめのバリアの更新
-	for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
-		barrier2->Update();
-		UpdateBarrier2PopCommands();
-	}
 
-	warp_->Update();
-
-	warp2_->Update();
 
 	// 天球の更新
 	skydome_->Update();
@@ -181,6 +168,7 @@ void GameScene::Update() {
 
 		isstage1_ = true;
 		istutorial_ = false;
+		
 	}
 
 
@@ -188,7 +176,7 @@ void GameScene::Update() {
 	if (istutorial_)
 	{
 		//ステージの更新
-		for (const std::unique_ptr<Stage>& stage : stages_) {
+		for (const std::unique_ptr<Tutorial>& stage : tutorials_) {
 			if (stage != nullptr) {
 				stage->Update();
 
@@ -196,6 +184,11 @@ void GameScene::Update() {
 		}
 		//複数の壁を出すための関数
 		UpdateWallPopCommands();
+
+		
+
+		
+
 	}
 
 	if (isstage1_)
@@ -213,8 +206,54 @@ void GameScene::Update() {
 		UpdateFlamePopCommands();
 		ball_->Update();
 
+		for (const std::unique_ptr<Flame>& flame : flames_) {
+			flame->Update();
+		}
+		//小スイッチの更新
+		smallswitch_->Update();
+		//中スイッチの更新
+		normalswitch_->Update();
+		//風のギミックの更新
+		for (const std::unique_ptr<Wind>& wind : winds_) {
+			wind->Update();
+		}
+		UpdateWindPopCommands();
+		//落とし穴の更新
+		for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
+			pitfall->Update();
+		}
+		UpdatePitfallPopCommands();
+		//バリアの更新
+		for (const std::unique_ptr<Barrier>& barrier : barriers_) {
+			barrier->Update();
+
+		}
+		UpdateBarrierPopCommands();
+		//2つめのバリアの更新
+		for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
+			barrier2->Update();
+		}
+		UpdateBarrier2PopCommands();
+		
+
+		//ワープの更新
+		warp_->Update();
+		//2つめのワープの更新
+		warp2_->Update();
+		//右矢印の更新
+		rightarrow_->Update();
+		//左矢印の更新
+		leftarrow_->Update();
+		//上矢印の更新
+		uparrow_->Update();
+		//下矢印の更新
+		downarrow_->Update();
+		//回転矢印の更新
+		rotatingarrow_->Update();
+		
 	}
 
+	
 
 }
 
@@ -255,11 +294,12 @@ void GameScene::Draw() {
 	if (istutorial_)
 	{
 		//ステージの描画
-		for (const auto& stage : stages_) {
+		for (const auto& stage : tutorials_) {
 
 			stage->Draw(viewProjection_);
 
 		}
+		
 	}
 
 	if (isstage1_)
@@ -290,24 +330,42 @@ void GameScene::Draw() {
 			wind->Draw(viewProjection_);
 		}
 		//落とし穴の描画
-		pitfall_->Draw(viewProjection_);
-	}
+		for (const auto& pitfall : pitfalls_) {
+			pitfall->Draw(viewProjection_);
+		}
+
+		//バリアの描画
+		for (const auto& barrier : barriers_) {
+			barrier->Draw(viewProjection_);
+		}
+
+		//2つめのバリアの描画
+		for (const auto& barrier2 : barriers2_) {
+			barrier2->Draw(viewProjection_);
+		}
+
+		//ワープの描画
+		warp_->Draw(viewProjection_);
+		//2つめのワープの描画
+		warp2_->Draw(viewProjection_);
+		//右矢印の描画
+		rightarrow_->Draw(viewProjection_);
+		//左矢印の描画
+		leftarrow_->Draw(viewProjection_);
+		//上矢印の描画
+		uparrow_->Draw(viewProjection_);
+		//下矢印の描画
+		downarrow_->Draw(viewProjection_);
+		//回転矢印の描画
+		rotatingarrow_->Draw(viewProjection_);
+
 	
-	//stage1_->Draw(viewProjection_);
-
-	//バリアの描画
-	for (const auto& barrier : barriers_) {
-		barrier->Draw(viewProjection_);
 	}
 
-	//2つめのバリアの描画
-	for (const auto& barrier2 : barriers2_) {
-		barrier2->Draw(viewProjection_);
-	}
+	
+	
 
-	warp_->Draw(viewProjection_);
-
-	warp2_->Draw(viewProjection_);
+	
 
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
@@ -330,17 +388,7 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::WallGeneration(const Vector3& position) {
-	// 敵の生成
-	Stage* stage = new Stage();
 
-
-
-	stage->Initialize(modelwall_.get(), position);
-	stage->SetGameScene(this);
-
-	stages_.push_back(static_cast<std::unique_ptr<Stage>>(stage));
-}
 
 void GameScene::Stage1LoadWallPopData()
 {
@@ -533,7 +581,7 @@ void GameScene::UpdateWindPopCommands()
 	std::string line2;
 
 	// コマンド実行ループ
-	while (getline(barrierPopCommands, line2)) {
+	while (getline(windPopCommands, line2)) {
 		// 1行分の文字列をストリームに変換して解析しやすくなる
 		std::istringstream line_stream(line2);
 
@@ -658,19 +706,123 @@ void GameScene::BarrierGeneration(const Vector3& position)
 	barriers_.push_back(static_cast<std::unique_ptr<Barrier>>(barrier));
 }
 
-void GameScene::LoadBarrier2PopData()
+void GameScene::WallGeneration(const Vector3& position) {
+	// 敵の生成
+	Tutorial* tutorial = new Tutorial();
+
+
+
+	tutorial->Initialize(modelwall_.get(), position);
+	tutorial->SetGameScene(this);
+
+	tutorials_.push_back(static_cast<std::unique_ptr<Tutorial>>(tutorial));
+}
+
+void GameScene::Barrier2Generation(const Vector3& position)
+{
+	// 敵の生成
+	Barrier2* barrier2 = new Barrier2();
+
+
+
+	barrier2->Initialize(modelwall_.get(), position);
+	barrier2->SetGameScene(this);
+
+	barriers2_.push_back(static_cast<std::unique_ptr<Barrier2>>(barrier2));
+}
+
+void GameScene::LoadPitfallPopData()
 {
 	// ファイルを開く
-	std::ifstream file2;
-	std::string filename = "Resources//Barrier2Pop.csv";
-	file2.open(filename);
-	assert(file2.is_open());
+	std::ifstream file;
+	std::string filename = "Resources//PitfallPop.csv";
+	file.open(filename);
+	assert(file.is_open());
 	// ファイルの内容を文字列ストリームにコピー
-	barrier2PopCommands << file2.rdbuf();
+	pitfallPopCommands << file.rdbuf();
 
 
 	// ファイルを閉じる
-	file2.close();
+	file.close();
+}
+
+void GameScene::UpdatePitfallPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(pitfallPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			PitfallGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::PitfallGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Pitfall* pitfall = new Pitfall();
+
+
+
+	pitfall->Initialize(modelwall_.get(), position);
+	pitfall->SetGameScene(this);
+
+	pitfalls_.push_back(static_cast<std::unique_ptr<Pitfall>>(pitfall));
+}
+
+void GameScene::LoadBarrier2PopData()
+{
+	// ファイルを開く
+	std::ifstream file;
+	std::string filename = "Resources//Barrier2Pop.csv";
+	file.open(filename);
+	assert(file.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	barrier2PopCommands << file.rdbuf();
+
+
+	// ファイルを閉じる
+	file.close();
 }
 
 void GameScene::UpdateBarrier2PopCommands()
@@ -724,18 +876,7 @@ void GameScene::UpdateBarrier2PopCommands()
 	}
 }
 
-void GameScene::Barrier2Generation(const Vector3& position)
-{
-	// 敵の生成
-	Barrier2* barrier2 = new Barrier2();
 
-
-
-	barrier2->Initialize(model_, position);
-	barrier2->SetGameScene(this);
-
-	barriers2_.push_back(static_cast<std::unique_ptr<Barrier2>>(barrier2));
-}
 
 void GameScene::LoadWallPopData()
 {

@@ -52,8 +52,26 @@
     <Filter Include="ソース ファイル\2d">
       <UniqueIdentifier>{814a0f6d-f847-4c45-856d-4688fa4c9e6c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Stage">
+    <Filter Include="ソース ファイル\Arrow">
+      <UniqueIdentifier>{89aec392-87ba-49f6-b3e2-e3c0c50b4ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Warp">
+      <UniqueIdentifier>{38d165e0-ed14-4813-89a0-02e0e6501074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Arrow">
+      <UniqueIdentifier>{037a8136-3c00-4fb3-8f0a-033b9a101a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Switch">
+      <UniqueIdentifier>{0a29c416-b9cd-488b-85a0-864bc8f88d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Warp">
+      <UniqueIdentifier>{f8c522de-5e2e-4622-a3f7-b6c3424cb6e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Tutorial">
       <UniqueIdentifier>{616cdd89-1824-47c5-a9ae-ddba7a282856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Switch">
+      <UniqueIdentifier>{0a4379a6-59d0-46d9-ae63-4d72ab50c015}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,19 +99,13 @@
     <ClCompile Include="math\WorldTransformEx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
-      <Filter>ヘッダー ファイル\Stage</Filter>
+    <ClCompile Include="Tutorial.cpp">
+      <Filter>ヘッダー ファイル\Tutorial</Filter>
     </ClCompile>
     <ClCompile Include="Stage1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Flame.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SmallSwitch.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalSwitch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Wind.cpp">
@@ -111,14 +123,35 @@
     <ClCompile Include="Barrier.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Warp.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Warp2.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Barrier2.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftArrow.cpp">
+      <Filter>ソース ファイル\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="RightArrow.cpp">
+      <Filter>ソース ファイル\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatingArrow.cpp">
+      <Filter>ソース ファイル\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="UpArrow.cpp">
+      <Filter>ソース ファイル\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="DownArrow.cpp">
+      <Filter>ソース ファイル\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="Warp.cpp">
+      <Filter>ソース ファイル\Warp</Filter>
+    </ClCompile>
+    <ClCompile Include="Warp2.cpp">
+      <Filter>ソース ファイル\Warp</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalSwitch.cpp">
+      <Filter>ソース ファイル\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="SmallSwitch.cpp">
+      <Filter>ソース ファイル\Switch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,8 +242,8 @@
     <ClInclude Include="Player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h">
-      <Filter>ヘッダー ファイル\Stage</Filter>
+    <ClInclude Include="Tutorial.h">
+      <Filter>ヘッダー ファイル\Tutorial</Filter>
     </ClInclude>
     <ClInclude Include="math\Mymath.h">
       <Filter>ヘッダー ファイル\math</Filter>
@@ -219,12 +252,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Flame.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SmallSwitch.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalSwitch.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Wind.h">
@@ -242,14 +269,35 @@
     <ClInclude Include="Barrier.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Warp.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Warp2.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Barrier2.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="RightArrow.h">
+      <Filter>ヘッダー ファイル\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="DownArrow.h">
+      <Filter>ヘッダー ファイル\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatingArrow.h">
+      <Filter>ヘッダー ファイル\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftArrow.h">
+      <Filter>ヘッダー ファイル\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="UpArrow.h">
+      <Filter>ヘッダー ファイル\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalSwitch.h">
+      <Filter>ヘッダー ファイル\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="SmallSwitch.h">
+      <Filter>ヘッダー ファイル\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="Warp.h">
+      <Filter>ヘッダー ファイル\Warp</Filter>
+    </ClInclude>
+    <ClInclude Include="Warp2.h">
+      <Filter>ヘッダー ファイル\Warp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

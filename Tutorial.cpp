@@ -1,8 +1,8 @@
-#include "Stage.h"
+#include "Tutorial.h"
 #include<cassert>
 #include"GameScene.h"
 
-void Stage::Initialize(Model* model,Vector3 position)
+void Tutorial::Initialize(Model* model,Vector3 position)
 {
 	//問題ないか変数をチェック
 	assert(model);
@@ -342,7 +342,7 @@ void Stage::Initialize(Model* model,Vector3 position)
 
 }
 
-void Stage::Update()
+void Tutorial::Update()
 {
 	//行列を更新
 	worldTransform_.UpdateMatrix();
@@ -376,7 +376,7 @@ void Stage::Update()
 #endif
 }
 
-void Stage::Draw(ViewProjection& viewProjection)
+void Tutorial::Draw(ViewProjection& viewProjection)
 {
 	//モデルの描画
 	model_->Draw(worldTransform_, viewProjection);
@@ -390,7 +390,7 @@ void Stage::Draw(ViewProjection& viewProjection)
 	
 }
 
-Vector3 Stage::GetPosition()
+Vector3 Tutorial::GetPosition()
 {
 	Vector3 worldPos;
 
@@ -401,7 +401,7 @@ Vector3 Stage::GetPosition()
 	return worldPos;
 }
 
-Vector3 Stage::GetScale()
+Vector3 Tutorial::GetScale()
 {
 	Vector3 worldScale;
 

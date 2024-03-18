@@ -15,14 +15,21 @@ void NormalSwitch::Update()
 {
 	worldTransform_.UpdateMatrix();
 
-	ImGui::Begin("NormalSwitch");
-	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
-	ImGui::End();
+
 }
 
 void NormalSwitch::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection,textureHandle_);
+}
+
+void NormalSwitch::OnCollision()
+{
+	isOncollision_ = true;
+	if (isOncollision_ && worldTransform_.scale_.x >= 0.5f)
+	{
+		worldTransform_.scale_.x -= 0.01f;
+	}
 }
 
 Vector3 NormalSwitch::GetPosition()

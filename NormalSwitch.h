@@ -10,6 +10,8 @@ public:
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
+	//当たった時の処理
+	void OnCollision();
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -23,6 +25,8 @@ private:
 	Model* model_;
 
 	uint32_t textureHandle_ = 0u;
+
+	bool isOncollision_ = false;
 
 };
 

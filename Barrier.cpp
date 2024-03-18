@@ -37,6 +37,11 @@ void Barrier::Update()
 	{
 		worldTransform_[i].UpdateMatrix();
 	}*/
+
+	//ImGui::Begin("Barrier");
+	//ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
+	//ImGui::End();
+
 }
 
 void Barrier::Draw(ViewProjection& viewProjection)

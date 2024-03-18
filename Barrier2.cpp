@@ -33,13 +33,14 @@ void Barrier2::Initialize(Model* model, Vector3 position)
 void Barrier2::Update()
 {
 	worldTransform_.UpdateMatrix();
+
 	/*for (int i = 0; i < 50; i++)
 	{
 		worldTransform_[i].UpdateMatrix();
 	}*/
-	ImGui::Begin("Barrier2");
-	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
-	ImGui::End();
+	//ImGui::Begin("Barrier2");
+	//ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
+	//ImGui::End();
 }
 
 void Barrier2::Draw(ViewProjection& viewProjection)

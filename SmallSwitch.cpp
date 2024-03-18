@@ -1,5 +1,6 @@
 #include "SmallSwitch.h"
 #include<cassert>
+
 void SmallSwitch::Initialize(Model* model)
 {
 	assert(model);
@@ -8,7 +9,7 @@ void SmallSwitch::Initialize(Model* model)
 
 	textureHandle_ = TextureManager::Load("sample.png");
 
-	worldTransform_.translation_ = { -18.0f,0.0f,50.0f };
+	worldTransform_.translation_ = { -18.0f,0.0f,48.0f };
 
 }
 
@@ -23,6 +24,15 @@ void SmallSwitch::Update()
 void SmallSwitch::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection,textureHandle_);
+}
+
+void SmallSwitch::OnCollision()
+{
+	isOncollision_ = true;
+	if (isOncollision_ && worldTransform_.scale_.x >= 0.5f)
+	{
+		worldTransform_.scale_.x -= 0.01f;
+	}
 }
 
 Vector3 SmallSwitch::GetPosition()
