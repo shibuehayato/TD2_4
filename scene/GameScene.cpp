@@ -1035,7 +1035,29 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			recovery_->OnCollision();
-			player_->OnCollision();
+			player_->RecoveryOnCollision();
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーと風
+	if (recovery_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//風の座標
+		for (const std::unique_ptr<Wind>& wind : winds_) {
+			PosB = wind->GetWorldPosition();
+			RadiusB = wind->GetRadius();
+			// 座標AとBの距離を求める
+			PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+				(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+				(PosB.z - PosA.z) * (PosB.z - PosA.z);
+			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+			// 弾と弾の交差判定
+			if (PositionMeasure <= RadiusMeasure) {
+				player_->WindOnCollision();
+			}
 		}
 	}
 #pragma endregion

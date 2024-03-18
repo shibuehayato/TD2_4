@@ -88,11 +88,17 @@ void Player::Draw(ViewProjection viewProjection) {
 	HeadModel_->Draw(worldTransformHead_, viewProjection);
 }
 
-void Player::OnCollision()
+void Player::RecoveryOnCollision()
 {
 	if (worldTransformHead_.scale_.x <= 1.5f) {
 		worldTransformHead_.scale_.x += 0.5f;
 		worldTransformHead_.scale_.y += 0.5f;
 		worldTransformHead_.scale_.z += 0.5f;
 	}
+}
+
+void Player::WindOnCollision()
+{
+	//風の強さ　あとで調整
+		KeepMove.x += 0.017f;
 }
