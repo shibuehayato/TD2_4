@@ -6,7 +6,7 @@
 
 class GameScene;
 
-class Stage
+class Tutorial
 {
 public:
 	//初期化

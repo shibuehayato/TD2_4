@@ -5,12 +5,10 @@
 
 class GameScene;
 
-
-class Flame
+class Barrier2
 {
 public:
-
-	void Initialize(Model* model,Vector3 position);
+	void Initialize(Model* model, Vector3 position);
 
 	void Update();
 
@@ -28,9 +26,11 @@ public:
 private:
 	WorldTransform worldTransform_;
 
-	Model* model_ = { nullptr };
+	Model* model_ = nullptr;
 
 	GameScene* gameScene_ = nullptr;
 
 };
+
+
 

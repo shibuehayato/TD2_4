@@ -2,22 +2,16 @@
 #include"WorldTransform.h"
 #include"Model.h"
 #include"ImGuiManager.h"
-
-class GameScene;
-
-
-class Flame
+class NormalSwitch
 {
 public:
-
-	void Initialize(Model* model,Vector3 position);
+	void Initialize(Model* model);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
-
-	//ゲームシーンからアドレスをもらうための関数
-	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+	//当たった時の処理
+	void OnCollision();
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -28,9 +22,11 @@ public:
 private:
 	WorldTransform worldTransform_;
 
-	Model* model_ = { nullptr };
+	Model* model_;
 
-	GameScene* gameScene_ = nullptr;
+	uint32_t textureHandle_ = 0u;
+
+	bool isOncollision_ = false;
 
 };
 
