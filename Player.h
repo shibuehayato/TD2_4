@@ -8,6 +8,8 @@ public:
 	void Update();
 	void Draw(ViewProjection viewProjection);
 
+	void OnCollision();
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
 

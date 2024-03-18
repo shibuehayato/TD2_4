@@ -214,7 +214,6 @@ void GameScene::Update() {
 		Stage1UpdateWallPopCommands();
 		//複数の炎ギミックを出すための関数
 		UpdateFlamePopCommands();
-		ball_->Update();
 
 		for (const std::unique_ptr<Flame>& flame : flames_) {
 			flame->Update();
@@ -244,7 +243,7 @@ void GameScene::Update() {
 			barrier2->Update();
 		}
 		UpdateBarrier2PopCommands();
-		
+
 
 		//ワープの更新
 		warp_->Update();
@@ -260,8 +259,8 @@ void GameScene::Update() {
 		downarrow_->Update();
 		//回転矢印の更新
 		rotatingarrow_->Update();
-		
-	}
+
+
 
 		//玉
 		if (ball_) {
@@ -270,15 +269,16 @@ void GameScene::Update() {
 		if (ball_ && ball_->IsDead()) {
 			ball_.reset();
 		}
-		
+
 		//回復
 		if (recovery_) {
 			recovery_->Update();
-		//消す
+			//消す
 			if (recovery_->IsDead()) {
 				recovery_.reset();
 			}
 		}
+
 
 		if (!recovery_) {
 			recoveryTime_++;
@@ -355,8 +355,6 @@ void GameScene::Draw() {
 		for (const auto& flame : flames_) {
 			flame->Draw(viewProjection_);
 		}
-		//玉
-		ball_->Draw(viewProjection_);
 
 
 		//小スイッチの描画
@@ -408,7 +406,7 @@ void GameScene::Draw() {
 		rotatingarrow_->Draw(viewProjection_);
 
 	
-	}
+	
 
 	
 	
@@ -1037,6 +1035,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			recovery_->OnCollision();
+			player_->OnCollision();
 		}
 	}
 #pragma endregion

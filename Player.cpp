@@ -87,3 +87,8 @@ void Player::Draw(ViewProjection viewProjection) {
 	// 3Dモデル描画
 	HeadModel_->Draw(worldTransformHead_, viewProjection);
 }
+
+void Player::OnCollision()
+{
+	//worldTransformHead_
+}
