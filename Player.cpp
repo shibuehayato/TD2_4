@@ -90,5 +90,9 @@ void Player::Draw(ViewProjection viewProjection) {
 
 void Player::OnCollision()
 {
-	//worldTransformHead_
+	if (worldTransformHead_.scale_.x <= 1.5f) {
+		worldTransformHead_.scale_.x += 0.5f;
+		worldTransformHead_.scale_.y += 0.5f;
+		worldTransformHead_.scale_.z += 0.5f;
+	}
 }
