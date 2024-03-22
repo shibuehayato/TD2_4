@@ -9,8 +9,8 @@ int IScene::GetSceneNo()
 	return sceneNo;
 }
 
-void IScene::SetKeys(char* keys, char* preKeys) 
+void IScene::SetKeys(XINPUT_STATE joyState, XINPUT_STATE prejoyState)
 {
-	keys_ = keys;
-	preKeys_ = preKeys;
+	joyState_ = joyState;
+	prejoyState_ = prejoyState;
 }

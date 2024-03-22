@@ -1,4 +1,5 @@
 #pragma once
+#include <Input.h>
 
 // シーンクラスを作るたびにここに種類を追加
 enum SceneType {
@@ -16,8 +17,11 @@ class IScene
 protected:
 	// シーン番号を管理する変数
 	static int sceneNo;
-	char* keys_;
-	char* preKeys_;
+
+	// ゲームパッドの状態を得る変数
+	XINPUT_STATE joyState_;
+	XINPUT_STATE prejoyState_;
+
 public:
 	// 継承先で実装される関数
 	// 抽象クラスなので純粋仮想関数とする
@@ -31,5 +35,5 @@ public:
 	// シーン番号のゲッター
 	int GetSceneNo();
 
-	void SetKeys(char* keys, char* preKeys);
+	void SetKeys(XINPUT_STATE joyState, XINPUT_STATE prejoyState);
 };

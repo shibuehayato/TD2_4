@@ -1,27 +1,27 @@
-#include "TitleScene.h"
+#include "Operation.h"
 #include "TextureManager.h"
 
-void TitleScene::Initialize()
+void Operation::Initialize()
 {
-	TitleTexture_ = TextureManager::Load("scene/title.png");
-	TitleSprite_ = std::make_unique<Sprite>();
-	TitleSprite_.reset(Sprite::Create(TitleTexture_, { 0, 0 }));
+	OperationTexture_ = TextureManager::Load("scene/operation.png");
+	OperationSprite_ = std::make_unique<Sprite>();
+	OperationSprite_.reset(Sprite::Create(OperationTexture_, { 0,0 }));
 }
 
-void TitleScene::Update()
+void Operation::Update()
 {
 	// ゲームパッドが有効の場合if文が通る
 	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
 		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState_)) {
 			if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 				!(prejoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				sceneNo = kOperation;
+				sceneNo = kStageSelect;
 			}
 		}
 	}
 }
 
-void TitleScene::Draw()
+void Operation::Draw()
 {
-	TitleSprite_->Draw();
+	OperationSprite_->Draw();
 }
