@@ -9,7 +9,7 @@ void Player::Initialize(Model* head)
 	assert(head);
 	HeadModel_ = head;
 
-	worldTransformHead_.translation_ = { 0,0,-15.0f };
+	worldTransformHead_.translation_ = { -0.5f,0,-15.0f };
 	worldTransformHead_.Initialize();
 }
 
@@ -90,6 +90,13 @@ void Player::Draw(ViewProjection viewProjection) {
 
 void Player::WallOnCollision()
 {
-	move.x *= -1;
+	
+	/*move.x *= -1;
 	move.z *= -1;
+	KeepMove.x *= -1;
+	KeepMove.z *= -1;
+	speed *= -1;*/
+
+	//当たっては、いる
+	//worldTransformHead_.translation_ = { 0,0,0 };
 }
