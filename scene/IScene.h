@@ -1,38 +1,38 @@
-#pragma once
+﻿#pragma once
 #include <Input.h>
 
-// �V�[���N���X����邽�тɂ����Ɏ�ނ�ǉ�
+// シーンクラスを作るたびにここに種類を追加
 enum SceneType {
-	kTitle,       // �^�C�g���V�[��
-	kOperation,	  // ��������V�[��
-	kStageSelect, // �X�e�[�W�I���V�[��
-	kGame,		  // �Q�[���V�[��
-	kClear,		  // �N���A�V�[��
-	kGameOver,	  // �Q�[���I�[�o�[�V�[��
-	kSceneMax	  // �V�[���̍ő吔
+	kTitle,       // タイトルシーン
+	kOperation,	  // 操作説明シーン
+	kStageSelect, // ステージ選択シーン
+	kGame,		  // ゲームシーン
+	kClear,		  // クリアシーン
+	kGameOver,	  // ゲームオーバーシーン
+	kSceneMax	  // シーンの最大数
 };
 
 class IScene
 {
 protected:
-	// �V�[���ԍ����Ǘ�����ϐ�
+	// シーン番号を管理する変数
 	static int sceneNo;
 
-	// �Q�[���p�b�h�̏�Ԃ𓾂�ϐ�
+	// ゲームパッドの状態を得る変数
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prejoyState_;
 
 public:
-	// �p����Ŏ��������֐�
-	// ���ۃN���X�Ȃ̂ŏ������z�֐��Ƃ���
+	// 継承先で実装される関数
+	// 抽象クラスなので純粋仮想関数とする
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
-	// ���z�f�X�g���N�^��p�ӂ��Ȃ��ƌx�������
+	// 仮想デストラクタを用意しないと警告される
 	virtual ~IScene();
 
-	// �V�[���ԍ��̃Q�b�^�[
+	// シーン番号のゲッター
 	int GetSceneNo();
 
 	void SetKeys(XINPUT_STATE joyState, XINPUT_STATE prejoyState);
