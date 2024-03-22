@@ -91,10 +91,10 @@ void Player::Draw(ViewProjection viewProjection) {
 void Player::WallOnCollision()
 {
 	
-	/*move.x *= -1;
-	move.z *= -1;
 	KeepMove.x *= -1;
 	KeepMove.z *= -1;
+	/*move.x *= -1;
+	move.z *= -1;
 	speed *= -1;*/
 
 	//当たっては、いる
