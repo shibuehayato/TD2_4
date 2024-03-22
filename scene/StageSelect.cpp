@@ -1,4 +1,4 @@
-#include "StageSelect.h"
+ï»¿#include "StageSelect.h"
 #include "TextureManager.h"
 
 void StageSelect::Initialize()
@@ -10,7 +10,7 @@ void StageSelect::Initialize()
 
 void StageSelect::Update()
 {
-	// ƒQ[ƒ€ƒpƒbƒh‚ª—LŒø‚Ìê‡if•¶‚ª’Ê‚é
+	// ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ãŒæœ‰åŠ¹ã®å ´åˆifæ–‡ãŒé€šã‚‹
 	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
 		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState_)) {
 			if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A &&

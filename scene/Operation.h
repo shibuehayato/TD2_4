@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IScene.h"
 #include "Sprite.h"
 #include <memory>
@@ -11,8 +11,8 @@ public:
 	void Draw() override;
 
 private:
-	// ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«
 	uint32_t OperationTexture_ = 0;
-	// ƒ^ƒCƒgƒ‹‰æ–Ê‚ÌƒXƒvƒ‰ƒCƒg
+	// ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 	std::unique_ptr<Sprite> OperationSprite_ = nullptr;
 };
