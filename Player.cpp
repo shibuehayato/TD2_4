@@ -100,5 +100,5 @@ void Player::RecoveryOnCollision()
 void Player::WindOnCollision()
 {
 	//風の強さ　あとで調整
-		KeepMove.x += 0.017f;
+		KeepMove.x += 0.02f;
 }
