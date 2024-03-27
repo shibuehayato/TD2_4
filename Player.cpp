@@ -4,6 +4,10 @@
 #include <Mymath.h>
 #include <ImGuiManager.h>
 
+//Player::Player()
+//{
+//}
+
 void Player::Initialize(Model* head)
 {
 	assert(head);
@@ -95,4 +99,12 @@ void Player::OnCollision()
 		worldTransformHead_.scale_.y += 0.5f;
 		worldTransformHead_.scale_.z += 0.5f;
 	}
+}
+
+void Player::ArrowOnCollision(const Vector3& velocity)
+{
+	KeepMove = velocity;
+
+	worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, KeepMove);
+	worldTransformHead_.UpdateMatrix();
 }

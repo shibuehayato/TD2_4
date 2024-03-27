@@ -9,6 +9,7 @@ public:
 	void Draw(ViewProjection viewProjection);
 
 	void OnCollision();
+	void ArrowOnCollision(const Vector3& velocity);
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -36,4 +37,6 @@ private:
 	Vector3 KeepMove = { 0,0,0 };
 	// 移動できるかフラグ
 	bool IsMove = false;
+
+	//Vector3 velocity_ = {0.0f,0.0f,0.0f};
 };
