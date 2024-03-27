@@ -9,7 +9,7 @@ int IScene::GetSceneNo()
 	return sceneNo;
 }
 
-void IScene::SetKeys(XINPUT_STATE joyState, XINPUT_STATE prejoyState)
+void IScene::SetKeys(XINPUT_STATE* joyState, XINPUT_STATE* prejoyState)
 {
 	joyState_ = joyState;
 	prejoyState_ = prejoyState;

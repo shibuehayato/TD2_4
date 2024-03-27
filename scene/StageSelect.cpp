@@ -10,12 +10,23 @@ void StageSelect::Initialize()
 
 void StageSelect::Update()
 {
+
 	// ゲームパッドが有効の場合if文が通る
-	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
-		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState_)) {
-			if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-				!(prejoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				sceneNo = kGame;
+	if (Input::GetInstance()->GetJoystickState(0, *joyState_)) {
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, *prejoyState_)) {
+			if (joyState_->Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+				!(prejoyState_->Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				sceneNo = kTutorial;
+			}
+		}
+	}
+
+	// ゲームパッドが有効の場合if文が通る
+	if (Input::GetInstance()->GetJoystickState(0, *joyState_)) {
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, *prejoyState_)) {
+			if (joyState_->Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+				!(prejoyState_->Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+				sceneNo = kStage2;
 			}
 		}
 	}

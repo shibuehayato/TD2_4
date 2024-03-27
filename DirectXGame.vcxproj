@@ -124,6 +124,7 @@
     <ClCompile Include="RightArrow.cpp" />
     <ClCompile Include="RotatingArrow.cpp" />
     <ClCompile Include="Recovery.cpp" />
+    <ClCompile Include="scene\GameManager.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="scene\IScene.cpp" />
     <ClCompile Include="scene\Operation.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="RightArrow.h" />
     <ClInclude Include="RotatingArrow.h" />
     <ClInclude Include="Recovery.h" />
+    <ClInclude Include="scene\GameManager.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="scene\IScene.h" />
     <ClInclude Include="scene\Operation.h" />

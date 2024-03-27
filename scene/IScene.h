@@ -6,7 +6,10 @@ enum SceneType {
 	kTitle,       // タイトルシーン
 	kOperation,	  // 操作説明シーン
 	kStageSelect, // ステージ選択シーン
-	kGame,		  // ゲームシーン
+	kTutorial,	  // チュートリアルシーン
+	kStage1,      // ステージ1
+	kStage2,	  // ステージ2
+	kStage3,	  // ステージ3
 	kClear,		  // クリアシーン
 	kGameOver,	  // ゲームオーバーシーン
 	kSceneMax	  // シーンの最大数
@@ -19,8 +22,8 @@ protected:
 	static int sceneNo;
 
 	// ゲームパッドの状態を得る変数
-	XINPUT_STATE joyState_;
-	XINPUT_STATE prejoyState_;
+	XINPUT_STATE* joyState_;
+	XINPUT_STATE* prejoyState_;
 
 public:
 	// 継承先で実装される関数
@@ -35,5 +38,5 @@ public:
 	// シーン番号のゲッター
 	int GetSceneNo();
 
-	void SetKeys(XINPUT_STATE joyState, XINPUT_STATE prejoyState);
+	void SetKeys(XINPUT_STATE* joyState, XINPUT_STATE* prejoyState);
 };

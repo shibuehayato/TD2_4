@@ -6,6 +6,7 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
+#include "GameManager.h"
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -18,6 +19,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
+
+	GameManager* gameManager = new GameManager();
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -79,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		axisIndicator->Update();
 		// ImGui受付終了
 		imguiManager->End();
+
+		gameManager->Run();
 
 		// 描画開始
 		dxCommon->PreDraw();
