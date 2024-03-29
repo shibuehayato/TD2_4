@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include <cassert>
-#include <Input.h>
+
 #include <Mymath.h>
 #include <ImGuiManager.h>
 
@@ -11,12 +11,13 @@ void Player::Initialize(Model* head)
 
 	worldTransformHead_.translation_ = { 0,0,-15.0f };
 	worldTransformHead_.Initialize();
+
+	e = 0.4f;
 }
 
 void Player::Update() {
 
-	// ゲームパッドの状態を得る変数
-	XINPUT_STATE joyState;
+	
 
 	// ゲームパッドが有効の場合if文が通る
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -36,7 +37,7 @@ void Player::Update() {
 
 		if ((float)joyState.Gamepad.sThumbLX == 0 && (float)joyState.Gamepad.sThumbLY == 0) {
 			speed = 0;
-
+		
 			if (speed == 0) {
 				IsMove = true;
 			}
@@ -44,9 +45,11 @@ void Player::Update() {
 			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010f)) {
 				KeepMove.x = 0;
 				KeepMove.z = 0;
+				e = 0.4f;
 				IsMove = false;
 			}
 		}
+		
 	}
 
 	// 移動量
@@ -54,7 +57,7 @@ void Player::Update() {
 	move.x -= KeepMove.x;
 	move.z -= KeepMove.z;
 	if (IsMove == true) {
-
+		
 		// 速度を落とす
 		if (KeepMove.x > 0) {
 			KeepMove.x -= 0.01f;
@@ -69,15 +72,20 @@ void Player::Update() {
 			KeepMove.z += 0.01f;
 		}
 
+	
+
 		// 座標移動
 		worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, move);
 	}
+
+
 
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
 
 	ImGui::Begin("speed");
 	ImGui::DragFloat("speed", &speed);
+	ImGui::DragFloat("e", &e);
 	ImGui::DragFloat3("KeepMove", &KeepMove.x);
 	ImGui::Checkbox("IsMove", &IsMove);
 	ImGui::End();
@@ -92,3 +100,72 @@ void Player::OnCollision()
 {
 	//worldTransformHead_
 }
+//反射するための関数
+void Player::OnCollision2()
+{
+	if (e >= 0.01f)
+	{
+		e -= 0.01f;
+	}
+	if (IsMove)
+	{
+		KeepMove.x = -e ;
+		
+	}
+	
+}
+
+void Player::OnCollision3()
+{
+	
+	if (IsMove)
+	{
+		if (e >= 0.01f)
+		{
+			e -= 0.01f;
+		}
+		KeepMove.x = e;
+
+	}
+	
+}
+
+void Player::OnCollision4()
+{
+	
+	if (IsMove)
+	{
+		if (e >= 0.01f)
+		{
+			e -= 0.01f;
+		}
+		KeepMove.z = -e;
+
+	}
+
+}
+
+void Player::OnCollision5()
+{
+	
+	if (IsMove)
+	{
+		if (e >= 0.01f)
+		{
+			e -= 0.01f;
+		}
+		KeepMove.z = e;
+
+	}
+	
+}
+//---------------------------//
+
+void Player::OnCollision6()
+{
+	KeepMove.z = e;
+}
+
+
+
+
