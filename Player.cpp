@@ -209,6 +209,18 @@ void Player::OnCollision7()
 	}
 }
 
+void Player::WarpOnCollision()
+{
+	worldTransformHead_.translation_= { -14.0f,0.0f,65.0f };
+	KeepMove = { 0,0,0 };
+}
+
+void Player::WarpOnCollision2()
+{
+	worldTransformHead_.translation_ = { 14.0f,0.0f,50.0f };
+	KeepMove = { 0,0,0 };
+}
+
 
 
 

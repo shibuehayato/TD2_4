@@ -27,7 +27,7 @@ void Barrier::Initialize(Model* model, Vector3 position)
 	worldTransform_[11].translation_ = { 3.5f,0.0f,2.5f };
 	worldTransform_[12].translation_ = { 3.5f,0.0f,4.5f };
 	worldTransform_[13].translation_ = { 3.5f,0.0f,6.5f };*/
-
+	isDead_ = false;
 }
 
 void Barrier::Update()
@@ -46,11 +46,19 @@ void Barrier::Update()
 
 void Barrier::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection);
+	if (isDead_==false)
+	{
+		model_->Draw(worldTransform_, viewProjection);
+	}
 	/*for (int i = 0; i < 50; i++)
 	{
 		model_[i]->Draw(worldTransform_[i], viewProjection);
 	}*/
+}
+
+void Barrier::OnCollision()
+{
+	isDead_ = true;
 }
 
 Vector3 Barrier::GetPosition()

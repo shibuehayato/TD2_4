@@ -16,7 +16,11 @@ public:
 	void OnCollision5();
 	//-----------------//
 	void OnCollision6();
+	//炎に当たった時の関数
 	void OnCollision7();
+	//1つめのワープに当たった時の関数
+	void WarpOnCollision();
+	void WarpOnCollision2();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
