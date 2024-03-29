@@ -22,8 +22,11 @@ protected:
 	static int sceneNo;
 
 	// ゲームパッドの状態を得る変数
-	XINPUT_STATE* joyState_;
-	XINPUT_STATE* prejoyState_;
+	//XINPUT_STATE* joyState_;
+	//XINPUT_STATE* prejoyState_;
+
+	char* keys_;
+	char* preKeys_;
 
 public:
 	// 継承先で実装される関数
@@ -38,5 +41,5 @@ public:
 	// シーン番号のゲッター
 	int GetSceneNo();
 
-	void SetKeys(XINPUT_STATE* joyState, XINPUT_STATE* prejoyState);
+	void SetKeys(char* keys, char* preKeys);
 };

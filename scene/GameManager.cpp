@@ -8,7 +8,7 @@ GameManager::GameManager()
 
 	for (int i = 0; i < kSceneMax; i++) {
 		// ゲームマネージャーのキーを全てのシーンに反映させる
-		sceneArr_[i]->SetKeys(joyState_, prejoyState_);
+	//	sceneArr_[i]->SetKeys(keys_, preKeys_);
 	}
 
 	// 初期シーン

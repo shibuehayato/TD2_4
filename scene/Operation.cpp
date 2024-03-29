@@ -11,14 +11,19 @@ void Operation::Initialize()
 void Operation::Update()
 {
 	// ゲームパッドが有効の場合if文が通る
-	if (Input::GetInstance()->GetJoystickState(0, *joyState_)) {
+	/*if (Input::GetInstance()->GetJoystickState(0, *joyState_)) {
 		if (Input::GetInstance()->GetJoystickStatePrevious(0, *prejoyState_)) {
 			if (joyState_->Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 				!(prejoyState_->Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 				sceneNo = kStageSelect;
 			}
 		}
+	}*/
+
+	if (keys_[DIK_SPACE] && !preKeys_[DIK_SPACE]) {
+		sceneNo = kStageSelect;
 	}
+
 }
 
 void Operation::Draw()

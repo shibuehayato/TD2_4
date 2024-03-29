@@ -2,6 +2,7 @@
 #include "IScene.h"
 #include "Sprite.h"
 #include <memory>
+#include "Input.h"
 
 class TitleScene : public IScene
 {
@@ -15,4 +16,6 @@ private:
     uint32_t TitleTexture_ = 0;
     // タイトル画面のスプライト
     std::unique_ptr<Sprite> TitleSprite_ = nullptr;
+
+    Input* input_ = nullptr;
 };

@@ -16,8 +16,11 @@ private:
 	int preSceneNo_;	  // 前のシーン
 
 	// ゲームパッドの状態を得る変数
-	XINPUT_STATE joyState_ = {0};
-	XINPUT_STATE prejoyState_ = {0};
+	//XINPUT_STATE joyState_;
+	//XINPUT_STATE prejoyState_;
+
+	char keys_[256] = { 0 };
+	char preKeys_[256] = { 0 };
 
 public:
 	GameManager();  // コンストラクタ
