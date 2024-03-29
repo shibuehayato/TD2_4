@@ -12,6 +12,7 @@ void Recovery::Initialize(Model* model)
 
 	WorldTransform_.translation_ = { -14,0,-7 };
 	WorldTransform_.scale_ = { 1,1,1 };
+	WorldTransform_.rotation_ = { 0,3.9f,0 };
 	isDead_ = false;
 
 	WorldTransform_.UpdateMatrix();

@@ -49,7 +49,7 @@ void GameScene::Initialize() {
 	//回復の生成
 	recovery_ = std::make_unique<Recovery>();
 	//3Dモデルの生成
-	modelRecovery_.reset(Model::CreateFromOBJ("Recovery", true));
+	modelRecovery_.reset(Model::CreateFromOBJ("life", true));
 	//回復の初期化
 	recovery_->Initialize(modelRecovery_.get());
 	recoveryTime_ = 0;
@@ -121,7 +121,8 @@ void GameScene::Initialize() {
 	downarrow_->Initialize(model_);
 
 	rotatingarrow_ = std::make_unique<RotatingArrow>();
-	rotatingarrow_->Initialize(model_);
+	modelRotationArrow_.reset(Model::CreateFromOBJ("Arrow", true));
+	rotatingarrow_->Initialize(modelRotationArrow_.get());
 
 }
 

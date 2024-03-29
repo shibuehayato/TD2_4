@@ -174,6 +174,7 @@ private: // メンバ変数
 	std::unique_ptr<DownArrow> downarrow_;
 	//回転矢印の宣言
 	std::unique_ptr<RotatingArrow> rotatingarrow_;
+	std::unique_ptr<Model> modelRotationArrow_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
