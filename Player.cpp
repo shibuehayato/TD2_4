@@ -13,6 +13,7 @@ void Player::Initialize(Model* head)
 	worldTransformHead_.Initialize();
 
 	e = 0.4f;
+	
 }
 
 void Player::Update() {
@@ -52,6 +53,27 @@ void Player::Update() {
 		
 	}
 
+	if (isOncollision_)
+	{
+		Oncollisiontimer_++;
+		blikingtimer_++;
+		
+	}
+	if (blikingtimer_ >= 10)
+	{
+		
+		blikingtimer_ = 0;
+	}
+
+	if (Oncollisiontimer_ >= 200)
+	{
+		isOncollision_ = false;
+		Oncollisiontimer_ = 0;
+	
+		blikingtimer_ = 0;
+	}
+
+
 	// 移動量
 	Vector3 move = { 0,0,0 };
 	move.x -= KeepMove.x;
@@ -84,16 +106,20 @@ void Player::Update() {
 	worldTransformHead_.UpdateMatrix();
 
 	ImGui::Begin("speed");
-	ImGui::DragFloat("speed", &speed);
+	ImGui::DragInt("speed", &Oncollisiontimer_);
 	ImGui::DragFloat("e", &e);
 	ImGui::DragFloat3("KeepMove", &KeepMove.x);
-	ImGui::Checkbox("IsMove", &IsMove);
+
+
 	ImGui::End();
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
 	// 3Dモデル描画
-	HeadModel_->Draw(worldTransformHead_, viewProjection);
+	if (blikingtimer_<=5)
+	{
+		HeadModel_->Draw(worldTransformHead_, viewProjection);
+	}
 }
 
 void Player::OnCollision()
@@ -168,6 +194,19 @@ void Player::OnCollision5()
 void Player::OnCollision6()
 {
 	KeepMove.z = e;
+}
+
+void Player::OnCollision7()
+{
+	
+	if (worldTransformHead_.scale_.x >= 0.5f&&isOncollision_==false) {
+		isOncollision_ = true;
+	
+		
+		worldTransformHead_.scale_.x -= 0.5f;
+		worldTransformHead_.scale_.y -= 0.5f;
+		worldTransformHead_.scale_.z -= 0.5f;
+	}
 }
 
 

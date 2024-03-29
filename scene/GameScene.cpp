@@ -216,8 +216,8 @@ void GameScene::Update() {
 		//複数の炎ギミックを出すための関数
 		UpdateFlamePopCommands();
 
-		for (const std::unique_ptr<Flame>& flame : flames_) {
-			flame->Update();
+		for (const std::unique_ptr<Fire>& fire : fires_) {
+			fire->Update();
 		}
 		//小スイッチの更新
 		smallswitch_->Update();
@@ -353,8 +353,8 @@ void GameScene::Draw() {
 		}
 
 		//炎の描画
-		for (const auto& flame : flames_) {
-			flame->Draw(viewProjection_);
+		for (const auto& fire : fires_) {
+			fire->Draw(viewProjection_);
 		}
 
 
@@ -585,14 +585,14 @@ void GameScene::UpdateFlamePopCommands()
 void GameScene::FlameGeneration(const Vector3& position)
 {
 	// 敵の生成
-	Flame* flame = new Flame();
+	Fire* fire = new Fire();
 
 
 
-	flame->Initialize(model_, position);
-	flame->SetGameScene(this);
+	fire->Initialize(model_, position);
+	fire->SetGameScene(this);
 
-	flames_.push_back(static_cast<std::unique_ptr<Flame>>(flame));
+	fires_.push_back(static_cast<std::unique_ptr<Fire>>(fire));
 }
 
 void GameScene::LoadWindPopData()
@@ -1082,7 +1082,7 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
-#pragma region プレイヤーとチュートリアルの壁
+#pragma region プレイヤーと1つめのステージの壁
 	for (const std::unique_ptr<Stage1>& stage1 : stages1_) {
 		if (stage1 && isstage1_) {
 			// プレイヤーの座標
@@ -1123,7 +1123,7 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
-#pragma region プレイヤーとチュートリアルの壁
+#pragma region プレイヤーと1つめのバリア
 	for (const std::unique_ptr<Barrier>& barrier : barriers_) {
 		if (barrier && isstage1_) {
 			// プレイヤーの座標
@@ -1164,7 +1164,7 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
-#pragma region プレイヤーとチュートリアルの壁
+#pragma region プレイヤーと2つめのバリア
 	for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
 		if (barrier2 && isstage1_) {
 			// プレイヤーの座標
@@ -1205,7 +1205,7 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
-#pragma region プレイヤーとチュートリアルの壁
+#pragma region プレイヤーと小さいスイッチ
 	
 		if (isstage1_) {
 			// プレイヤーの座標
@@ -1246,7 +1246,7 @@ void GameScene::CheckAllCollisions() {
 	
 #pragma endregion
 
-#pragma region プレイヤーとチュートリアルの壁
+#pragma region プレイヤーと普通のスイッチ
 
 		if (isstage1_) {
 			// プレイヤーの座標
@@ -1285,6 +1285,51 @@ void GameScene::CheckAllCollisions() {
 
 		}
 
+#pragma endregion
+
+#pragma region プレイヤーと炎
+		for (const std::unique_ptr<Fire>& fire : fires_) {
+			if (fire && isstage1_) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//回復の座標
+				PosB = fire->GetPosition();
+				RadiusB = fire->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision2();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision3();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+				{
+					player_->OnCollision4();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+				{
+					player_->OnCollision5();
+					player_->OnCollision7();
+				}
+
+			}
+		}
 #pragma endregion
 }
 

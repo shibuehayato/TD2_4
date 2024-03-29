@@ -15,7 +15,7 @@
 #include<list>
 #include <sstream>
 #include"Stage1.h"
-#include"Flame.h"
+#include"Fire.h"
 #include"SmallSwitch.h"
 #include"NormalSwitch.h"
 #include"Wind.h"
@@ -143,7 +143,7 @@ private: // メンバ変数
 
 	//ギミックの宣言
 	//炎の壁の宣言
-	std::list<std::unique_ptr<Flame>> flames_;
+	std::list<std::unique_ptr<Fire>> fires_;
 	//小スイッチの宣言
 	std::unique_ptr<SmallSwitch> smallswitch_;
 	//中スイッチの宣言

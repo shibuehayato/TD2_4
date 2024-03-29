@@ -16,6 +16,7 @@ public:
 	void OnCollision5();
 	//-----------------//
 	void OnCollision6();
+	void OnCollision7();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -50,6 +51,17 @@ private:
 	Vector3 normal = { 0.0f,0.5f,0.0f };
 	// 移動できるかフラグ
 	bool IsMove = false;
+
+	//当たった時一定の無敵時間を作るための変数
+	bool isOncollision_;
+
+	int32_t Oncollisiontimer_;
+
+	//---------------------------//
+
+	//当たった時点滅する用の変数
+	int32_t blikingtimer_;
+	bool isBliking_;
 	// ゲームパッドの状態を得る変数
 	XINPUT_STATE joyState;
 };

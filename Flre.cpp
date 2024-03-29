@@ -1,7 +1,7 @@
-#include "Flame.h"
+#include "Fire.h"
 #include<cassert>
 #include"GameScene.h"
-void Flame::Initialize(Model* model,Vector3 position)
+void Fire::Initialize(Model* model,Vector3 position)
 {
 	assert(model);
 
@@ -23,7 +23,7 @@ void Flame::Initialize(Model* model,Vector3 position)
 
 }
 
-void Flame::Update()
+void Fire::Update()
 {
 
 	worldTransform_.UpdateMatrix();
@@ -43,7 +43,7 @@ void Flame::Update()
 
 }
 
-void Flame::Draw(ViewProjection& viewProjection)
+void Fire::Draw(ViewProjection& viewProjection)
 {
 
 	model_->Draw(worldTransform_, viewProjection);
@@ -54,7 +54,7 @@ void Flame::Draw(ViewProjection& viewProjection)
 	}*/
 }
 
-Vector3 Flame::GetPosition()
+Vector3 Fire::GetPosition()
 {
 	Vector3 worldPos;
 
@@ -65,7 +65,7 @@ Vector3 Flame::GetPosition()
 	return worldPos;
 }
 
-Vector3 Flame::GetScale()
+Vector3 Fire::GetScale()
 {
 	Vector3 worldScale;
 
