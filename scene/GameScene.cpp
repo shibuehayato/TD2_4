@@ -101,8 +101,6 @@ void GameScene::Initialize() {
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
-	
-
 	//右矢印の生成と初期化
 	rightarrow_ = std::make_unique<RightArrow>();
 	rightarrow_->Initialize(model_);
@@ -126,8 +124,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
-
 
 	debugCamera_->Update();
 

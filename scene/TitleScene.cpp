@@ -8,6 +8,7 @@ void TitleScene::Initialize()
 	TitleSprite_.reset(Sprite::Create(TitleTexture_, { 0, 0 }));
 
 	input_ = Input::GetInstance();
+	input_->Initialize();
 }
 
 void TitleScene::Update()
