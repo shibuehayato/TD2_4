@@ -1055,7 +1055,8 @@ void GameScene::CheckAllCollisions() {
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
-			rotatingarrow_->OnCollision();
+			rotatingarrow_->OnCollision(player_.get());
+			//player_ -> ArrowOnCollision();
 		}
 #pragma endregion
 }

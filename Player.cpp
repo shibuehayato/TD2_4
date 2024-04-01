@@ -4,10 +4,6 @@
 #include <Mymath.h>
 #include <ImGuiManager.h>
 
-//Player::Player()
-//{
-//}
-
 void Player::Initialize(Model* head)
 {
 	assert(head);
@@ -15,6 +11,8 @@ void Player::Initialize(Model* head)
 
 	worldTransformHead_.translation_ = { 0,0,-15.0f };
 	worldTransformHead_.Initialize();
+
+	ArrowSpeed_ = { 0.0f,0.0f,0.0f };
 }
 
 void Player::Update() {
@@ -32,8 +30,8 @@ void Player::Update() {
 
 				// スピードが上がりすぎないようにする
 				if (speed < 0.04f) {
-					KeepMove.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed;
-					KeepMove.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed;
+					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed;
+					KeepMove_.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed;
 				}
 			}
 		}
@@ -45,9 +43,9 @@ void Player::Update() {
 				IsMove = true;
 			}
 
-			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010f)) {
-				KeepMove.x = 0;
-				KeepMove.z = 0;
+			if ((KeepMove_.x >= -0.010f && KeepMove_.x <= 0.010f) && (KeepMove_.z >= -0.010f && KeepMove_.z <= 0.010f)) {
+				KeepMove_.x = 0;
+				KeepMove_.z = 0;
 				IsMove = false;
 			}
 		}
@@ -55,22 +53,22 @@ void Player::Update() {
 
 	// 移動量
 	Vector3 move = { 0,0,0 };
-	move.x -= KeepMove.x;
-	move.z -= KeepMove.z;
+	move.x -= KeepMove_.x;
+	move.z -= KeepMove_.z;
 	if (IsMove == true) {
 
 		// 速度を落とす
-		if (KeepMove.x > 0) {
-			KeepMove.x -= 0.01f;
+		if (KeepMove_.x > 0) {
+			KeepMove_.x -= 0.01f;
 		}
-		if (KeepMove.x < 0) {
-			KeepMove.x += 0.01f;
+		if (KeepMove_.x < 0) {
+			KeepMove_.x += 0.01f;
 		}
-		if (KeepMove.z > 0) {
-			KeepMove.z -= 0.01f;
+		if (KeepMove_.z > 0) {
+			KeepMove_.z -= 0.01f;
 		}
-		if (KeepMove.z < 0) {
-			KeepMove.z += 0.01f;
+		if (KeepMove_.z < 0) {
+			KeepMove_.z += 0.01f;
 		}
 
 		// 座標移動
@@ -82,9 +80,10 @@ void Player::Update() {
 
 	ImGui::Begin("speed");
 	ImGui::DragFloat("speed", &speed);
-	ImGui::DragFloat3("KeepMove", &KeepMove.x);
+	ImGui::DragFloat3("KeepMove", &KeepMove_.x);
 	ImGui::Checkbox("IsMove", &IsMove);
 	ImGui::End();
+
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
@@ -101,10 +100,16 @@ void Player::OnCollision()
 	}
 }
 
-void Player::ArrowOnCollision(const Vector3& velocity)
+void Player::ArrowOnCollision()
 {
-	KeepMove = velocity;
+	//これだとkeepmoveに入っているのに減算されないか入っていないのかわからない状態これが一番正解に近いのかな？？？
+	//多分入ってもないのかな？
+	KeepMove_ = Add(KeepMove_, V3FDot(ArrowSpeed_, 1.5f));
 
-	worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, KeepMove);
-	worldTransformHead_.UpdateMatrix();
+	//これだと自機のもともと入っているスピードを倍にしているだけ
+	//KeepMove_ = V3FDot(Add(KeepMove_, ArrowSpeed_), 1.5f);
+	
+	//?
+	//worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, ArrowSpeed_);
+
 }

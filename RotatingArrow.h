@@ -3,6 +3,8 @@
 #include"Model.h"
 #include"ImGuiManager.h"
 
+class Player;
+
 class RotatingArrow
 {
 public:
@@ -12,7 +14,7 @@ public:
 
 	void Draw(ViewProjection& viewProjection);
 
-	void OnCollision();
+	void OnCollision(Player* player);
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {

@@ -9,7 +9,10 @@ public:
 	void Draw(ViewProjection viewProjection);
 
 	void OnCollision();
-	void ArrowOnCollision(const Vector3& velocity);
+	void ArrowOnCollision();
+
+	//セッター
+	void SetKeepMove(const Vector3& ArrowSpeed) { ArrowSpeed_ = ArrowSpeed; };
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -34,9 +37,9 @@ private:
 	// 速さ
 	float speed = 0;
 	// 移動量を保管する
-	Vector3 KeepMove = { 0,0,0 };
+	Vector3 KeepMove_ = { 0,0,0 };
 	// 移動できるかフラグ
 	bool IsMove = false;
 
-	//Vector3 velocity_ = {0.0f,0.0f,0.0f};
+	Vector3 ArrowSpeed_ = {0.0f,0.0f,0.0f};
 };
