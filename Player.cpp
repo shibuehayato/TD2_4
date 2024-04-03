@@ -23,7 +23,7 @@ void Player::Update() {
 	// ゲームパッドが有効の場合if文が通る
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 
-		if (IsMove == false) {
+		if (isMove == false) {
 			if ((float)joyState.Gamepad.sThumbLX != 0 || (float)joyState.Gamepad.sThumbLY != 0) {
 				// スティックを傾けているとき、スピードが加算される	
 				speed += 0.001f;
@@ -40,14 +40,14 @@ void Player::Update() {
 			speed = 0;
 		
 			if (speed == 0) {
-				IsMove = true;
+				isMove = true;
 			}
 
 			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010f)) {
 				KeepMove.x = 0;
 				KeepMove.z = 0;
 				e = 0.4f;
-				IsMove = false;
+				isMove = false;
 			}
 		}
 		
@@ -78,7 +78,7 @@ void Player::Update() {
 	Vector3 move = { 0,0,0 };
 	move.x -= KeepMove.x;
 	move.z -= KeepMove.z;
-	if (IsMove == true) {
+	if (isMove == true) {
 		
 		// 速度を落とす
 		if (KeepMove.x > 0) {
@@ -137,7 +137,7 @@ void Player::OnCollision2()
 	{
 		e -= 0.01f;
 	}
-	if (IsMove)
+	if (isMove)
 	{
 		KeepMove.x = -e ;
 		
@@ -148,7 +148,7 @@ void Player::OnCollision2()
 void Player::OnCollision3()
 {
 	
-	if (IsMove)
+	if (isMove)
 	{
 		if (e >= 0.01f)
 		{
@@ -163,7 +163,7 @@ void Player::OnCollision3()
 void Player::OnCollision4()
 {
 	
-	if (IsMove)
+	if (isMove)
 	{
 		if (e >= 0.01f)
 		{
@@ -178,7 +178,7 @@ void Player::OnCollision4()
 void Player::OnCollision5()
 {
 	
-	if (IsMove)
+	if (isMove)
 	{
 		if (e >= 0.01f)
 		{
@@ -212,13 +212,13 @@ void Player::OnCollision7()
 void Player::WarpOnCollision()
 {
 	worldTransformHead_.translation_= { -14.0f,0.0f,65.0f };
-	KeepMove = { 0,0,0 };
+	//KeepMove = { 0,0,0 };
 }
 
 void Player::WarpOnCollision2()
 {
 	worldTransformHead_.translation_ = { 14.0f,0.0f,50.0f };
-	KeepMove = { 0,0,0 };
+	//KeepMove = { 0,0,0 };
 }
 
 

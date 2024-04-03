@@ -108,6 +108,8 @@ public: // メンバ関数
 	void PitfallGeneration(const Vector3& position);
 
 	//--------------------------------------------//
+	//バリアが解除した時の処理の関数
+	void BarrierRemoved();
 
 	void CheckAllCollisions();
 
@@ -146,8 +148,12 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Fire>> fires_;
 	//小スイッチの宣言
 	std::unique_ptr<SmallSwitch> smallswitch_;
+	std::unique_ptr<Model> modelsmallswitch_;
+	std::unique_ptr<Model> modelsmallbutton_;
 	//中スイッチの宣言
 	std::unique_ptr<NormalSwitch> normalswitch_;
+	std::unique_ptr<Model> modelnormalswitch_;
+	std::unique_ptr<Model> modelnormalbutton_;
 	//風のギミックの宣言
 	std::list<std::unique_ptr<Wind>> winds_;
 	//落とし穴の宣言

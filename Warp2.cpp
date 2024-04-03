@@ -18,6 +18,16 @@ void Warp2::Draw(ViewProjection& viewProjection)
 	model_->Draw(worldTransform_, viewProjection);
 }
 
+void Warp2::OnCollision()
+{
+	isOncollision_ = true;
+}
+
+void Warp2::OnCollision2()
+{
+	isOncollision_ = false;
+}
+
 Vector3 Warp2::GetPosition()
 {
 	Vector3 worldPos;

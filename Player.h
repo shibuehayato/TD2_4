@@ -37,7 +37,7 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransformHead_.scale_; };
 
-	
+	bool IsMove() { return isMove; }
 
 private:
 	// ワールド変換データ
@@ -54,7 +54,7 @@ private:
 	Vector3 incident = { 0.2f,0.0f,0.2f };
 	Vector3 normal = { 0.0f,0.5f,0.0f };
 	// 移動できるかフラグ
-	bool IsMove = false;
+	bool isMove = false;
 
 	//当たった時一定の無敵時間を作るための変数
 	bool isOncollision_;
