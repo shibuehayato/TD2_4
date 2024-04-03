@@ -25,6 +25,8 @@ public:
 	//当た後
 	void RecoveryOnCollision();
 	void WindOnCollision();
+	//落とし穴の当たり判定
+	void PitfallOnCollision();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {

@@ -238,3 +238,8 @@ void Player::WindOnCollision()
 	//風の強さ　あとで調整
 		KeepMove.x += 0.02f;
 }
+
+void Player::PitfallOnCollision()
+{
+	worldTransformHead_.translation_ = { 0,0,-15.0f };
+}

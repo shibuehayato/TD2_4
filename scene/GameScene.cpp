@@ -413,10 +413,10 @@ void GameScene::Draw() {
 		warp2_->Draw(viewProjection_);
 		//右矢印の描画
 		rightarrow_->Draw(viewProjection_);
-		//左矢印の描画
-		leftarrow_->Draw(viewProjection_);
-		//上矢印の描画
-		uparrow_->Draw(viewProjection_);
+		////左矢印の描画
+		//leftarrow_->Draw(viewProjection_);
+		////上矢印の描画
+		//uparrow_->Draw(viewProjection_);
 		//下矢印の描画
 		downarrow_->Draw(viewProjection_);
 		//回転矢印の描画
@@ -1419,7 +1419,7 @@ void GameScene::CheckAllCollisions() {
 					(PosB.y - PosA.y) * (PosB.y - PosA.y) +
 					(PosB.z - PosA.z) * (PosB.z - PosA.z);
 				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-				// 弾と弾の交差判定
+				// プレイヤーと1つめのワープの交差判定
 				if (PositionMeasure <= RadiusMeasure&&warpcooltime_>=10) {
 					player_->WarpOnCollision();
 					warpcooltime_ = 0;
@@ -1451,7 +1451,7 @@ void GameScene::CheckAllCollisions() {
 					(PosB.y - PosA.y) * (PosB.y - PosA.y) +
 					(PosB.z - PosA.z) * (PosB.z - PosA.z);
 				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-				// 弾と弾の交差判定
+				// プレイヤーと2つめのワープの交差判定
 				if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
 					player_->WarpOnCollision2();
 					warpcooltime_ = 0;
@@ -1464,6 +1464,28 @@ void GameScene::CheckAllCollisions() {
 
 			}
 
+#pragma endregion
+
+#pragma region プレイヤーと落とし穴
+			if (isstage1_) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//落とし穴の座標
+				for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
+					PosB = pitfall->GetPosition();
+					RadiusB = pitfall->GetScale();
+					// 座標AとBの距離を求める
+					PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+						(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+						(PosB.z - PosA.z) * (PosB.z - PosA.z);
+					RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+					// プレイヤーと落とし穴の交差判定
+					if (PositionMeasure <= RadiusMeasure) {
+						player_->PitfallOnCollision();
+					}
+				}
+			}
 #pragma endregion
 }
 
