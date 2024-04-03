@@ -124,12 +124,7 @@
     <ClCompile Include="RightArrow.cpp" />
     <ClCompile Include="RotatingArrow.cpp" />
     <ClCompile Include="Recovery.cpp" />
-    <ClCompile Include="scene\GameManager.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
-    <ClCompile Include="scene\IScene.cpp" />
-    <ClCompile Include="scene\Operation.cpp" />
-    <ClCompile Include="scene\StageSelect.cpp" />
-    <ClCompile Include="scene\TitleScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="SmallSwitch.cpp" />
     <ClCompile Include="Tutorial.cpp" />
@@ -180,12 +175,7 @@
     <ClInclude Include="RightArrow.h" />
     <ClInclude Include="RotatingArrow.h" />
     <ClInclude Include="Recovery.h" />
-    <ClInclude Include="scene\GameManager.h" />
     <ClInclude Include="scene\GameScene.h" />
-    <ClInclude Include="scene\IScene.h" />
-    <ClInclude Include="scene\Operation.h" />
-    <ClInclude Include="scene\StageSelect.h" />
-    <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="SmallSwitch.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="Tutorial.h" />

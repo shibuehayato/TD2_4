@@ -23,6 +23,21 @@ void GameScene::Initialize() {
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 
+	TitleTexture_ = TextureManager::Load("scene/title.png");
+	OperationTexture_ = TextureManager::Load("scene/operation.png");
+	ClearTexture_ = TextureManager::Load("scene/clear.png");
+	GameOverTexture_ = TextureManager::Load("scene/GameOver.png");
+
+	TitleSprite_ = std::make_unique<Sprite>();
+	OperationSprite_ = std::make_unique<Sprite>();
+	ClearSprite_ = std::make_unique<Sprite>();
+	GameOverSprite_ = std::make_unique<Sprite>();
+
+	TitleSprite_.reset(Sprite::Create(TitleTexture_, { 0, 0 }));
+	OperationSprite_.reset(Sprite::Create(OperationTexture_, { 0, 0 }));
+	ClearSprite_.reset(Sprite::Create(ClearTexture_, { 0, 0 }));
+	GameOverSprite_.reset(Sprite::Create(GameOverTexture_, { 0, 0 }));
+
 	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
 	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
@@ -125,6 +140,31 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+	switch (scene)
+	{
+	case GameScene::TITLE: // タイトルシーン
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+
+					scene = OPERATION;
+				}
+			}
+		}
+		break;
+	case GameScene::OPERATION: // 操作説明シーン
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					scene = GAME;
+				}
+			}
+		}
+		break;
+	case GameScene::GAME:
+
 	debugCamera_->Update();
 
 	ImGui::Begin("viewprojection");
@@ -176,7 +216,6 @@ void GameScene::Update() {
 		istutorial_ = false;
 		
 	}
-
 
 	//チュートリアルのフラグがたったら実行する
 	if (istutorial_)
@@ -291,6 +330,48 @@ void GameScene::Update() {
 
 	//当たり判定
 	CheckAllCollisions();
+
+	// コントローラーのAボタンを押すとクリア
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+				!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				scene = CLEAR;
+			}
+		}
+	}
+
+	// コントローラーのBボタンを押すとゲームオーバー
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+				!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+				scene = GAMEOVER;
+			}
+		}
+	}
+	break;
+	case GameScene::CLEAR:
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					scene = TITLE;
+				}
+			}
+		}
+		break;
+	case GameScene::GAMEOVER:
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					scene = TITLE;
+				}
+			}
+		}
+		break;
+	}
 }
 
 void GameScene::Draw() {
@@ -306,6 +387,19 @@ void GameScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 
+	if (scene == TITLE) {
+		TitleSprite_->Draw();
+	}
+	if (scene == OPERATION) {
+		OperationSprite_->Draw();
+	}
+	if (scene == CLEAR) {
+		ClearSprite_->Draw();
+	}
+	if (scene == GAMEOVER) {
+		GameOverSprite_->Draw();
+	}
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -320,61 +414,63 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// 自キャラの描画
-	if (istutorial_ || isstage1_)
-	{
-		player_->Draw(viewProjection_);
-	}
-	
-	//チュートリアルのフラグがたったら実行する
-	if (istutorial_)
-	{
-		//ステージの描画
-		for (const auto& stage : tutorials_) {
+	if (scene == GAME) {
 
-			stage->Draw(viewProjection_);
-
+		// 自キャラの描画
+		if (istutorial_ || isstage1_)
+		{
+			player_->Draw(viewProjection_);
 		}
-		
-	}
 
-	if (isstage1_)
-	{
-		//ステージの描画
-		for (const auto& stage1 : stages1_) {
+		//チュートリアルのフラグがたったら実行する
+		if (istutorial_)
+		{
+			//ステージの描画
+			for (const auto& stage : tutorials_) {
 
-			stage1->Draw(viewProjection_);
+				stage->Draw(viewProjection_);
+
+			}
 
 		}
 
-		//炎の描画
-		for (const auto& flame : flames_) {
-			flame->Draw(viewProjection_);
-		}
+		if (isstage1_)
+		{
+			//ステージの描画
+			for (const auto& stage1 : stages1_) {
+
+				stage1->Draw(viewProjection_);
+
+			}
+
+			//炎の描画
+			for (const auto& flame : flames_) {
+				flame->Draw(viewProjection_);
+			}
 
 
-		//小スイッチの描画
-		smallswitch_->Draw(viewProjection_);
+			//小スイッチの描画
+			smallswitch_->Draw(viewProjection_);
 
-		//中スイッチの描画
-		normalswitch_->Draw(viewProjection_);
+			//中スイッチの描画
+			normalswitch_->Draw(viewProjection_);
 
-		//風のギミックの描画
-		for (const auto& wind : winds_) {
-			wind->Draw(viewProjection_);
+			//風のギミックの描画
+			for (const auto& wind : winds_) {
+				wind->Draw(viewProjection_);
+			}
+			//落とし穴の描画
+			for (const auto& pitfall : pitfalls_) {
+				pitfall->Draw(viewProjection_);
+			}
+			if (ball_) {
+				ball_->Draw(viewProjection_);
+			}
+			//回復
+			if (recovery_) {
+				recovery_->Draw(viewProjection_);
+			}
 		}
-		//落とし穴の描画
-		for (const auto& pitfall : pitfalls_) {
-			pitfall->Draw(viewProjection_);
-		}
-		if (ball_) {
-			ball_->Draw(viewProjection_);
-		}
-		//回復
-		if (recovery_) {
-			recovery_->Draw(viewProjection_);
-		}
-	}
 
 		//バリアの描画
 		for (const auto& barrier : barriers_) {
@@ -401,16 +497,9 @@ void GameScene::Draw() {
 		//回転矢印の描画
 		rotatingarrow_->Draw(viewProjection_);
 
-	
-	
-
-	
-	
-
-	
-
-	// 天球の描画
-	skydome_->Draw(viewProjection_);
+		// 天球の描画
+		skydome_->Draw(viewProjection_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
