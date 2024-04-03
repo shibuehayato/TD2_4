@@ -363,10 +363,10 @@ void GameScene::Draw() {
 		//中スイッチの描画
 		normalswitch_->Draw(viewProjection_);
 
-		//風のギミックの描画
-		for (const auto& wind : winds_) {
+		//風のギミックの描画消す
+		/*for (const auto& wind : winds_) {
 			wind->Draw(viewProjection_);
-		}
+		}*/
 		//落とし穴の描画
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
