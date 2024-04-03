@@ -33,6 +33,7 @@
 #include"RotatingArrow.h"
 #include"Mymath.h"
 #include"Recovery.h"
+#include"Stage2.h"
 
 /// <summary>
 /// ゲームシーン
@@ -77,11 +78,23 @@ public: // メンバ関数
 
 	void Stage1WallGeneration(const Vector3& position);
 
+	void Stage2LoadWallPopData();
+
+	void Stage2UpdateWallPopCommands();
+
+	void Stage2WallGeneration(const Vector3& position);
+
 	void LoadFlamePopData();
 
 	void UpdateFlamePopCommands();
 
 	void FlameGeneration(const Vector3& position);
+
+	void LoadStage2FlamePopData();
+
+	void UpdateStage2FlamePopCommands();
+
+	void Stage2FlameGeneration(const Vector3& position);
 
 	void LoadWindPopData();
 
@@ -142,6 +155,7 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Tutorial>> tutorials_;
 	std::unique_ptr<Model> modelwall_;
 	std::list<std::unique_ptr<Stage1>> stages1_;
+	std::list<std::unique_ptr<Stage2>> stages2_;
 
 	//ギミックの宣言
 	//炎の壁の宣言
@@ -193,8 +207,11 @@ private: // メンバ変数
 	std::stringstream wallPopCommands;
 	// 壁発生コマンド
 	std::stringstream stage1wallPopCommands;
+	//ステージ2の壁発生コマンド
+	std::stringstream stage2wallPopCommands;
 	//炎発生コマンド
 	std::stringstream flamePopCommands;
+	std::stringstream stage2flamePopCommands;
 	//風のギミックの発生コマンド
 	std::stringstream windPopCommands;
 	//バリアの発生コマンド
@@ -203,11 +220,12 @@ private: // メンバ変数
 	std::stringstream barrier2PopCommands;
 	//落とし穴の発生コマンド
 	std::stringstream pitfallPopCommands;
+	
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
-
+	bool isstage2_ = false;
 	
 
 	// 天球

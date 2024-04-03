@@ -66,6 +66,7 @@ void GameScene::Initialize() {
 	LoadBarrierPopData();
 	LoadBarrier2PopData();
 	LoadPitfallPopData();
+	Stage2LoadWallPopData();
 
 	//--------------------//
 	
@@ -127,7 +128,9 @@ void GameScene::Initialize() {
 	rotatingarrow_ = std::make_unique<RotatingArrow>();
 	
 	rotatingarrow_->Initialize(modelRotationArrow_.get());
-
+	
+		
+	
 }
 
 void GameScene::Update() {
@@ -177,6 +180,7 @@ void GameScene::Update() {
 
 		istutorial_ = true;
 		isstage1_ = false;
+		isstage2_ = false;
 	}
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
@@ -184,7 +188,13 @@ void GameScene::Update() {
 
 		isstage1_ = true;
 		istutorial_ = false;
-		
+		isstage2_ = false;
+	}
+	if (input_->TriggerKey(DIK_C))
+	{
+		istutorial_ = false;
+		isstage1_ = false;
+		isstage2_ = true;
 	}
 
 
@@ -298,7 +308,15 @@ void GameScene::Update() {
 			}
 		}
 	}
-
+	if (isstage2_)
+	{
+		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
+			if (stage2 != nullptr) {
+				stage2->Update();
+			}
+		}
+		Stage2UpdateWallPopCommands();
+	}
 	/*if (player_->IsMove()&&warpcooltime_<=10)
 	{
 		warpcooltime_++;
@@ -342,7 +360,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 自キャラの描画
-	if (istutorial_ || isstage1_)
+	if (istutorial_ || isstage1_||isstage2_)
 	{
 		player_->Draw(viewProjection_);
 	}
@@ -396,7 +414,13 @@ void GameScene::Draw() {
 			recovery_->Draw(viewProjection_);
 		}
 	}
-
+	if (isstage2_)
+	{
+		//ステージの描画
+		for (const auto& stage2 : stages2_) {
+			stage2->Draw(viewProjection_);
+		}
+	}
 		//バリアの描画
 		for (const auto& barrier : barriers_) {
 			barrier->Draw(viewProjection_);
@@ -532,6 +556,85 @@ void GameScene::Stage1WallGeneration(const Vector3& position)
 	stages1_.push_back(static_cast<std::unique_ptr<Stage1>>(stage1));
 }
 
+void GameScene::Stage2LoadWallPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//Stage2wallPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage2wallPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::Stage2UpdateWallPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage2wallPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage2WallGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage2WallGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Stage2* stage2 = new Stage2();
+
+
+
+	stage2->Initialize(modelwall_.get(), position);
+	stage2->SetGameScene(this);
+
+	stages2_.push_back(static_cast<std::unique_ptr<Stage2>>(stage2));
+}
+
 void GameScene::LoadFlamePopData()
 {
 	// ファイルを開く
@@ -599,6 +702,85 @@ void GameScene::UpdateFlamePopCommands()
 }
 
 void GameScene::FlameGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Fire* fire = new Fire();
+
+
+
+	fire->Initialize(model_, position);
+	fire->SetGameScene(this);
+
+	fires_.push_back(static_cast<std::unique_ptr<Fire>>(fire));
+}
+
+void GameScene::LoadStage2FlamePopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//FlamePop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage2flamePopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateStage2FlamePopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage2flamePopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage2FlameGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage2FlameGeneration(const Vector3& position)
 {
 	// 敵の生成
 	Fire* fire = new Fire();
