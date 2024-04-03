@@ -7,18 +7,18 @@ void SmallSwitch::Initialize(Model* model, Model* modelbutton)
 	assert(modelbutton);
 	model_ = model;
 	modelbutton_ = modelbutton;
-	worldTransform_.Initialize();
+	worldTransformswitch_.Initialize();
 	worldTransformbutton_.Initialize();
 	
 
-	worldTransform_.translation_ = { -20.25f,0.0f,49.0f };
-	worldTransform_.rotation_ = { 0.0f,3.15f,0.0f };
-	worldTransformbutton_.translation_ = { -19.5f,0.0f,49.0f };
+	worldTransformswitch_.translation_ = { -20.25f,0.0f,49.0f };
+	worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+	worldTransformbutton_.translation_ = { -19.0f,0.0f,49.0f };
 }
 
 void SmallSwitch::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransformswitch_.UpdateMatrix();
 	worldTransformbutton_.UpdateMatrix();
 
 	if (isOncollision_ && worldTransformbutton_.scale_.x >= 0.6f)
@@ -26,22 +26,24 @@ void SmallSwitch::Update()
 		worldTransformbutton_.scale_.x -= 0.01f;
 	}
 	
-	if (isOncollision_ && worldTransform_.translation_.x >= -18.5f)
+	if (isOncollision_ && worldTransformswitch_.translation_.x >= -18.5f)
 	{
-		worldTransform_.translation_.x -= 0.01f;
+		worldTransformswitch_.translation_.x -= 0.01f;
 	}
 	if (worldTransformbutton_.scale_.x <= 0.6f)
 	{
 		isScale_ = true;
 	}
 	ImGui::Begin("SmallSwitch");
-	ImGui::DragFloat3("Scale", &worldTransformbutton_.scale_.x,0.1f);
+	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
+	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x,0.1f);
+	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
 	ImGui::End();
 }
 
 void SmallSwitch::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection);
+	model_->Draw(worldTransformswitch_, viewProjection);
 	modelbutton_->Draw(worldTransformbutton_, viewProjection);
 }
 

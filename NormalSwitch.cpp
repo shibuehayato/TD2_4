@@ -6,18 +6,18 @@ void NormalSwitch::Initialize(Model* model, Model* modelbutton)
 	assert(modelbutton);
 	model_ = model;
 	modelbutton_ = modelbutton;
-	worldTransform_.Initialize();
+	worldTransformswitch_.Initialize();
 	worldTransformbutton_.Initialize();
 	
 
-	worldTransform_.translation_ = { -20.25f,0.0f,1.0f };
-	worldTransform_.rotation_ = { 0.0f,3.15f,0.0f };
-	worldTransformbutton_.translation_ = { -19.5f,0.0f,1.0f };
+	worldTransformswitch_.translation_ = { -20.25f,0.0f,1.0f };
+	worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+	worldTransformbutton_.translation_ = { -19.0f,0.0f,1.0f };
 }
 
 void NormalSwitch::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransformswitch_.UpdateMatrix();
 	worldTransformbutton_.UpdateMatrix();
 
 	if (isOncollision_ && worldTransformbutton_.scale_.x >= 0.6f)
@@ -30,11 +30,17 @@ void NormalSwitch::Update()
 	{
 		isScale_ = true;
 	}
+
+	ImGui::Begin("NormalSwitch");
+	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
+	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x, 0.1f);
+	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
+	ImGui::End();
 }
 
 void NormalSwitch::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection);
+	model_->Draw(worldTransformswitch_, viewProjection);
 	modelbutton_->Draw(worldTransformbutton_, viewProjection);
 }
 

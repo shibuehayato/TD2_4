@@ -21,7 +21,7 @@ public:
 	//指定したサイズになった時の関数
 	bool IsScale() { return isScale_; }
 private:
-	WorldTransform worldTransform_;
+	WorldTransform worldTransformswitch_;
 	WorldTransform worldTransformbutton_;
 
 	Model* model_=nullptr;
