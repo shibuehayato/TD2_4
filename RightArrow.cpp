@@ -7,7 +7,7 @@ void RightArrow::Initialize(Model* model)
 	worldTransform_.Initialize();
 
 	worldTransform_.translation_ = { 26.0f,0.0f,50.0f };
-
+	worldTransform_.rotation_ = { 0.0f,1.6f,0.0f };
 	velocity_ = { 1.0f,1.0f,1.0f };
 }
 

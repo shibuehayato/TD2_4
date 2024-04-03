@@ -5,7 +5,7 @@ void Warp2::Initialize(Model* model)
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { -14.0f,0.0f,65.0f };
+	worldTransform_.translation_ = { -14.0f,-0.5f,65.0f };
 }
 
 void Warp2::Update()

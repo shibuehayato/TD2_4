@@ -105,27 +105,27 @@ void GameScene::Initialize() {
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
-	
+	modelRotationArrow_.reset(Model::CreateFromOBJ("Arrow", true));
 
 	//右矢印の生成と初期化
 	rightarrow_ = std::make_unique<RightArrow>();
-	rightarrow_->Initialize(model_);
+	rightarrow_->Initialize(modelRotationArrow_.get());
 	//---------------------------------//
 
 	//左矢印の生成と初期化
 	leftarrow_ = std::make_unique<LeftArrow>();
-	leftarrow_->Initialize(model_);
+	leftarrow_->Initialize(modelRotationArrow_.get());
 	//
 
 	//上矢印の生成と初期化
 	uparrow_ = std::make_unique<UpArrow>();
-	uparrow_->Initialize(model_);
+	uparrow_->Initialize(modelRotationArrow_.get());
 	//下方向の生成と初期化
 	downarrow_ = std::make_unique_for_overwrite<DownArrow>();
-	downarrow_->Initialize(model_);
+	downarrow_->Initialize(modelRotationArrow_.get());
 
 	rotatingarrow_ = std::make_unique<RotatingArrow>();
-	modelRotationArrow_.reset(Model::CreateFromOBJ("Arrow", true));
+	
 	rotatingarrow_->Initialize(modelRotationArrow_.get());
 
 }
@@ -139,6 +139,7 @@ void GameScene::Update() {
 	ImGui::Begin("viewprojection");
 	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+	ImGui::DragInt("rotation", &warpcooltime_);
 	ImGui::End();
 
 #ifdef _DEBUG
@@ -296,6 +297,15 @@ void GameScene::Update() {
 				recoveryTime_ = 0;
 			}
 		}
+	}
+
+	/*if (player_->IsMove()&&warpcooltime_<=10)
+	{
+		warpcooltime_++;
+	}*/
+	 if (player_->IsMove() == false && movestoptime <= 10)
+	{
+		movestoptime++;
 	}
 
 	//バリアが解除されたかを確認する関数
@@ -1410,14 +1420,18 @@ void GameScene::CheckAllCollisions() {
 					(PosB.z - PosA.z) * (PosB.z - PosA.z);
 				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 				// 弾と弾の交差判定
-				if (PositionMeasure <= RadiusMeasure&&warp_->IsOncollision()==false) {
+				if (PositionMeasure <= RadiusMeasure&&warpcooltime_>=10) {
 					player_->WarpOnCollision();
-					warp_->OnCollision();
+					warpcooltime_ = 0;
+					movestoptime = 0;
 				}
-				else if(PositionMeasure2<=RadiusMeasure2&&player_->IsMove())
-				{
-					warp_->OnCollision2();
+				else if (PositionMeasure <= RadiusMeasure && movestoptime<=10) {
+					player_->MoveStop();
 				}
+				if (PositionMeasure >= RadiusMeasure && PositionMeasure2 >= RadiusMeasure2&&warpcooltime_<=10) {
+					warpcooltime_++;
+				}
+				
 
 			}
 		
@@ -1438,14 +1452,15 @@ void GameScene::CheckAllCollisions() {
 					(PosB.z - PosA.z) * (PosB.z - PosA.z);
 				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 				// 弾と弾の交差判定
-				if (PositionMeasure <= RadiusMeasure && warp2_->IsOncollision() == false) {
+				if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
 					player_->WarpOnCollision2();
-					warp2_->OnCollision();
+					warpcooltime_ = 0;
+					movestoptime = 0;
 				}
-				else
-				{
-					warp2_->OnCollision2();
+				else if (PositionMeasure <= RadiusMeasure && movestoptime <= 10) {
+					player_->MoveStop();
 				}
+				
 
 			}
 

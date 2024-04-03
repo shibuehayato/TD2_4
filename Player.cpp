@@ -221,6 +221,14 @@ void Player::WarpOnCollision2()
 	//KeepMove = { 0,0,0 };
 }
 
+void Player::MoveStop()
+{
+	KeepMove.x = 0;
+	KeepMove.z = 0;
+	speed = 0;
+	isMove = false;
+}
+
 
 
 

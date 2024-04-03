@@ -162,6 +162,8 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Barrier>> barriers_;
     //ワープの宣言
 	std::unique_ptr<Warp> warp_;
+	int32_t warpcooltime_ = 0;
+	int32_t movestoptime = 0;
 	//2つ目のワープの宣言
 	std::unique_ptr<Warp2> warp2_;
 	//2つめのバリアの宣言

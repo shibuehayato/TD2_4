@@ -21,6 +21,7 @@ public:
 	//1つめのワープに当たった時の関数
 	void WarpOnCollision();
 	void WarpOnCollision2();
+	void MoveStop();
 	//当た後
 	void RecoveryOnCollision();
 	void WindOnCollision();
