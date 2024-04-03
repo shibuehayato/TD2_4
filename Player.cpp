@@ -12,7 +12,7 @@ void Player::Initialize(Model* head)
 	worldTransformHead_.translation_ = { 0,0,-15.0f };
 	worldTransformHead_.Initialize();
 
-	ArrowSpeed_ = { 0.0f,0.0f,0.0f };
+	ArrowRot_ = { 0.0f,0.0f,0.0f };
 }
 
 void Player::Update() {
@@ -102,14 +102,8 @@ void Player::OnCollision()
 
 void Player::ArrowOnCollision()
 {
-	//これだとkeepmoveに入っているのに減算されないか入っていないのかわからない状態これが一番正解に近いのかな？？？
-	//多分入ってもないのかな？
-	KeepMove_ = Add(KeepMove_, V3FDot(ArrowSpeed_, 1.5f));
+	//当たった後のスピードの調整
+	float Adjustment=0.3f;
 
-	//これだと自機のもともと入っているスピードを倍にしているだけ
-	//KeepMove_ = V3FDot(Add(KeepMove_, ArrowSpeed_), 1.5f);
-	
-	//?
-	//worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, ArrowSpeed_);
-
+	KeepMove_ = V3FDot(ArrowRot_, Adjustment);
 }

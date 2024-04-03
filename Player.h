@@ -12,7 +12,7 @@ public:
 	void ArrowOnCollision();
 
 	//セッター
-	void SetKeepMove(const Vector3& ArrowSpeed) { ArrowSpeed_ = ArrowSpeed; };
+	void SetKeepMove(const Vector3& ArrowRot) { ArrowRot_ = ArrowRot; };
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -41,5 +41,5 @@ private:
 	// 移動できるかフラグ
 	bool IsMove = false;
 
-	Vector3 ArrowSpeed_ = {0.0f,0.0f,0.0f};
+	Vector3 ArrowRot_ = {0.0f,0.0f,0.0f};
 };

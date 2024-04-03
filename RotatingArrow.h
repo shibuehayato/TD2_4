@@ -2,6 +2,7 @@
 #include"WorldTransform.h"
 #include"Model.h"
 #include"ImGuiManager.h"
+#include <Input.h>
 
 class Player;
 
@@ -41,5 +42,11 @@ private:
 
 	// 速度
 	Vector3 velocity_;
+
+	//矢印の回転に合わせるよう
+	Vector3 ArrowRot;
+	Vector3 ArrowRotspeed;
+
+	Input* input_ = nullptr;
 };
 
