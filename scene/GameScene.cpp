@@ -418,7 +418,7 @@ void GameScene::Draw() {
 	if (scene == GAMEOVER) {
 		GameOverSprite_->Draw();
 	}
-
+	
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -1569,7 +1569,7 @@ void GameScene::CheckAllCollisions() {
 					RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 					// プレイヤーと落とし穴の交差判定
 					if (PositionMeasure <= RadiusMeasure) {
-						player_->PitfallOnCollision();
+						scene = GAMEOVER;
 					}
 				}
 			}
