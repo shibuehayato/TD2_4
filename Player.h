@@ -21,6 +21,9 @@ public:
 	//1つめのワープに当たった時の関数
 	void WarpOnCollision();
 	void WarpOnCollision2();
+	//当た後
+	void RecoveryOnCollision();
+	void WindOnCollision();
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
