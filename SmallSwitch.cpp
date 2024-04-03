@@ -1,47 +1,65 @@
 #include "SmallSwitch.h"
 #include<cassert>
 
-void SmallSwitch::Initialize(Model* model)
+void SmallSwitch::Initialize(Model* model, Model* modelbutton)
 {
 	assert(model);
+	assert(modelbutton);
 	model_ = model;
-	worldTransform_.Initialize();
+	modelbutton_ = modelbutton;
+	worldTransformswitch_.Initialize();
+	worldTransformbutton_.Initialize();
+	
 
-	textureHandle_ = TextureManager::Load("sample.png");
-
-	worldTransform_.translation_ = { -18.0f,0.0f,48.0f };
-
+	worldTransformswitch_.translation_ = { -20.25f,0.0f,49.0f };
+	worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+	worldTransformbutton_.translation_ = { -19.0f,0.0f,49.0f };
 }
 
 void SmallSwitch::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransformswitch_.UpdateMatrix();
+	worldTransformbutton_.UpdateMatrix();
 
+	if (isOncollision_ && worldTransformbutton_.scale_.x >= 0.6f)
+	{
+		worldTransformbutton_.scale_.x -= 0.01f;
+	}
 	
-
+	if (isOncollision_ && worldTransformswitch_.translation_.x >= -18.5f)
+	{
+		worldTransformswitch_.translation_.x -= 0.01f;
+	}
+	if (worldTransformbutton_.scale_.x <= 0.6f)
+	{
+		isScale_ = true;
+	}
+	ImGui::Begin("SmallSwitch");
+	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
+	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x,0.1f);
+	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
+	ImGui::End();
 }
 
 void SmallSwitch::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection,textureHandle_);
+	model_->Draw(worldTransformswitch_, viewProjection);
+	modelbutton_->Draw(worldTransformbutton_, viewProjection);
 }
 
 void SmallSwitch::OnCollision()
 {
 	isOncollision_ = true;
-	if (isOncollision_ && worldTransform_.scale_.x >= 0.5f)
-	{
-		worldTransform_.scale_.x -= 0.01f;
-	}
+	
 }
 
 Vector3 SmallSwitch::GetPosition()
 {
 	Vector3 worldPos;
 
-	worldPos.x = worldTransform_.matWorld_.m[3][0];
-	worldPos.y = worldTransform_.matWorld_.m[3][1];
-	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	worldPos.x = worldTransformbutton_.matWorld_.m[3][0];
+	worldPos.y = worldTransformbutton_.matWorld_.m[3][1];
+	worldPos.z = worldTransformbutton_.matWorld_.m[3][2];
 
 	return worldPos;
 }
@@ -50,9 +68,9 @@ Vector3 SmallSwitch::GetScale()
 {
 	Vector3 worldScale;
 
-	worldScale.x = worldTransform_.scale_.x;
-	worldScale.y = worldTransform_.scale_.y;
-	worldScale.z = worldTransform_.scale_.z;
+	worldScale.x = worldTransformbutton_.scale_.x;
+	worldScale.y = worldTransformbutton_.scale_.y;
+	worldScale.z = worldTransformbutton_.scale_.z;
 
 	return worldScale;
 }

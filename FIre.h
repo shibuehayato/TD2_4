@@ -6,7 +6,7 @@
 class GameScene;
 
 
-class Flame
+class Fire
 {
 public:
 

@@ -5,7 +5,7 @@ void Warp::Initialize(Model* model)
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { 14.0f,0.0f,50.0f };
+	worldTransform_.translation_ = { 14.0f,-0.5f,50.0f };
 }
 
 void Warp::Update()
@@ -16,6 +16,16 @@ void Warp::Update()
 void Warp::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection);
+}
+
+void Warp::OnCollision()
+{
+	isOncollision_ = true;
+}
+
+void Warp::OnCollision2()
+{
+	isOncollision_ = false;
 }
 
 Vector3 Warp::GetPosition()

@@ -15,7 +15,7 @@
 #include<list>
 #include <sstream>
 #include"Stage1.h"
-#include"Flame.h"
+#include"Fire.h"
 #include"SmallSwitch.h"
 #include"NormalSwitch.h"
 #include"Wind.h"
@@ -108,6 +108,8 @@ public: // メンバ関数
 	void PitfallGeneration(const Vector3& position);
 
 	//--------------------------------------------//
+	//バリアが解除した時の処理の関数
+	void BarrierRemoved();
 
 	void CheckAllCollisions();
 
@@ -143,11 +145,15 @@ private: // メンバ変数
 
 	//ギミックの宣言
 	//炎の壁の宣言
-	std::list<std::unique_ptr<Flame>> flames_;
+	std::list<std::unique_ptr<Fire>> fires_;
 	//小スイッチの宣言
 	std::unique_ptr<SmallSwitch> smallswitch_;
+	std::unique_ptr<Model> modelsmallswitch_;
+	std::unique_ptr<Model> modelsmallbutton_;
 	//中スイッチの宣言
 	std::unique_ptr<NormalSwitch> normalswitch_;
+	std::unique_ptr<Model> modelnormalswitch_;
+	std::unique_ptr<Model> modelnormalbutton_;
 	//風のギミックの宣言
 	std::list<std::unique_ptr<Wind>> winds_;
 	//落とし穴の宣言
@@ -156,6 +162,8 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Barrier>> barriers_;
     //ワープの宣言
 	std::unique_ptr<Warp> warp_;
+	int32_t warpcooltime_ = 0;
+	int32_t movestoptime = 0;
 	//2つ目のワープの宣言
 	std::unique_ptr<Warp2> warp2_;
 	//2つめのバリアの宣言
@@ -174,6 +182,7 @@ private: // メンバ変数
 	std::unique_ptr<DownArrow> downarrow_;
 	//回転矢印の宣言
 	std::unique_ptr<RotatingArrow> rotatingarrow_;
+	std::unique_ptr<Model> modelRotationArrow_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;

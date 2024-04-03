@@ -14,6 +14,8 @@ public:
 
 	void Draw(ViewProjection& viewProjection);
 
+	void OnCollision();
+
 	//ゲームシーンからアドレスをもらうための関数
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
@@ -23,12 +25,16 @@ public:
 	//ワールドサイズを取得
 	Vector3 GetScale();
 
+	bool IsDead() { return isDead_; }
+
 private:
 	WorldTransform worldTransform_;
 
 	Model* model_ = nullptr;
 
 	GameScene* gameScene_ = nullptr;
+
+	bool isDead_ = false;
 
 };
 
