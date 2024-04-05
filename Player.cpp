@@ -251,3 +251,12 @@ void Player::ArrowOnCollision()
 
 	KeepMove_ = V3FDot(ArrowRot_, Adjustment);
 }
+
+void Player::Reset()
+{
+	worldTransformHead_.translation_ = { 0,0,-15.0f };
+	isMove = true;
+	KeepMove_.x = 0;
+	KeepMove_.y = 0;
+	KeepMove_.z = 0;
+}

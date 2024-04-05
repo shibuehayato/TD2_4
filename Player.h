@@ -50,6 +50,8 @@ public:
 
 	bool IsMove() { return isMove; }
 
+	void Reset();
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransformHead_;

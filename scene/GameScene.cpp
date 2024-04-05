@@ -378,6 +378,9 @@ void GameScene::Update() {
 				}
 			}
 		}
+
+		player_->Reset();
+
 		break;
 	case GameScene::GAMEOVER:
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -388,6 +391,9 @@ void GameScene::Update() {
 				}
 			}
 		}
+
+		player_->Reset();
+
 		break;
 	}
 }
