@@ -1,19 +1,20 @@
 ﻿#include"RotatingArrow.h"
+#include"GameScene.h"
 #include<cassert>
 #include <Mymath.h>
-#include <Player.h>
 
-void RotatingArrow::Initialize(Model* model)
+void RotatingArrow::Initialize(Model* model, Vector3 position)
 {
 	assert(model);
 	model_ = model;
-	worldTransform_.Initialize();
 
-	worldTransform_.translation_ = { 4.0f,0.0f,12.0f };
+	worldTransform_.Initialize();
+	worldTransform_.translation_ = position;
+
+	//worldTransform_.translation_ = { 4.0f,0.0f,12.0f };
 
 	velocity_ = { 1.0f, 1.0f, 1.0f };
 	ArrowRot = { 1.0f,1.0f,1.0f };
-	ArrowRotspeed = { 0.01f,0.0f,0.01f };
 	input_ = Input::GetInstance();
 }
 

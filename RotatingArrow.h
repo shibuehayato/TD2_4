@@ -5,11 +5,12 @@
 #include <Input.h>
 
 class Player;
+class GameScene;
 
 class RotatingArrow
 {
 public:
-	void Initialize(Model* model);
+	void Initialize(Model* model, Vector3 position);
 
 	void Update();
 
@@ -32,8 +33,8 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransform_.scale_; };
 
-	//角度の取得
-
+	//ゲームシーンからアドレスをもらうための関数
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 private:
 	WorldTransform worldTransform_;
@@ -48,4 +49,6 @@ private:
 	Vector3 ArrowRotspeed;
 
 	Input* input_ = nullptr;
+
+	GameScene* gameScene_ = nullptr;
 };

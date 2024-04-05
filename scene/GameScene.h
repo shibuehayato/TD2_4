@@ -107,6 +107,12 @@ public: // メンバ関数
 
 	void PitfallGeneration(const Vector3& position);
 
+	void LoadArrowPopData();
+
+	void UpdateArrowPopCommands();
+
+	void ArrowGeneration(const Vector3& position);
+
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
@@ -181,8 +187,9 @@ private: // メンバ変数
 	//下矢印の宣言
 	std::unique_ptr<DownArrow> downarrow_;
 	//回転矢印の宣言
-	std::unique_ptr<RotatingArrow> rotatingarrow_;
-	std::unique_ptr<Model> modelRotationArrow_;
+	//std::unique_ptr<RotatingArrow> rotatingarrow_;
+	std::unique_ptr<Model> modelArrow_;
+	std::list<std::unique_ptr<RotatingArrow>> Arrows_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
@@ -203,6 +210,8 @@ private: // メンバ変数
 	std::stringstream barrier2PopCommands;
 	//落とし穴の発生コマンド
 	std::stringstream pitfallPopCommands;
+	//矢印のギミックの発生コマンド
+	std::stringstream arrowPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;

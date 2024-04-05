@@ -81,6 +81,7 @@ void GameScene::Initialize() {
 	LoadBarrierPopData();
 	LoadBarrier2PopData();
 	LoadPitfallPopData();
+	LoadArrowPopData();
 
 	//--------------------//
 	
@@ -120,28 +121,28 @@ void GameScene::Initialize() {
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
-	modelRotationArrow_.reset(Model::CreateFromOBJ("Arrow", true));
+	modelArrow_.reset(Model::CreateFromOBJ("Arrow", true));
 
 	//右矢印の生成と初期化
 	rightarrow_ = std::make_unique<RightArrow>();
-	rightarrow_->Initialize(modelRotationArrow_.get());
+	rightarrow_->Initialize(modelArrow_.get());
 	//---------------------------------//
 
 	//左矢印の生成と初期化
 	leftarrow_ = std::make_unique<LeftArrow>();
-	leftarrow_->Initialize(modelRotationArrow_.get());
+	leftarrow_->Initialize(modelArrow_.get());
 	//
 
 	//上矢印の生成と初期化
 	uparrow_ = std::make_unique<UpArrow>();
-	uparrow_->Initialize(modelRotationArrow_.get());
+	uparrow_->Initialize(modelArrow_.get());
 	//下方向の生成と初期化
 	downarrow_ = std::make_unique_for_overwrite<DownArrow>();
-	downarrow_->Initialize(modelRotationArrow_.get());
+	downarrow_->Initialize(modelArrow_.get());
 
-	rotatingarrow_ = std::make_unique<RotatingArrow>();
-	rotatingarrow_->Initialize(modelRotationArrow_.get());
-
+	//rotatingarrow_ = std::make_unique<RotatingArrow>();
+	//rotatingarrow_->Initialize(modelRotationArrow_.get());
+	
 }
 
 void GameScene::Update() {
@@ -285,7 +286,10 @@ void GameScene::Update() {
 			barrier2->Update();
 		}
 		UpdateBarrier2PopCommands();
-
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			arrow->Update();
+		}
+		UpdateArrowPopCommands();
 
 		//ワープの更新
 		warp_->Update();
@@ -300,7 +304,7 @@ void GameScene::Update() {
 		//下矢印の更新
 		downarrow_->Update();
 		//回転矢印の更新
-		rotatingarrow_->Update();
+		//rotatingarrow_->Update();
 
 
 
@@ -488,6 +492,9 @@ void GameScene::Draw() {
 		if (recovery_) {
 			recovery_->Draw(viewProjection_);
 		}
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			arrow->Draw(viewProjection_);
+		}
 	}
 
 		//バリアの描画
@@ -505,17 +512,18 @@ void GameScene::Draw() {
 		//2つめのワープの描画
 		warp2_->Draw(viewProjection_);
 		//右矢印の描画
-		//rightarrow_->Draw(viewProjection_);
-		////左矢印の描画
-		//leftarrow_->Draw(viewProjection_);
-		////上矢印の描画
-		//uparrow_->Draw(viewProjection_);
+		rightarrow_->Draw(viewProjection_);
+		//左矢印の描画
+		leftarrow_->Draw(viewProjection_);
+		//上矢印の描画
+		uparrow_->Draw(viewProjection_);
 		//下矢印の描画
-		//downarrow_->Draw(viewProjection_);
-		// 他の矢印いらない？
+		downarrow_->Draw(viewProjection_);
 		//回転矢印の描画
-		rotatingarrow_->Draw(viewProjection_);
-
+		//rotatingarrow_->Draw(viewProjection_);
+		for (const auto& arrow : Arrows_) {
+			arrow->Draw(viewProjection_);
+		}
 		// 天球の描画
 		skydome_->Draw(viewProjection_);
 	}
@@ -1112,6 +1120,83 @@ void GameScene::BarrierRemoved()
 	}
 }
 
+void GameScene::LoadArrowPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//ArrowPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	arrowPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateArrowPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(arrowPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			ArrowGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::ArrowGeneration(const Vector3& position)
+{
+	// 敵の生成
+	RotatingArrow* arrow = new RotatingArrow();
+
+	arrow->Initialize(modelArrow_.get(), position);
+	arrow->SetGameScene(this);
+
+	Arrows_.push_back(static_cast<std::unique_ptr<RotatingArrow>>(arrow));
+}
+
 void GameScene::CheckAllCollisions() {
 	// 判定対象AとBの座標
 	Vector3 PosA, PosB;
@@ -1165,30 +1250,28 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 #pragma region プレイヤーと風
-	if (recovery_) {
-		// プレイヤーの座標
-		PosA = player_->GetWorldPosition();
-		RadiusA = player_->GetRadius();
-		//風の座標
-		for (const std::unique_ptr<Wind>& wind : winds_) {
-			PosB = wind->GetWorldPosition();
-			RadiusB = wind->GetRadius();
-			// 座標AとBの距離を求める
-			PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-				(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-				(PosB.z - PosA.z) * (PosB.z - PosA.z);
-			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-			// 弾と弾の交差判定
-			if (PositionMeasure <= RadiusMeasure) {
-				player_->WindOnCollision();
-			}
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	//風の座標
+	for (const std::unique_ptr<Wind>& wind : winds_) {
+		PosB = wind->GetWorldPosition();
+		RadiusB = wind->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			player_->WindOnCollision();
 		}
 	}
 #pragma endregion
 
 #pragma region プレイヤーとチュートリアルの壁
 	for (const std::unique_ptr<Tutorial>& tutorial : tutorials_) {
-		if (tutorial&&istutorial_) {
+		if (tutorial && istutorial_) {
 			// プレイヤーの座標
 			PosA = player_->GetWorldPosition();
 			RadiusA = player_->GetRadius();
@@ -1196,7 +1279,7 @@ void GameScene::CheckAllCollisions() {
 			PosB = tutorial->GetPosition();
 			RadiusB = tutorial->GetScale();
 			//右端
-			if (PosA.x-RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
@@ -1210,9 +1293,9 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision3();
 			}
 			//上
-			if (PosA.x  >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z-RadiusA.z <= PosB.z + (RadiusB.z+0.2f) && PosA.z >= PosB.z + (RadiusA.z+0.2f))
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 			{
 				player_->OnCollision4();
 			}
@@ -1223,7 +1306,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision5();
 			}
-				
+
 		}
 	}
 #pragma endregion
@@ -1280,7 +1363,7 @@ void GameScene::CheckAllCollisions() {
 			RadiusB = barrier->GetScale();
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z&&barrier->IsDead()==false)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier->IsDead() == false)
 			{
 				player_->OnCollision2();
 			}
@@ -1321,7 +1404,7 @@ void GameScene::CheckAllCollisions() {
 			RadiusB = barrier2->GetScale();
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z&&barrier2->IsDead()==false)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier2->IsDead() == false)
 			{
 				player_->OnCollision2();
 			}
@@ -1352,246 +1435,319 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 #pragma region プレイヤーと小さいスイッチ
-	
-		if (isstage1_) {
-			// プレイヤーの座標
-			PosA = player_->GetWorldPosition();
-			RadiusA = player_->GetRadius();
-			//小さいスイッチの座標
-			PosB = smallswitch_->GetPosition();
-			RadiusB = smallswitch_->GetScale();
-			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->OnCollision2();
-				smallswitch_->OnCollision();
-			}
+	if (isstage1_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//小さいスイッチの座標
+		PosB = smallswitch_->GetPosition();
+		RadiusB = smallswitch_->GetScale();
+		if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+		{
+			player_->OnCollision2();
+			smallswitch_->OnCollision();
+		}
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->OnCollision3();
-				
-			}
+		if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
-			{
-				player_->OnCollision4();
-			}
-
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
-			{
-				player_->OnCollision5();
-			}
+			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+		{
+			player_->OnCollision3();
 
 		}
-	
-	
+
+		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+			PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+		{
+			player_->OnCollision4();
+		}
+
+		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+			PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+		{
+			player_->OnCollision5();
+		}
+
+	}
+
+
 #pragma endregion
 
 #pragma region プレイヤーと普通のスイッチ
-	
-		if (isstage1_) {
-			// プレイヤーの座標
-			PosA = player_->GetWorldPosition();
-			RadiusA = player_->GetRadius();
-			//普通のスイッチの座標
-			PosB = normalswitch_->GetPosition();
-			RadiusB = normalswitch_->GetScale();
-			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->OnCollision2();
-				normalswitch_->OnCollision();
-			}
+	if (isstage1_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//普通のスイッチの座標
+		PosB = normalswitch_->GetPosition();
+		RadiusB = normalswitch_->GetScale();
+		if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->OnCollision3();
-			}
-
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
-			{
-				player_->OnCollision4();
-			}
-
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
-			{
-				player_->OnCollision5();
-			}
-
+			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+		{
+			player_->OnCollision2();
+			normalswitch_->OnCollision();
 		}
-	
+
+		if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+		{
+			player_->OnCollision3();
+		}
+
+		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+			PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+		{
+			player_->OnCollision4();
+		}
+
+		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+			PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+		{
+			player_->OnCollision5();
+		}
+
+	}
+
 
 #pragma endregion
 
 #pragma region プレイヤーと炎
-		for (const std::unique_ptr<Fire>& fire : fires_) {
-			if (fire && isstage1_) {
-				// プレイヤーの座標
-				PosA = player_->GetWorldPosition();
-				RadiusA = player_->GetRadius();
-				//炎の座標
-				PosB = fire->GetPosition();
-				RadiusB = fire->GetScale();
-				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+	for (const std::unique_ptr<Fire>& fire : fires_) {
+		if (fire && isstage1_) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//炎の座標
+			PosB = fire->GetPosition();
+			RadiusB = fire->GetScale();
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-				{
-					player_->OnCollision2();
-					player_->OnCollision7();
-				}
-
-				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-				{
-					player_->OnCollision3();
-					player_->OnCollision7();
-				}
-
-				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
-				{
-					player_->OnCollision4();
-					player_->OnCollision7();
-				}
-
-				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
-
-					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
-				{
-					player_->OnCollision5();
-					player_->OnCollision7();
-				}
-
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision2();
+				player_->OnCollision7();
 			}
+
+			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision3();
+				player_->OnCollision7();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+			{
+				player_->OnCollision4();
+				player_->OnCollision7();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+			{
+				player_->OnCollision5();
+				player_->OnCollision7();
+			}
+
 		}
+	}
 #pragma endregion
 
 #pragma region プレイヤーと1つ目のワープ
-	
-			if ( isstage1_) {
-				// プレイヤーの座標
-				PosA = player_->GetWorldPosition();
-				RadiusA = player_->GetRadius();
-				//回復の座標
-				PosB = warp_->GetPosition();
-				RadiusB = warp_->GetScale();
-				//2つめのワープの座標
-				PosB2 = warp2_->GetPosition();
-				RadiusB2 = warp2_->GetScale();
-			
-				// 座標AとBの距離を求める
-				PositionMeasure2 = (PosB2.x - PosA.x) * (PosB2.x - PosA.x) +
-					(PosB2.y - PosA.y) * (PosB2.y - PosA.y) +
-					(PosB2.z - PosA.z) * (PosB2.z - PosA.z);
-				RadiusMeasure2 = (float)(Dot(RadiusA, RadiusB2));
-				// 座標AとBの距離を求める
-				PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-					(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-					(PosB.z - PosA.z) * (PosB.z - PosA.z);
-				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-				// プレイヤーと1つめのワープの交差判定
-				if (PositionMeasure <= RadiusMeasure&&warpcooltime_>=10) {
-					player_->WarpOnCollision();
-					warpcooltime_ = 0;
-					movestoptime = 0;
-				}
-				else if (PositionMeasure <= RadiusMeasure && movestoptime<=10) {
-					player_->MoveStop();
-				}
-				if (PositionMeasure >= RadiusMeasure && PositionMeasure2 >= RadiusMeasure2&&warpcooltime_<=10) {
-					warpcooltime_++;
-				}
-				
 
-			}
-		
+	if (isstage1_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//回復の座標
+		PosB = warp_->GetPosition();
+		RadiusB = warp_->GetScale();
+		//2つめのワープの座標
+		PosB2 = warp2_->GetPosition();
+		RadiusB2 = warp2_->GetScale();
+
+		// 座標AとBの距離を求める
+		PositionMeasure2 = (PosB2.x - PosA.x) * (PosB2.x - PosA.x) +
+			(PosB2.y - PosA.y) * (PosB2.y - PosA.y) +
+			(PosB2.z - PosA.z) * (PosB2.z - PosA.z);
+		RadiusMeasure2 = (float)(Dot(RadiusA, RadiusB2));
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// プレイヤーと1つめのワープの交差判定
+		if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
+			player_->WarpOnCollision();
+			warpcooltime_ = 0;
+			movestoptime = 0;
+		}
+		else if (PositionMeasure <= RadiusMeasure && movestoptime <= 10) {
+			player_->MoveStop();
+		}
+		if (PositionMeasure >= RadiusMeasure && PositionMeasure2 >= RadiusMeasure2 && warpcooltime_ <= 10) {
+			warpcooltime_++;
+		}
+
+
+	}
+
 #pragma endregion
 
 #pragma region プレイヤーと2つ目のワープ
 
-			if (isstage1_) {
-				// プレイヤーの座標
-				PosA = player_->GetWorldPosition();
-				RadiusA = player_->GetRadius();
-				//2つめのワープの座標
-				PosB = warp2_->GetPosition();
-				RadiusB = warp2_->GetScale();
-				// 座標AとBの距離を求める
-				PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-					(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-					(PosB.z - PosA.z) * (PosB.z - PosA.z);
-				RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-				// プレイヤーと2つめのワープの交差判定
-				if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
-					player_->WarpOnCollision2();
-					warpcooltime_ = 0;
-					movestoptime = 0;
-				}
-				else if (PositionMeasure <= RadiusMeasure && movestoptime <= 10) {
-					player_->MoveStop();
-				}
-				
+	if (isstage1_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//2つめのワープの座標
+		PosB = warp2_->GetPosition();
+		RadiusB = warp2_->GetScale();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// プレイヤーと2つめのワープの交差判定
+		if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
+			player_->WarpOnCollision2();
+			warpcooltime_ = 0;
+			movestoptime = 0;
+		}
+		else if (PositionMeasure <= RadiusMeasure && movestoptime <= 10) {
+			player_->MoveStop();
+		}
 
-			}
+
+	}
 
 #pragma endregion
 
 #pragma region プレイヤーと落とし穴
-			if (isstage1_) {
-				// プレイヤーの座標
-				PosA = player_->GetWorldPosition();
-				RadiusA = player_->GetRadius();
-				//落とし穴の座標
-				for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
-					PosB = pitfall->GetPosition();
-					RadiusB = pitfall->GetScale();
-					// 座標AとBの距離を求める
-					PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-						(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-						(PosB.z - PosA.z) * (PosB.z - PosA.z);
-					RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-					// プレイヤーと落とし穴の交差判定
-					if (PositionMeasure <= RadiusMeasure) {
-						scene = GAMEOVER;
-					}
-				}
-			}
-#pragma endregion
-
-#pragma region プレイヤーと矢印
-			// プレイヤーの座標
-			PosA = player_->GetWorldPosition();
-			RadiusA = player_->GetRadius();
-			//回復の座標
-			PosB = rotatingarrow_->GetWorldPosition();
-			RadiusB = rotatingarrow_->GetRadius();
+	if (isstage1_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		//落とし穴の座標
+		for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
+			PosB = pitfall->GetPosition();
+			RadiusB = pitfall->GetScale();
 			// 座標AとBの距離を求める
 			PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 				(PosB.y - PosA.y) * (PosB.y - PosA.y) +
 				(PosB.z - PosA.z) * (PosB.z - PosA.z);
 			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-			// 弾と弾の交差判定
+			// プレイヤーと落とし穴の交差判定
 			if (PositionMeasure <= RadiusMeasure) {
-				rotatingarrow_->OnCollision(player_.get());
+				scene = GAMEOVER;
 			}
+		}
+	}
 #pragma endregion
 
-}
+#pragma region プレイヤーと回る矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+		PosB = arrow->GetWorldPosition();
+		RadiusB = arrow->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			arrow->OnCollision(player_.get());
+		}
+	}
 
+#pragma endregion
+
+#pragma region プレイヤーと右矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	PosB = rightarrow_->GetWorldPosition();
+	RadiusB = rightarrow_->GetRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		(PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		rightarrow_->OnCollision(player_.get());
+	}
+
+#pragma endregion
+
+#pragma region プレイヤーと左矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	PosB = leftarrow_->GetWorldPosition();
+	RadiusB = leftarrow_->GetRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		(PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		leftarrow_->OnCollision(player_.get());
+	}
+
+#pragma endregion
+
+#pragma region プレイヤーと上矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	PosB = uparrow_->GetWorldPosition();
+	RadiusB = uparrow_->GetRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		(PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		uparrow_->OnCollision(player_.get());
+	}
+
+#pragma endregion
+
+
+#pragma region プレイヤーと下矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	PosB = downarrow_->GetWorldPosition();
+	RadiusB = downarrow_->GetRadius();
+	// 座標AとBの距離を求める
+	PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+		(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		(PosB.z - PosA.z) * (PosB.z - PosA.z);
+	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+	// 弾と弾の交差判定
+	if (PositionMeasure <= RadiusMeasure) {
+		downarrow_->OnCollision(player_.get());
+	}
+
+#pragma endregion
+}
