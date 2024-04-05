@@ -140,7 +140,6 @@ void GameScene::Initialize() {
 	downarrow_->Initialize(modelRotationArrow_.get());
 
 	rotatingarrow_ = std::make_unique<RotatingArrow>();
-	
 	rotatingarrow_->Initialize(modelRotationArrow_.get());
 
 }
@@ -506,13 +505,14 @@ void GameScene::Draw() {
 		//2つめのワープの描画
 		warp2_->Draw(viewProjection_);
 		//右矢印の描画
-		rightarrow_->Draw(viewProjection_);
+		//rightarrow_->Draw(viewProjection_);
 		////左矢印の描画
 		//leftarrow_->Draw(viewProjection_);
 		////上矢印の描画
 		//uparrow_->Draw(viewProjection_);
 		//下矢印の描画
-		downarrow_->Draw(viewProjection_);
+		//downarrow_->Draw(viewProjection_);
+		// 他の矢印いらない？
 		//回転矢印の描画
 		rotatingarrow_->Draw(viewProjection_);
 
