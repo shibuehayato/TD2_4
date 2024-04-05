@@ -379,6 +379,7 @@ void GameScene::Update() {
 			}
 		}
 
+		// プレイヤーの位置をリセット
 		player_->Reset();
 
 		break;
@@ -392,6 +393,7 @@ void GameScene::Update() {
 			}
 		}
 
+		// プレイヤーの位置をリセット
 		player_->Reset();
 
 		break;
