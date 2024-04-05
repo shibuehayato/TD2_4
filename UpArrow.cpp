@@ -15,7 +15,7 @@ void UpArrow::Initialize(Model* model)
 	ArrowRot = { 1.0f,1.0f,1.0f };
 	
 	//試し
-	worldTransform_.translation_ = { 10.0f,0.0f,-30.0f };
+	//worldTransform_.translation_ = { 10.0f,0.0f,-30.0f };
 }
 
 void UpArrow::Update()

@@ -17,7 +17,7 @@ void LeftArrow::Initialize(Model* model)
 
 
 	//試し
-	worldTransform_.translation_ = { 15.0f,0.0f,-20.0f };
+	//worldTransform_.translation_ = { 15.0f,0.0f,-20.0f };
 }
 
 void LeftArrow::Update()
