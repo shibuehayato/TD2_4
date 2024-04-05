@@ -1,4 +1,4 @@
-﻿#include "MyMath.h"
+﻿#include"Mymath.h"
 
 Vector3 Add(Vector3 v1, Vector3 v2) {
 	Vector3 num;
@@ -249,6 +249,29 @@ Vector3 Normalize(const Vector3 v1)
 	num.x = newX;
 	num.y = newY;
 	num.z = newZ;
+
+	return num;
+}
+
+float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
+
+Vector3 V3FDot(const Vector3& v1, const float& scalar) {
+	Vector3 result;
+	result.x = v1.x * scalar;
+	result.y = v1.y * scalar;
+	result.z = v1.z * scalar;
+	return result;
+}
+
+Vector3 Transform(Vector3 v1, Vector3 v2) {
+	Vector3 num;
+
+	float a[3] = { v1.x, v1.y, v1.z };
+	float b[3] = { v2.x, v2.y, v2.z };
+
+	num.x = a[0] * b[0];
+	num.y = a[1] * b[1];
+	num.z = a[2] * b[2];
 
 	return num;
 }
