@@ -1542,9 +1542,18 @@ void GameScene::CheckAllCollisions() {
 			//小さいスイッチの座標
 			PosB = smallswitch_->GetPosition();
 			RadiusB = smallswitch_->GetScale();
+			//もしプレイヤーのサイズが中以上だったら
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z&&player_->GetRadius().x>=1.5f)
+			{
+				player_->OnCollision2();
+			
+			}
+			//もしプレイヤーのサイズが小だったら
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
 			{
 				player_->OnCollision2();
 				smallswitch_->OnCollision();
@@ -1588,7 +1597,21 @@ void GameScene::CheckAllCollisions() {
 			RadiusB = normalswitch_->GetScale();
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 2.0f)
+			{
+				player_->OnCollision2();
+
+			}
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
+			{
+				player_->OnCollision2();
+
+			}
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x == 1.5f)
 			{
 				player_->OnCollision2();
 				normalswitch_->OnCollision();
