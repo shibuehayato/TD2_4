@@ -33,6 +33,7 @@
 #include"RotatingArrow.h"
 #include"Mymath.h"
 #include"Recovery.h"
+#include <Goal.h>
 
 /// <summary>
 /// ゲームシーン
@@ -113,6 +114,18 @@ public: // メンバ関数
 
 	void ArrowGeneration(const Vector3& position);
 
+	void LoadGoalWhitePopData();
+
+	void UpdateGoalWhitePopCommands();
+
+	void GoalWhiteGeneration(const Vector3& position);
+
+	void LoadGoalBlackPopData();
+
+	void UpdateGoalBlackPopCommands();
+
+	void GoalBlackGeneration(const Vector3& position);
+
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
@@ -191,6 +204,12 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelArrow_;
 	std::list<std::unique_ptr<RotatingArrow>> Arrows_;
 
+	//ゴールの白と黒
+	std::unique_ptr<Model> modelGoalWhite_;
+	std::list<std::unique_ptr<Goal>> GoalWhites_;
+	std::unique_ptr<Model> modelGoalBlack_;
+	std::list<std::unique_ptr<Goal>> GoalBlacks_;
+
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
 	std::unique_ptr <Recovery> recovery_;
@@ -212,6 +231,9 @@ private: // メンバ変数
 	std::stringstream pitfallPopCommands;
 	//矢印のギミックの発生コマンド
 	std::stringstream arrowPopCommands;
+	//ゴールのギミックの発生コマンド
+	std::stringstream GoalWhitePopCommands;
+	std::stringstream GoalBlackPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
