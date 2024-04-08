@@ -264,7 +264,15 @@ void GameScene::Update() {
 		}
 		//複数の壁を出すための関数
 		UpdateWallPopCommands();
-
+		//ゴール
+		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+			goalW->Update();
+		}
+		UpdateGoalWhitePopCommands();
+		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+			goalB->Update();
+		}
+		UpdateGoalBlackPopCommands();
 		
 
 		
@@ -545,7 +553,13 @@ void GameScene::Draw() {
 				stage->Draw(viewProjection_);
 
 			}
-
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+				goalW->Draw(viewProjection_);
+			}
+			for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+				goalB->Draw(viewProjection_);
+			}
 		}
 
 		if (isstage1_)
@@ -577,6 +591,7 @@ void GameScene::Draw() {
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
 		}
+		
 		//回転矢印
 		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
 			arrow->Draw(viewProjection_);
