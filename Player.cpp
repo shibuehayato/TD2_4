@@ -111,7 +111,7 @@ void Player::Update() {
 	
 
 	ImGui::DragFloat("e", &e);
-	ImGui::DragFloat3("KeepMove", &KeepMove.x);
+	ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
 	ImGui::DragFloat3("Position", &worldTransformHead_.scale_.x, 0.1f);
 
 	ImGui::End();
