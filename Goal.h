@@ -13,9 +13,6 @@ public:
 
 	void Draw(ViewProjection& viewProjection);
 
-	//セッター
-	void SetWorldTransform(float worldTransformZ) { worldTransform_.translation_.z = worldTransformZ; };
-
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
 
