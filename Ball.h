@@ -30,6 +30,7 @@ public:
 	}
 	// 大きさ取得
 	Vector3 GetRadius() { return WorldTransform_.scale_; };
+
 	
 private:
 	WorldTransform WorldTransform_;
@@ -37,5 +38,6 @@ private:
 	Model* Model_=nullptr;
 
 	bool isDead_ = false;
+
 };
 

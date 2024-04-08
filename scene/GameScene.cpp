@@ -353,15 +353,12 @@ void GameScene::Update() {
 	//当たり判定
 	CheckAllCollisions();
 
-	// コントローラーのAボタンを押すとクリア
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-				!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				scene = CLEAR;
-			}
-		}
+	//玉をとって位置に来たらクリア
+	if (player_->GetTransformZ() >= 71&&ball_==nullptr) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
 	}
+	
 
 	// コントローラーのBボタンを押すとゲームオーバー
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {

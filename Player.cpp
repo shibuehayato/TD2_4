@@ -107,7 +107,7 @@ void Player::Update() {
 
 	ImGui::Begin("speed");
 	ImGui::DragInt("speed", &Oncollisiontimer_);
-	ImGui::DragFloat("e", &e);
+	ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
 	ImGui::DragFloat3("KeepMove", &KeepMove_.x);
 
 

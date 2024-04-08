@@ -30,6 +30,8 @@ public:
 	//矢印の当たり判定
 	void ArrowOnCollision();
 
+	float GetTransformZ() { return worldTransformHead_.translation_.z; };
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
 
