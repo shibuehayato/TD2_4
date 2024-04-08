@@ -33,6 +33,9 @@
 #include"RotatingArrow.h"
 #include"Mymath.h"
 #include"Recovery.h"
+#include"Stage2Recovery.h"
+#include"Stage2.h"
+#include"Fire2.h"
 #include <Goal.h>
 
 /// <summary>
@@ -78,11 +81,23 @@ public: // メンバ関数
 
 	void Stage1WallGeneration(const Vector3& position);
 
+	void Stage2LoadWallPopData();
+
+	void Stage2UpdateWallPopCommands();
+
+	void Stage2WallGeneration(const Vector3& position);
+
 	void LoadFlamePopData();
 
 	void UpdateFlamePopCommands();
 
 	void FlameGeneration(const Vector3& position);
+
+	void LoadStage2FlamePopData();
+
+	void UpdateStage2FlamePopCommands();
+
+	void Stage2FlameGeneration(const Vector3& position);
 
 	void LoadWindPopData();
 
@@ -132,6 +147,11 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	//それぞれのギミックをステージごとに位置を変えるために必要なフラグの関数
+	bool IsStage1() { return isstage1_; }
+	bool IsStage2() { return isstage2_; }
+	
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -161,10 +181,12 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Tutorial>> tutorials_;
 	std::unique_ptr<Model> modelwall_;
 	std::list<std::unique_ptr<Stage1>> stages1_;
+	std::list<std::unique_ptr<Stage2>> stages2_;
 
 	//ギミックの宣言
 	//炎の壁の宣言
 	std::list<std::unique_ptr<Fire>> fires_;
+	std::list<std::unique_ptr<Fire2>> fires2_;
 	//小スイッチの宣言
 	std::unique_ptr<SmallSwitch> smallswitch_;
 	std::unique_ptr<Model> modelsmallswitch_;
@@ -179,8 +201,10 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Pitfall>> pitfalls_;
 	//バリアの宣言
 	std::list<std::unique_ptr<Barrier>> barriers_;
+	std::unique_ptr<Model> modelbarrier_;
     //ワープの宣言
 	std::unique_ptr<Warp> warp_;
+	std::unique_ptr<Model> modelwarp_;
 	int32_t warpcooltime_ = 0;
 	int32_t movestoptime = 0;
 	//2つ目のワープの宣言
@@ -191,6 +215,7 @@ private: // メンバ変数
 	//玉
 	std::unique_ptr<Model> modelBall_;
 	std::unique_ptr <Ball> ball_;
+	bool isballdead_ = false;
 	//右矢印の宣言
 	std::unique_ptr<RightArrow> rightarrow_;
 	//左矢印の宣言
@@ -213,14 +238,20 @@ private: // メンバ変数
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
 	std::unique_ptr <Recovery> recovery_;
+	std::unique_ptr <Stage2Recovery> stage2recovery_;
+	bool isrecoverydead_ = false;
+	bool isrecoverydeadflag = false;
 	float recoveryTime_ = 0;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
 	// 壁発生コマンド
 	std::stringstream stage1wallPopCommands;
+	//ステージ2の壁発生コマンド
+	std::stringstream stage2wallPopCommands;
 	//炎発生コマンド
 	std::stringstream flamePopCommands;
+	std::stringstream stage2flamePopCommands;
 	//風のギミックの発生コマンド
 	std::stringstream windPopCommands;
 	//バリアの発生コマンド
@@ -229,6 +260,8 @@ private: // メンバ変数
 	std::stringstream barrier2PopCommands;
 	//落とし穴の発生コマンド
 	std::stringstream pitfallPopCommands;
+	//ステージ２の回復発生コマンド
+	std::stringstream stage2recoveryPopCommands;
 	//矢印のギミックの発生コマンド
 	std::stringstream arrowPopCommands;
 	//ゴールのギミックの発生コマンド
@@ -238,6 +271,8 @@ private: // メンバ変数
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
+	bool isstage2_ = false;
+	
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;

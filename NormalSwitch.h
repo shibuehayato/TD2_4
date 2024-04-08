@@ -2,6 +2,9 @@
 #include"WorldTransform.h"
 #include"Model.h"
 #include"ImGuiManager.h"
+
+class GameScene;
+
 class NormalSwitch
 {
 public:
@@ -12,6 +15,10 @@ public:
 	void Draw(ViewProjection& viewProjection);
 	//当たった時の処理
 	void OnCollision();
+	//ステージ2の時の位置調整の関数
+	void Position();
+
+	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -28,11 +35,18 @@ private:
 	Model* model_=nullptr;
 	Model* modelbutton_=nullptr;
 
+
+
 	uint32_t textureHandle_ = 0u;
 
 	bool isOncollision_ = false;
 	//指定したになった時のフラグ
 	bool isScale_ = false;
+
+
+
+	GameScene* gamescene_ = nullptr;
+
 
 };
 

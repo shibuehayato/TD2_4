@@ -60,13 +60,14 @@ void GameScene::Initialize() {
 	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
 	//玉の初期化
 	ball_->Initialize(modelBall_.get());
-	
+	ball_->SetGameScene(this);
 	//回復の生成
 	recovery_ = std::make_unique<Recovery>();
 	//3Dモデルの生成
 	modelRecovery_.reset(Model::CreateFromOBJ("life", true));
 	//回復の初期化
 	recovery_->Initialize(modelRecovery_.get());
+	recovery_->SetGameScene(this);
 	recoveryTime_ = 0;
 
 	//複数の壁を読み込むための関数
@@ -85,6 +86,9 @@ void GameScene::Initialize() {
 	LoadGoalWhitePopData();
 	LoadGoalBlackPopData();
 
+	Stage2LoadWallPopData();
+	LoadStage2FlamePopData();
+	
 	//--------------------//
 	
 	
@@ -94,21 +98,23 @@ void GameScene::Initialize() {
 	modelsmallswitch_.reset(Model::CreateFromOBJ("switch_small", true));
 	modelsmallbutton_.reset(Model::CreateFromOBJ("switch_push", true));
 	smallswitch_->Initialize(modelsmallswitch_.get(),modelsmallbutton_.get());
+	smallswitch_->SetGameScene(this);
 
 	//普通のスイッチの生成と初期化
 	normalswitch_ = std::make_unique<NormalSwitch>();
 	modelnormalswitch_.reset(Model::CreateFromOBJ("switch_normal", true));
 	modelnormalbutton_.reset(Model::CreateFromOBJ("switch_push", true));
 	normalswitch_->Initialize(modelnormalswitch_.get(),modelnormalbutton_.get());
-
+	normalswitch_->SetGameScene(this);
 	
 
 	warp_ = std::make_unique<Warp>();
-	warp_->Initialize(model_);
+	modelwarp_.reset(Model::CreateFromOBJ("warp", true));
+	warp_->Initialize(modelwarp_.get());
 
 
 	warp2_ = std::make_unique<Warp2>();
-	warp2_->Initialize(model_);
+	warp2_->Initialize(modelwarp_.get());
 
 	
 	// 3Dモデルの生成
@@ -149,6 +155,12 @@ void GameScene::Initialize() {
 	//rotatingarrow_ = std::make_unique<RotatingArrow>();
 	//rotatingarrow_->Initialize(modelRotationArrow_.get());
 	
+	//rotatingarrow_->Initialize(modelRotationArrow_.get());
+	
+	stage2recovery_ = std::make_unique<Stage2Recovery>();
+	stage2recovery_->Initialize(modelRecovery_.get());
+	stage2recovery_->SetGameScene(this);
+	
 }
 
 void GameScene::Update() {
@@ -184,6 +196,7 @@ void GameScene::Update() {
 	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 	ImGui::DragInt("rotation", &warpcooltime_);
+	ImGui::Checkbox("isstage2", &isstage2_);
 	ImGui::End();
 
 #ifdef _DEBUG
@@ -221,6 +234,7 @@ void GameScene::Update() {
 
 		istutorial_ = true;
 		isstage1_ = false;
+		isstage2_ = false;
 	}
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
@@ -228,7 +242,14 @@ void GameScene::Update() {
 
 		isstage1_ = true;
 		istutorial_ = false;
-		
+		isstage2_ = false;
+	}
+	if (input_->TriggerKey(DIK_C))
+	{
+		istutorial_ = false;
+		isstage1_ = false;
+		isstage2_ = true;
+		isballdead_ = false;
 	}
 
 	//チュートリアルのフラグがたったら実行する
@@ -250,6 +271,12 @@ void GameScene::Update() {
 
 	}
 
+	if (isstage1_ || isstage2_)
+	{
+		//中スイッチの更新
+		normalswitch_->Update();
+	}
+
 	if (isstage1_)
 	{
 		//ステージの更新
@@ -269,8 +296,7 @@ void GameScene::Update() {
 		}
 		//小スイッチの更新
 		smallswitch_->Update();
-		//中スイッチの更新
-		normalswitch_->Update();
+		
 		//風のギミックの更新
 		for (const std::unique_ptr<Wind>& wind : winds_) {
 			wind->Update();
@@ -323,37 +349,91 @@ void GameScene::Update() {
 
 
 
-		//玉
-		if (ball_) {
-			ball_->Update();
-		}
-		if (ball_ && ball_->IsDead()) {
-			ball_.reset();
-		}
+		
 
-		//回復
-		if (recovery_) {
-			recovery_->Update();
-			//消す
-			if (recovery_->IsDead()) {
-				recovery_.reset();
+		
+	}
+	if (isstage2_)
+	{
+		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
+			if (stage2 != nullptr) {
+				stage2->Update();
 			}
 		}
+		Stage2UpdateWallPopCommands();
+		for (const std::unique_ptr<Fire2>& fire2 : fires2_) {
+			fire2->Update();
+		}
+		//複数の炎ギミックを出すための関数
+		UpdateStage2FlamePopCommands();
+		
+		
+		
+			
+			
+	
 
-
-		if (!recovery_) {
-			recoveryTime_++;
-
-			if (recoveryTime_ >= 180) {
-				//回復の生成
-				recovery_ = std::make_unique<Recovery>();
-				//回復の初期化
-				recovery_->Initialize(modelRecovery_.get());
-				recoveryTime_ = 0;
-			}
+	}
+	//回復
+	if (isstage1_ && recovery_ || recovery_ && isstage2_) {
+		recovery_->Update();
+		//消す
+		if (recovery_->IsDead()) {
+			recovery_.reset();
+		}
+	}
+	//回復
+	if (isstage1_ && stage2recovery_|| stage2recovery_ && isstage2_) {
+		stage2recovery_->Update();
+		//消す
+		if (stage2recovery_->IsDead()) {
+			stage2recovery_.reset();
 		}
 	}
 
+
+	if (!stage2recovery_) {
+		recoveryTime_++;
+
+		if (recoveryTime_ >= 180) {
+			//回復の生成
+			stage2recovery_ = std::make_unique<Stage2Recovery>();
+			//回復の初期化
+			stage2recovery_->Initialize(modelRecovery_.get());
+			recoveryTime_ = 0;
+		}
+	}
+
+	if (!recovery_) {
+		recoveryTime_++;
+
+		if (recoveryTime_ >= 180) {
+			//回復の生成
+			recovery_ = std::make_unique<Recovery>();
+			//回復の初期化
+			recovery_->SetGameScene(this);
+			recovery_->Initialize(modelRecovery_.get());
+			recoveryTime_ = 0;
+		}
+	}
+
+	if (!ball_)
+	{
+		if (isstage2_&&isballdead_==false) {
+			//回復の生成
+			ball_ = std::make_unique<Ball>();
+			//回復の初期化
+			ball_->SetGameScene(this);
+			ball_->Initialize(modelBall_.get());
+		}
+	}
+	//玉
+	if (isstage1_ && ball_ || isstage2_ && ball_) {
+		ball_->Update();
+	}
+	if (ball_ && ball_->IsDead()) {
+		ball_.reset();
+	}
 	/*if (player_->IsMove()&&warpcooltime_<=10)
 	{
 		warpcooltime_++;
@@ -497,12 +577,24 @@ void GameScene::Draw() {
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
 		}
-		if (ball_) {
-			ball_->Draw(viewProjection_);
+		
+		
+	}
+
+	if (isstage2_)
+	{
+		//ステージの描画
+		for (const auto& stage2 : stages2_) {
+			stage2->Draw(viewProjection_);
 		}
-		//回復
-		if (recovery_) {
-			recovery_->Draw(viewProjection_);
+		//炎の描画
+		for (const auto& fire2 : fires2_) {
+			fire2->Draw(viewProjection_);
+		}
+		//ステージ2の回復の描画
+		if (stage2recovery_)
+		{
+			stage2recovery_->Draw(viewProjection_);
 		}
 		//回転矢印
 		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
@@ -526,7 +618,19 @@ void GameScene::Draw() {
 		for (const auto& barrier2 : barriers2_) {
 			barrier2->Draw(viewProjection_);
 		}
+		if (isstage1_ || isstage2_)
+		{
+			//中スイッチの描画
+			normalswitch_->Draw(viewProjection_);
+		}
+		//回復
+		if (isstage1_&&recovery_ || isstage2_&&recovery_) {
+			recovery_->Draw(viewProjection_);
+		}
 
+		if (isstage1_&&ball_||isstage2_&&ball_) {
+			ball_->Draw(viewProjection_);
+		}
 		//ワープの描画
 		warp_->Draw(viewProjection_);
 		//2つめのワープの描画
@@ -645,6 +749,85 @@ void GameScene::Stage1WallGeneration(const Vector3& position)
 	stages1_.push_back(static_cast<std::unique_ptr<Stage1>>(stage1));
 }
 
+void GameScene::Stage2LoadWallPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//Stage2wallPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage2wallPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::Stage2UpdateWallPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage2wallPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage2WallGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage2WallGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Stage2* stage2 = new Stage2();
+
+
+
+	stage2->Initialize(modelwall_.get(), position);
+	stage2->SetGameScene(this);
+
+	stages2_.push_back(static_cast<std::unique_ptr<Stage2>>(stage2));
+}
+
 void GameScene::LoadFlamePopData()
 {
 	// ファイルを開く
@@ -722,6 +905,85 @@ void GameScene::FlameGeneration(const Vector3& position)
 	fire->SetGameScene(this);
 
 	fires_.push_back(static_cast<std::unique_ptr<Fire>>(fire));
+}
+
+void GameScene::LoadStage2FlamePopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//Stage2FlamePop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage2flamePopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateStage2FlamePopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage2flamePopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage2FlameGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage2FlameGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Fire2* fire2 = new Fire2();
+
+
+
+	fire2->Initialize(model_, position);
+	fire2->SetGameScene(this);
+
+	fires2_.push_back(static_cast<std::unique_ptr<Fire2>>(fire2));
 }
 
 void GameScene::LoadWindPopData()
@@ -875,7 +1137,7 @@ void GameScene::BarrierGeneration(const Vector3& position)
 	Barrier* barrier = new Barrier();
 
 
-
+	
 	barrier->Initialize(model_, position);
 	barrier->SetGameScene(this);
 
@@ -985,6 +1247,10 @@ void GameScene::PitfallGeneration(const Vector3& position)
 
 	pitfalls_.push_back(static_cast<std::unique_ptr<Pitfall>>(pitfall));
 }
+
+
+
+
 
 void GameScene::LoadBarrier2PopData()
 {
@@ -1398,28 +1664,35 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			ball_->OnCollision();
+			isballdead_ = true;
 		}
 	}
 #pragma endregion
 
 #pragma region プレイヤーと回復
-	if (recovery_) {
+	if (isstage1_&&recovery_||isstage2_&&recovery_) {
 		// プレイヤーの座標
 		PosA = player_->GetWorldPosition();
 		RadiusA = player_->GetRadius();
 		//回復の座標
 		PosB = recovery_->GetWorldPosition();
 		RadiusB = recovery_->GetRadius();
+
+		
+
 		// 座標AとBの距離を求める
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+
+		
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			recovery_->OnCollision();
 			player_->RecoveryOnCollision();
 		}
+		
 	}
 #pragma endregion
 
@@ -1609,21 +1882,30 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 #pragma region プレイヤーと小さいスイッチ
+	
+		if (isstage1_) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//小さいスイッチの座標
+			PosB = smallswitch_->GetPosition();
+			RadiusB = smallswitch_->GetScale();
+			//もしプレイヤーのサイズが中以上だったら
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-	if (isstage1_) {
-		// プレイヤーの座標
-		PosA = player_->GetWorldPosition();
-		RadiusA = player_->GetRadius();
-		//小さいスイッチの座標
-		PosB = smallswitch_->GetPosition();
-		RadiusB = smallswitch_->GetScale();
-		if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z&&player_->GetRadius().x>=1.5f)
+			{
+				player_->OnCollision2();
+			
+			}
+			//もしプレイヤーのサイズが小だったら
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-		{
-			player_->OnCollision2();
-			smallswitch_->OnCollision();
-		}
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
+			{
+				player_->OnCollision2();
+				smallswitch_->OnCollision();
+			}
 
 		if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
@@ -1663,11 +1945,25 @@ void GameScene::CheckAllCollisions() {
 		RadiusB = normalswitch_->GetScale();
 		if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-		{
-			player_->OnCollision2();
-			normalswitch_->OnCollision();
-		}
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 2.0f)
+			{
+				player_->OnCollision2();
+
+			}
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
+			{
+				player_->OnCollision2();
+
+			}
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x == 1.5f)
+			{
+				player_->OnCollision2();
+				normalswitch_->OnCollision();
+			}
 
 		if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 

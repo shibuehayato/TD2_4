@@ -113,6 +113,7 @@
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="DownArrow.cpp" />
+    <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="LeftArrow.cpp" />
@@ -128,6 +129,9 @@
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="SmallSwitch.cpp" />
+    <ClCompile Include="Stage2.cpp" />
+    <ClCompile Include="Stage2Barrier.cpp" />
+    <ClCompile Include="Stage2Recovery.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="UpArrow.cpp" />
@@ -163,6 +167,7 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
+    <ClInclude Include="Fire2.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="LeftArrow.h" />
@@ -180,6 +185,9 @@
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="SmallSwitch.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="Stage2.h" />
+    <ClInclude Include="Stage2Barrier.h" />
+    <ClInclude Include="Stage2Recovery.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="UpArrow.h" />

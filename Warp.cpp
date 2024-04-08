@@ -6,11 +6,16 @@ void Warp::Initialize(Model* model)
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { 14.0f,-0.5f,50.0f };
+	worldTransform_.rotation_ = { 0.0f,3.2f,0.0f };
 }
 
 void Warp::Update()
 {
 	worldTransform_.UpdateMatrix();
+
+	ImGui::Begin("Warp");
+	ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.01f);
+	ImGui::End();
 }
 
 void Warp::Draw(ViewProjection& viewProjection)
