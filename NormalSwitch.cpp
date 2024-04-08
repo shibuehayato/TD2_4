@@ -1,5 +1,6 @@
 #include "NormalSwitch.h"
 #include<cassert>
+#include"GameScene.h"
 void NormalSwitch::Initialize(Model* model, Model* modelbutton)
 {
 	assert(model);
@@ -13,6 +14,8 @@ void NormalSwitch::Initialize(Model* model, Model* modelbutton)
 	worldTransformswitch_.translation_ = { -20.25f,0.0f,1.0f };
 	worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
 	worldTransformbutton_.translation_ = { -19.0f,0.0f,1.0f };
+
+	
 }
 
 void NormalSwitch::Update()
@@ -36,6 +39,21 @@ void NormalSwitch::Update()
 	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x, 0.1f);
 	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
 	ImGui::End();
+
+	if (gamescene_->IsStage1())
+	{
+		worldTransformswitch_.translation_ = { -20.25f,0.0f,1.0f };
+		worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+		worldTransformbutton_.translation_ = { -19.0f,0.0f,1.0f };
+	}
+	
+	if (gamescene_->IsStage2())
+	{
+		worldTransformswitch_.translation_= { -20.25f,0.0f,53.0f };
+		
+		worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+		worldTransformbutton_.translation_ = { -19.0f,0.0f,53.0f };
+	}
 }
 
 void NormalSwitch::Draw(ViewProjection& viewProjection)
@@ -47,6 +65,11 @@ void NormalSwitch::Draw(ViewProjection& viewProjection)
 void NormalSwitch::OnCollision()
 {
 	isOncollision_ = true;
+	
+}
+
+void NormalSwitch::Position()
+{
 	
 }
 

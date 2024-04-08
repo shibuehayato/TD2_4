@@ -1,14 +1,14 @@
-﻿#pragma once
+#pragma once
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include "Model.h"
 
 class GameScene;
 
-class Ball
+class Stage2Recovery
 {
 public:
-	void Initialize(Model* ball);
+	void Initialize(Model* model);
 
 	void Update();
 
@@ -21,28 +21,20 @@ public:
 	bool IsDead() const { return isDead_; }
 
 	// ワールド座標を取得
-	Vector3 GetWorldPosition() {
-
-		// ワールド座標を入れる変数
-		Vector3 worldPos{};
-		WorldTransform_.matWorld_.m;
-		// ワールド行列の平行移動成分を取得(ワールド座標)
-		worldPos.x = WorldTransform_.matWorld_.m[3][0];
-		worldPos.y = WorldTransform_.matWorld_.m[3][1];
-		worldPos.z = WorldTransform_.matWorld_.m[3][2];
-		return worldPos;
-	}
+	Vector3 GetWorldPosition();
 	// 大きさ取得
 	Vector3 GetRadius() { return WorldTransform_.scale_; };
-	
+
+
+
 private:
 	WorldTransform WorldTransform_;
+	
 
-	Model* Model_=nullptr;
+	Model* Model_ = nullptr;
 
 	bool isDead_ = false;
 
 	GameScene* gamescene_ = nullptr;
-
 };
 

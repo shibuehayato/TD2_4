@@ -2,6 +2,9 @@
 #include"Model.h"
 #include"WorldTransform.h"
 #include"ImGuiManager.h"
+
+class GameScene;
+
 class SmallSwitch
 {
 public:
@@ -12,6 +15,8 @@ public:
 	void Draw(ViewProjection& viewProjection);
 	//当たった時の処理
 	void OnCollision();
+
+	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -32,6 +37,8 @@ private:
 	bool isOncollision_ = false;
 	//指定したになった時のフラグ
 	bool isScale_ = false;
+
+	GameScene* gamescene_ = nullptr;
 
 };
 

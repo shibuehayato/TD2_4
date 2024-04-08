@@ -2,6 +2,9 @@
 #include"WorldTransform.h"
 #include"ViewProjection.h"
 #include "Model.h"
+
+class GameScene;
+
 class Recovery
 {
 public:
@@ -12,6 +15,8 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	void OnCollision();
+
+	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
 	bool IsDead() const { return isDead_; }
 
@@ -30,12 +35,18 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return WorldTransform_.scale_; };
 
+	
 
 private:
 	WorldTransform WorldTransform_ ;
+	WorldTransform worldTransform2_;
 
-	Model* Model_ = nullptr;
+	Model* Model_ =  nullptr;
 
 	bool isDead_ = false;
+
+	int32_t drawcooltime_;
+
+	GameScene* gamescene_ = nullptr;
 };
 

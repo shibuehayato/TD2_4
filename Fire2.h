@@ -2,17 +2,22 @@
 #include"WorldTransform.h"
 #include"Model.h"
 #include"ImGuiManager.h"
-class Warp
+
+class GameScene;
+
+
+class Fire2
 {
 public:
-	void Initialize(Model* model);
+
+	void Initialize(Model* model, Vector3 position);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
 
-	void OnCollision();
-	void OnCollision2();
+	//ゲームシーンからアドレスをもらうための関数
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	//ワールド座標を取得
 	Vector3 GetPosition();
@@ -20,15 +25,12 @@ public:
 	//ワールドサイズを取得
 	Vector3 GetScale();
 
-	bool IsOncollision() { return isOncollision_; }
-
 private:
 	WorldTransform worldTransform_;
 
-	Model* model_ = nullptr;
+	Model* model_ = { nullptr };
 
-	bool isOncollision_ = false;
-
+	GameScene* gameScene_ = nullptr;
 
 };
 

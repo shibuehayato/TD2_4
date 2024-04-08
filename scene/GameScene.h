@@ -33,7 +33,9 @@
 #include"RotatingArrow.h"
 #include"Mymath.h"
 #include"Recovery.h"
+#include"Stage2Recovery.h"
 #include"Stage2.h"
+#include"Fire2.h"
 
 /// <summary>
 /// ゲームシーン
@@ -120,11 +122,18 @@ public: // メンバ関数
 
 	void PitfallGeneration(const Vector3& position);
 
+	
+
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
 
 	void CheckAllCollisions();
+
+	//それぞれのギミックをステージごとに位置を変えるために必要なフラグの関数
+	bool IsStage1() { return isstage1_; }
+	bool IsStage2() { return isstage2_; }
+	
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -160,6 +169,7 @@ private: // メンバ変数
 	//ギミックの宣言
 	//炎の壁の宣言
 	std::list<std::unique_ptr<Fire>> fires_;
+	std::list<std::unique_ptr<Fire2>> fires2_;
 	//小スイッチの宣言
 	std::unique_ptr<SmallSwitch> smallswitch_;
 	std::unique_ptr<Model> modelsmallswitch_;
@@ -174,8 +184,10 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Pitfall>> pitfalls_;
 	//バリアの宣言
 	std::list<std::unique_ptr<Barrier>> barriers_;
+	std::unique_ptr<Model> modelbarrier_;
     //ワープの宣言
 	std::unique_ptr<Warp> warp_;
+	std::unique_ptr<Model> modelwarp_;
 	int32_t warpcooltime_ = 0;
 	int32_t movestoptime = 0;
 	//2つ目のワープの宣言
@@ -186,6 +198,7 @@ private: // メンバ変数
 	//玉
 	std::unique_ptr<Model> modelBall_;
 	std::unique_ptr <Ball> ball_;
+	bool isballdead_ = false;
 	//右矢印の宣言
 	std::unique_ptr<RightArrow> rightarrow_;
 	//左矢印の宣言
@@ -201,6 +214,9 @@ private: // メンバ変数
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
 	std::unique_ptr <Recovery> recovery_;
+	std::unique_ptr <Stage2Recovery> stage2recovery_;
+	bool isrecoverydead_ = false;
+	bool isrecoverydeadflag = false;
 	float recoveryTime_ = 0;
 
 	// 壁発生コマンド
@@ -220,7 +236,8 @@ private: // メンバ変数
 	std::stringstream barrier2PopCommands;
 	//落とし穴の発生コマンド
 	std::stringstream pitfallPopCommands;
-	
+	//ステージ２の回復発生コマンド
+	std::stringstream stage2recoveryPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;

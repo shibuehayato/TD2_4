@@ -1,5 +1,6 @@
 #include "SmallSwitch.h"
 #include<cassert>
+#include"GameScene.h"
 
 void SmallSwitch::Initialize(Model* model, Model* modelbutton)
 {
@@ -34,6 +35,9 @@ void SmallSwitch::Update()
 	{
 		isScale_ = true;
 	}
+
+	
+
 	ImGui::Begin("SmallSwitch");
 	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
 	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x,0.1f);
