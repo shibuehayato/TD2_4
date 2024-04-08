@@ -577,8 +577,17 @@ void GameScene::Draw() {
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
 		}
-		
-		
+		//回転矢印
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			arrow->Draw(viewProjection_);
+		}
+		//ゴール
+		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+			goalW->Draw(viewProjection_);
+		}
+		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+			goalB->Draw(viewProjection_);
+		}
 	}
 
 	if (isstage2_)
