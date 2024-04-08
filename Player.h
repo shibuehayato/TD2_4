@@ -26,7 +26,11 @@ public:
 	void RecoveryOnCollision();
 	void WindOnCollision();
 	//落とし穴の当たり判定
-	void PitfallOnCollision();
+	void PitfallOnCollision(); 
+	//矢印の当たり判定
+	void ArrowOnCollision();
+
+	float GetTransformZ() { return worldTransformHead_.translation_.z; };
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -43,6 +47,9 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransformHead_.scale_; };
 
+	//矢印の向きのセッター
+	void SetKeepMove(const Vector3& ArrowRot) { ArrowRot_ = ArrowRot; };
+
 	bool IsMove() { return isMove; }
 
 private:
@@ -52,8 +59,6 @@ private:
 	Model* HeadModel_ = nullptr;
 	// 速さ
 	float speed = 0;
-	// 移動量を保管する
-	Vector3 KeepMove = { 0,0,0 };
 	//反発係数
 	float e = 0.4f;
 
@@ -61,6 +66,8 @@ private:
 	Vector3 normal = { 0.0f,0.5f,0.0f };
 	// 移動できるかフラグ
 	bool isMove = false;
+	// 移動量を保管する
+	Vector3 KeepMove_ = { 0,0,0 };
 
 	//当たった時一定の無敵時間を作るための変数
 	bool isOncollision_;
@@ -74,4 +81,6 @@ private:
 	bool isBliking_;
 	// ゲームパッドの状態を得る変数
 	XINPUT_STATE joyState;
+
+	Vector3 ArrowRot_ = { 0.0f,0.0f,0.0f };
 };

@@ -13,7 +13,7 @@ void Player::Initialize(Model* head)
 	worldTransformHead_.Initialize();
 
 	e = 0.4f;
-	
+	ArrowRot_ = { 0.0f,0.0f,0.0f };
 }
 
 void Player::Update() {
@@ -30,8 +30,8 @@ void Player::Update() {
 
 				// スピードが上がりすぎないようにする
 				if (speed < 0.04f) {
-					KeepMove.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed;
-					KeepMove.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed;
+					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed;
+					KeepMove_.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed;
 				}
 			}
 		}
@@ -43,9 +43,9 @@ void Player::Update() {
 				isMove = true;
 			}
 
-			if ((KeepMove.x >= -0.010f && KeepMove.x <= 0.010f) && (KeepMove.z >= -0.010f && KeepMove.z <= 0.010f)) {
-				KeepMove.x = 0;
-				KeepMove.z = 0;
+			if ((KeepMove_.x >= -0.010f && KeepMove_.x <= 0.010f) && (KeepMove_.z >= -0.010f && KeepMove_.z <= 0.010f)) {
+				KeepMove_.x = 0;
+				KeepMove_.z = 0;
 				e = 0.4f;
 				isMove = false;
 			}
@@ -76,22 +76,22 @@ void Player::Update() {
 
 	// 移動量
 	Vector3 move = { 0,0,0 };
-	move.x -= KeepMove.x;
-	move.z -= KeepMove.z;
+	move.x -= KeepMove_.x;
+	move.z -= KeepMove_.z;
 	if (isMove == true) {
 		
 		// 速度を落とす
-		if (KeepMove.x > 0) {
-			KeepMove.x -= 0.01f;
+		if (KeepMove_.x > 0) {
+			KeepMove_.x -= 0.01f;
 		}
-		if (KeepMove.x < 0) {
-			KeepMove.x += 0.01f;
+		if (KeepMove_.x < 0) {
+			KeepMove_.x += 0.01f;
 		}
-		if (KeepMove.z > 0) {
-			KeepMove.z -= 0.01f;
+		if (KeepMove_.z > 0) {
+			KeepMove_.z -= 0.01f;
 		}
-		if (KeepMove.z < 0) {
-			KeepMove.z += 0.01f;
+		if (KeepMove_.z < 0) {
+			KeepMove_.z += 0.01f;
 		}
 
 	
@@ -107,6 +107,9 @@ void Player::Update() {
 
 	ImGui::Begin("speed");
 	ImGui::DragInt("speed", &Oncollisiontimer_);
+	ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
+	
+
 	ImGui::DragFloat("e", &e);
 	ImGui::DragFloat3("KeepMove", &KeepMove.x);
 	ImGui::DragFloat3("Position", &worldTransformHead_.scale_.x, 0.1f);
@@ -139,7 +142,7 @@ void Player::OnCollision2()
 	}
 	if (isMove)
 	{
-		KeepMove.x = -e ;
+		KeepMove_.x = -e ;
 		
 	}
 	
@@ -154,7 +157,7 @@ void Player::OnCollision3()
 		{
 			e -= 0.01f;
 		}
-		KeepMove.x = e;
+		KeepMove_.x = e;
 
 	}
 	
@@ -169,7 +172,7 @@ void Player::OnCollision4()
 		{
 			e -= 0.01f;
 		}
-		KeepMove.z = -e;
+		KeepMove_.z = -e;
 
 	}
 
@@ -184,7 +187,7 @@ void Player::OnCollision5()
 		{
 			e -= 0.01f;
 		}
-		KeepMove.z = e;
+		KeepMove_.z = e;
 
 	}
 	
@@ -193,7 +196,7 @@ void Player::OnCollision5()
 
 void Player::OnCollision6()
 {
-	KeepMove.z = e;
+	KeepMove_.z = e;
 }
 
 void Player::OnCollision7()
@@ -223,8 +226,8 @@ void Player::WarpOnCollision2()
 
 void Player::MoveStop()
 {
-	KeepMove.x = 0;
-	KeepMove.z = 0;
+	KeepMove_.x = 0;
+	KeepMove_.z = 0;
 	speed = 0;
 	isMove = false;
 }
@@ -236,10 +239,18 @@ void Player::MoveStop()
 void Player::WindOnCollision()
 {
 	//風の強さ　あとで調整
-		KeepMove.x += 0.02f;
+		KeepMove_.x += 0.02f;
 }
 
 void Player::PitfallOnCollision()
 {
 	worldTransformHead_.translation_ = { 0,0,-15.0f };
+}
+
+void Player::ArrowOnCollision()
+{
+	//当たった後のスピードの調整
+	float Adjustment = 0.3f;
+
+	KeepMove_ = V3FDot(ArrowRot_, Adjustment);
 }

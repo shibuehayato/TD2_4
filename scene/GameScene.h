@@ -122,7 +122,11 @@ public: // メンバ関数
 
 	void PitfallGeneration(const Vector3& position);
 
-	
+	void LoadArrowPopData();
+
+	void UpdateArrowPopCommands();
+
+	void ArrowGeneration(const Vector3& position);
 
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
@@ -208,8 +212,9 @@ private: // メンバ変数
 	//下矢印の宣言
 	std::unique_ptr<DownArrow> downarrow_;
 	//回転矢印の宣言
-	std::unique_ptr<RotatingArrow> rotatingarrow_;
-	std::unique_ptr<Model> modelRotationArrow_;
+	//std::unique_ptr<RotatingArrow> rotatingarrow_;
+	std::unique_ptr<Model> modelArrow_;
+	std::list<std::unique_ptr<RotatingArrow>> Arrows_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
@@ -238,6 +243,8 @@ private: // メンバ変数
 	std::stringstream pitfallPopCommands;
 	//ステージ２の回復発生コマンド
 	std::stringstream stage2recoveryPopCommands;
+	//矢印のギミックの発生コマンド
+	std::stringstream arrowPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
@@ -249,6 +256,32 @@ private: // メンバ変数
 	std::unique_ptr<Skydome> skydome_;
 	// 3Dモデルの生成
 	std::unique_ptr<Model> modelSkydome_;
+
+	//ゲームパッドの状態を得る変数
+	XINPUT_STATE joyState;
+	XINPUT_STATE prejoyState;
+
+	// シーン切り替え
+	enum Scene {
+		TITLE,
+		OPERATION,
+		GAME,
+		CLEAR,
+		GAMEOVER
+	};
+	Scene scene = TITLE;
+
+	//テクスチャハンドル
+	uint32_t TitleTexture_ = 0;
+	uint32_t OperationTexture_ = 0;
+	uint32_t ClearTexture_ = 0;
+	uint32_t GameOverTexture_ = 0;
+
+	//シーン画面のスプライト
+	std::unique_ptr<Sprite> TitleSprite_ = nullptr;
+	std::unique_ptr<Sprite> OperationSprite_ = nullptr;
+	std::unique_ptr<Sprite> ClearSprite_ = nullptr;
+	std::unique_ptr<Sprite> GameOverSprite_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
