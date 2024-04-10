@@ -143,6 +143,12 @@ void GameScene::Initialize() {
 	//rotatingarrow_ = std::make_unique<RotatingArrow>();
 	//rotatingarrow_->Initialize(modelRotationArrow_.get());
 	
+	// 追従カメラの生成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	// 自キャラのワールドトランスフォームを追従カメラにセット
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+
 }
 
 void GameScene::Update() {
@@ -352,6 +358,12 @@ void GameScene::Update() {
 	BarrierRemoved();
 	//当たり判定
 	CheckAllCollisions();
+
+	// 追従カメラの更新
+	followCamera_->Update();
+	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+	viewProjection_.matView = followCamera_->GetViewProjection().matView;
+	viewProjection_.TransferMatrix();
 
 	// コントローラーのAボタンを押すとクリア
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {

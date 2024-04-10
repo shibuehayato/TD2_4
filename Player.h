@@ -50,6 +50,8 @@ public:
 
 	bool IsMove() { return isMove; }
 
+	const WorldTransform& GetWorldTransform() { return worldTransformHead_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransformHead_;

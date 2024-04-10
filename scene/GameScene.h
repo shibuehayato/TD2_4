@@ -33,6 +33,7 @@
 #include"RotatingArrow.h"
 #include"Mymath.h"
 #include"Recovery.h"
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -247,6 +248,9 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> OperationSprite_ = nullptr;
 	std::unique_ptr<Sprite> ClearSprite_ = nullptr;
 	std::unique_ptr<Sprite> GameOverSprite_ = nullptr;
+
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 
 	/// <summary>
 	/// ゲームシーン用
