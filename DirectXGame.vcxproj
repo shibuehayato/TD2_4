@@ -115,6 +115,7 @@
     <ClCompile Include="DownArrow.cpp" />
     <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="LeftArrow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\MyMath.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
     <ClInclude Include="Fire2.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="LeftArrow.h" />
     <ClInclude Include="math\Matrix4x4.h" />

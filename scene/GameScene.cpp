@@ -83,6 +83,10 @@ void GameScene::Initialize() {
 	LoadBarrier2PopData();
 	LoadPitfallPopData();
 	LoadArrowPopData();
+	LoadGoalWhitePopData();
+	LoadGoalBlackPopData();
+	LoadTutorialGoalWhitePopData();
+	LoadTutorialGoalBlackPopData();
 
 	Stage2LoadWallPopData();
 	LoadStage2FlamePopData();
@@ -128,6 +132,10 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+
+	//ゴールのモデル
+	modelGoalWhite_.reset(Model::CreateFromOBJ("White", true)); 
+	modelGoalBlack_.reset(Model::CreateFromOBJ("Black", true));
 
 	modelArrow_.reset(Model::CreateFromOBJ("Arrow", true));
 
@@ -265,12 +273,18 @@ void GameScene::Update() {
 		}
 		//複数の壁を出すための関数
 		UpdateWallPopCommands();
-
-		
-
-		
-
+		//ゴール
+		for (const std::unique_ptr<Goal>& goalW : TutorialGoalWhites_) {
+			goalW->Update();
+		}
+		UpdateTutorialGoalWhitePopCommands();
+		for (const std::unique_ptr<Goal>& goalB : TutorialGoalBlacks_) {
+			goalB->Update();
+		}
+		UpdateTutorialGoalBlackPopCommands();
+	
 	}
+
 
 	if (isstage1_ || isstage2_)
 	{
@@ -323,6 +337,15 @@ void GameScene::Update() {
 			arrow->Update();
 		}
 		UpdateArrowPopCommands();
+		//ゴール
+		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+			goalW->Update();
+		}
+		UpdateGoalWhitePopCommands();
+		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+			goalB->Update();
+		}
+		UpdateGoalBlackPopCommands();
 
 		//ワープの更新
 		warp_->Update();
@@ -338,13 +361,9 @@ void GameScene::Update() {
 		downarrow_->Update();
 		//回転矢印の更新
 		//rotatingarrow_->Update();
-
-
-
-		
-
-		
+	
 	}
+
 	if (isstage2_)
 	{
 		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
@@ -445,11 +464,11 @@ void GameScene::Update() {
 	//当たり判定
 	CheckAllCollisions();
 
-	//玉をとって位置に来たらクリア
-	if (player_->GetTransformZ() >= 71&&ball_==nullptr) {
-			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
-	}
+	////玉をとって位置に来たらクリア
+	//if (player_->GetTransformZ() >= 71&&ball_==nullptr) {
+	//		scene = CLEAR;
+	//		player_->Initialize(modelPlayerHead_.get());
+	//}
 	
 
 	// コントローラーのBボタンを押すとゲームオーバー
@@ -542,7 +561,13 @@ void GameScene::Draw() {
 				stage->Draw(viewProjection_);
 
 			}
-
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : TutorialGoalWhites_) {
+				goalW->Draw(viewProjection_);
+			}
+			for (const std::unique_ptr<Goal>& goalB : TutorialGoalBlacks_) {
+				goalB->Draw(viewProjection_);
+			}
 		}
 
 		if (isstage1_)
@@ -575,9 +600,46 @@ void GameScene::Draw() {
 			pitfall->Draw(viewProjection_);
 		}
 		
-		
+		//回転矢印
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			arrow->Draw(viewProjection_);
+		}
+		//ゴール
+		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+			goalW->Draw(viewProjection_);
+		}
+		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+			goalB->Draw(viewProjection_);
+		}
 	}
 
+	if (isstage2_)
+	{
+		//ステージの描画
+		for (const auto& stage2 : stages2_) {
+			stage2->Draw(viewProjection_);
+		}
+		//炎の描画
+		for (const auto& fire2 : fires2_) {
+			fire2->Draw(viewProjection_);
+		}
+		//ステージ2の回復の描画
+		if (stage2recovery_)
+		{
+			stage2recovery_->Draw(viewProjection_);
+		}
+		//回転矢印
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			arrow->Draw(viewProjection_);
+		}
+		////ゴール
+		//for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+		//	goalW->Draw(viewProjection_);
+		//}
+		//for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+		//	goalB->Draw(viewProjection_);
+		//}
+	}
 		if (isstage2_)
 		{
 			//ステージの描画
@@ -643,9 +705,7 @@ void GameScene::Draw() {
 		downarrow_->Draw(viewProjection_);
 		//回転矢印の描画
 		//rotatingarrow_->Draw(viewProjection_);
-		for (const auto& arrow : Arrows_) {
-			arrow->Draw(viewProjection_);
-		}
+		
 		// 天球の描画
 		skydome_->Draw(viewProjection_);
 	}
@@ -1482,6 +1542,319 @@ void GameScene::ArrowGeneration(const Vector3& position)
 	Arrows_.push_back(static_cast<std::unique_ptr<RotatingArrow>>(arrow));
 }
 
+//ゴールステージ１
+void GameScene::LoadGoalWhitePopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//WhitePop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	GoalWhitePopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateGoalWhitePopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(GoalWhitePopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			GoalWhiteGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::GoalWhiteGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Goal*  goal= new Goal();
+
+	goal->Initialize(modelGoalWhite_.get(), position);
+	goal->SetGameScene(this);
+
+	GoalWhites_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+void GameScene::LoadGoalBlackPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//BlackPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	GoalBlackPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateGoalBlackPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(GoalBlackPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			GoalBlackGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::GoalBlackGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Goal* goal = new Goal();
+
+	goal->Initialize(modelGoalBlack_.get(), position);
+	goal->SetGameScene(this);
+
+	GoalBlacks_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+//ゴールチュートリアル
+void GameScene::LoadTutorialGoalWhitePopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//TutorialWhitePop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	TutorialGoalWhitePopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateTutorialGoalWhitePopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(TutorialGoalWhitePopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			TutorialGoalWhiteGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::TutorialGoalWhiteGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Goal* goal = new Goal();
+
+	goal->Initialize(modelGoalWhite_.get(), position);
+	goal->SetGameScene(this);
+
+	TutorialGoalWhites_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+void GameScene::LoadTutorialGoalBlackPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//TutorialBlackPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	TutorialGoalBlackPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateTutorialGoalBlackPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(TutorialGoalBlackPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			TutorialGoalBlackGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::TutorialGoalBlackGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Goal* goal = new Goal();
+
+	goal->Initialize(modelGoalBlack_.get(), position);
+	goal->SetGameScene(this);
+
+	TutorialGoalBlacks_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+
+
+//当たり判定
 void GameScene::LoadStage2BarrierPopData()
 {
 	// ファイルを開く
@@ -2206,7 +2579,6 @@ void GameScene::CheckAllCollisions() {
 
 #pragma endregion
 
-
 #pragma region プレイヤーと下矢印
 	// プレイヤーの座標
 	PosA = player_->GetWorldPosition();
@@ -2223,6 +2595,86 @@ void GameScene::CheckAllCollisions() {
 		downarrow_->OnCollision(player_.get());
 	}
 
+#pragma endregion
+
+#pragma region プレイヤーとゴール白
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : GoalWhites_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとゴール黒
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : GoalBlacks_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとゴール白
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : TutorialGoalWhites_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとゴール黒
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : TutorialGoalBlacks_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
 #pragma endregion
 
 #pragma region プレイヤーとスピードダウン
