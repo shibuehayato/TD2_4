@@ -18,6 +18,9 @@ public:
 	void OnCollision6();
 	//炎に当たった時の関数
 	void OnCollision7();
+	//スピードダウンに当たった時の関数
+	void SpeedDownOnCollision();
+	void NoSpeedOnCollision();
 	//1つめのワープに当たった時の関数
 	void WarpOnCollision();
 	void WarpOnCollision2();
@@ -29,6 +32,8 @@ public:
 	void PitfallOnCollision(); 
 	//矢印の当たり判定
 	void ArrowOnCollision();
+
+	float GetTransformZ() { return worldTransformHead_.translation_.z; };
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() {
@@ -47,6 +52,9 @@ public:
 
 	//矢印の向きのセッター
 	void SetKeepMove(const Vector3& ArrowRot) { ArrowRot_ = ArrowRot; };
+
+	//プレイヤーの大きさの取得xだけ
+	float GetPlayerScaleX() { return worldTransformHead_.scale_.x; };
 
 	bool IsMove() { return isMove; }
 
@@ -75,6 +83,11 @@ private:
 	int32_t Oncollisiontimer_;
 
 	//---------------------------//
+
+	//スピードダウンに必要な変数
+	float speeddown_ = 0.0f;
+	//スピードアップに必要な変数
+	float speedup_ = 0.0f;
 
 	//当たった時点滅する用の変数
 	int32_t blikingtimer_;

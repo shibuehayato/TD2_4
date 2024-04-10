@@ -1,15 +1,12 @@
-#include "Barrier.h"
+#include "Stage2Barrier.h"
 #include<cassert>
 #include"GameScene.h"
-void Barrier::Initialize(Model* model, Vector3 position)
+void Stage2Barrier::Initialize(Model* model, Vector3 position)
 {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-
-	textureHandle_ = TextureManager::Load("barrier.png");
-
 	/*for (int i = 0; i < 50; i++)
 	{
 		model_[i] = model;
@@ -33,25 +30,24 @@ void Barrier::Initialize(Model* model, Vector3 position)
 	isDead_ = false;
 }
 
-void Barrier::Update()
+void Stage2Barrier::Update()
 {
 	worldTransform_.UpdateMatrix();
+
 	/*for (int i = 0; i < 50; i++)
 	{
 		worldTransform_[i].UpdateMatrix();
 	}*/
-
-	//ImGui::Begin("Barrier");
-	//ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
-	//ImGui::End();
-
+	ImGui::Begin("Barrier2");
+	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
+	ImGui::End();
 }
 
-void Barrier::Draw(ViewProjection& viewProjection)
+void Stage2Barrier::Draw(ViewProjection& viewProjection)
 {
-	if (isDead_==false)
+	if (isDead_ == false)
 	{
-		model_->Draw(worldTransform_, viewProjection,textureHandle_);
+		model_->Draw(worldTransform_, viewProjection);
 	}
 	/*for (int i = 0; i < 50; i++)
 	{
@@ -59,12 +55,12 @@ void Barrier::Draw(ViewProjection& viewProjection)
 	}*/
 }
 
-void Barrier::OnCollision()
+void Stage2Barrier::OnCollision()
 {
 	isDead_ = true;
 }
 
-Vector3 Barrier::GetPosition()
+Vector3 Stage2Barrier::GetPosition()
 {
 	Vector3 worldPos;
 
@@ -75,7 +71,7 @@ Vector3 Barrier::GetPosition()
 	return worldPos;
 }
 
-Vector3 Barrier::GetScale()
+Vector3 Stage2Barrier::GetScale()
 {
 	Vector3 worldScale;
 
