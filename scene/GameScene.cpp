@@ -38,6 +38,19 @@ void GameScene::Initialize() {
 	ClearSprite_.reset(Sprite::Create(ClearTexture_, { 0, 0 }));
 	GameOverSprite_.reset(Sprite::Create(GameOverTexture_, { 0, 0 }));
 
+	//大きさ
+	BigTexture_ = TextureManager::Load("Size/Big.png");
+	MediumTexture_ = TextureManager::Load("Size/Medium.png");
+	SmallTexture_ = TextureManager::Load("Size/Small.png");
+
+	BigSprite_ = std::make_unique<Sprite>();
+	MediumSprite_ = std::make_unique<Sprite>();
+	SmallSprite_ = std::make_unique<Sprite>();
+
+	BigSprite_.reset(Sprite::Create(BigTexture_, { 0, 0 }));
+	MediumSprite_.reset(Sprite::Create(MediumTexture_, { 0, 0 }));
+	SmallSprite_.reset(Sprite::Create(SmallTexture_, { 0, 0 }));
+
 	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
 	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
@@ -471,6 +484,17 @@ void GameScene::Update() {
 	//		player_->Initialize(modelPlayerHead_.get());
 	//}
 	
+	//大きさ合わせ
+	if (player_->GetPlayerScaleX() == 1.0) {
+		size_ = Small_;
+	}
+	if (player_->GetPlayerScaleX() == 1.5) {
+		size_ = Medium_;
+	}
+	if (player_->GetPlayerScaleX() == 2.0) {
+		size_ = Big_;
+	}
+
 
 	// コントローラーのBボタンを押すとゲームオーバー
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -518,6 +542,7 @@ void GameScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 
+	
 	if (scene == TITLE) {
 		TitleSprite_->Draw();
 	}
@@ -531,6 +556,8 @@ void GameScene::Draw() {
 		GameOverSprite_->Draw();
 	}
 	
+	
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -722,6 +749,24 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	//大きさの描画
+	//これで場所替え
+	Vector2 position = { 800,170 };
+	if (istutorial_ == true && scene == GAME || isstage1_ == true && scene == GAME || isstage2_ == true&&scene==GAME) {
+		if (size_ == Big_) {
+			BigSprite_->SetPosition(position);
+			BigSprite_->Draw();
+		}
+		if (size_ == Medium_) {
+			MediumSprite_->SetPosition(position);
+			MediumSprite_->Draw();
+		}
+		if (size_ == Small_) {
+			SmallSprite_->SetPosition(position);
+			SmallSprite_->Draw();	
+		}
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

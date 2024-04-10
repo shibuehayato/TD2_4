@@ -16,6 +16,8 @@ void Player::Initialize(Model* head)
 	ArrowRot_ = { 0.0f,0.0f,0.0f };
 	speeddown_ = 0.01f;
 	speedup_ = 0.01f;
+
+	KeepMove_ = { 0,0,0 };
 }
 
 void Player::Update() {

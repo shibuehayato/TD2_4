@@ -320,6 +320,24 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> ClearSprite_ = nullptr;
 	std::unique_ptr<Sprite> GameOverSprite_ = nullptr;
 
+	//大きさ
+	enum Size {
+		Big_,
+		Medium_,
+		Small_
+	};
+	Size size_ = Small_;
+
+	//テクスチャハンドル
+	uint32_t BigTexture_ = 0;
+	uint32_t MediumTexture_ = 0;
+	uint32_t SmallTexture_ = 0;
+
+	//大きさのスプライト
+	std::unique_ptr<Sprite> BigSprite_ = nullptr;
+	std::unique_ptr<Sprite> MediumSprite_ = nullptr;
+	std::unique_ptr<Sprite> SmallSprite_ = nullptr;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
