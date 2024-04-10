@@ -2721,7 +2721,7 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
 		}
@@ -2741,7 +2741,7 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
 		}
