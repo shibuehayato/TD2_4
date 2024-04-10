@@ -86,10 +86,11 @@ void GameScene::Initialize() {
 
 	Stage2LoadWallPopData();
 	LoadStage2FlamePopData();
-	
+	LoadStage2BarrierPopData();
+	LoadSpeedDownPopData();
 	//--------------------//
 	
-	
+	modelbarrier_.reset(Model::CreateFromOBJ("barrier", true));
 
 	//小さいスイッチの生成と初期化
 	smallswitch_ = std::make_unique<SmallSwitch>();
@@ -114,6 +115,7 @@ void GameScene::Initialize() {
 	warp2_ = std::make_unique<Warp2>();
 	warp2_->Initialize(modelwarp_.get());
 
+	
 	
 	// 3Dモデルの生成
 	modelSkydome_.reset(Model::CreateFromOBJ("Skydome", true));
@@ -154,6 +156,11 @@ void GameScene::Initialize() {
 	stage2recovery_ = std::make_unique<Stage2Recovery>();
 	stage2recovery_->Initialize(modelRecovery_.get());
 	stage2recovery_->SetGameScene(this);
+
+	stage2rotatingarrow_ = std::make_unique<Stage2RotatingArrow>();
+	stage2rotatingarrow_->Initialize(modelArrow_.get());
+
+	
 	
 }
 
@@ -351,13 +358,18 @@ void GameScene::Update() {
 		}
 		//複数の炎ギミックを出すための関数
 		UpdateStage2FlamePopCommands();
+		for (const std::unique_ptr<Stage2Barrier>& stage2barrier : stage2barriers_)
+		{
+			stage2barrier->Update();
+		}
+		UpdateStage2BarrierPopCommands();
 		
-		
-		
-			
-			
-	
-
+		stage2rotatingarrow_->Update();
+		for (const std::unique_ptr<SpeedDown>& speeddown : speeddowns_)
+		{
+			speeddown->Update();
+		}
+		UpdateSpeedDownPopCommands();
 	}
 	//回復
 	if (isstage1_ && recovery_ || recovery_ && isstage2_) {
@@ -516,7 +528,7 @@ void GameScene::Draw() {
 	if (scene == GAME) {
 
 		// 自キャラの描画
-		if (istutorial_ || isstage1_)
+		if (istutorial_ || isstage1_||isstage2_)
 		{
 			player_->Draw(viewProjection_);
 		}
@@ -566,25 +578,34 @@ void GameScene::Draw() {
 		
 	}
 
-	if (isstage2_)
-	{
-		//ステージの描画
-		for (const auto& stage2 : stages2_) {
-			stage2->Draw(viewProjection_);
-		}
-		//炎の描画
-		for (const auto& fire2 : fires2_) {
-			fire2->Draw(viewProjection_);
-		}
-		//ステージ2の回復の描画
-		if (stage2recovery_)
+		if (isstage2_)
 		{
-			stage2recovery_->Draw(viewProjection_);
+			//ステージの描画
+			for (const auto& stage2 : stages2_) {
+				stage2->Draw(viewProjection_);
+			}
+			//炎の描画
+			for (const auto& fire2 : fires2_) {
+				fire2->Draw(viewProjection_);
+			}
+			//ステージ2の回復の描画
+			if (stage2recovery_)
+			{
+				stage2recovery_->Draw(viewProjection_);
+			}
+			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+				arrow->Draw(viewProjection_);
+			}
+			for (const auto& stage2barrier : stage2barriers_)
+			{
+				stage2barrier->Draw(viewProjection_);
+			}
+			stage2rotatingarrow_->Draw(viewProjection_);
+			for (const auto& speeddown : speeddowns_)
+			{
+				speeddown->Draw(viewProjection_);
+			}
 		}
-		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-			arrow->Draw(viewProjection_);
-		}
-	}
 
 		//バリアの描画
 		for (const auto& barrier : barriers_) {
@@ -1112,12 +1133,13 @@ void GameScene::UpdateBarrierPopCommands()
 
 void GameScene::BarrierGeneration(const Vector3& position)
 {
+	
 	// 敵の生成
 	Barrier* barrier = new Barrier();
 
-
 	
-	barrier->Initialize(model_, position);
+	
+	barrier->Initialize(modelbarrier_.get(), position);
 	barrier->SetGameScene(this);
 
 	barriers_.push_back(static_cast<std::unique_ptr<Barrier>>(barrier));
@@ -1142,7 +1164,7 @@ void GameScene::Barrier2Generation(const Vector3& position)
 
 
 
-	barrier2->Initialize(modelwall_.get(), position);
+	barrier2->Initialize(modelbarrier_.get(), position);
 	barrier2->SetGameScene(this);
 
 	barriers2_.push_back(static_cast<std::unique_ptr<Barrier2>>(barrier2));
@@ -1458,6 +1480,160 @@ void GameScene::ArrowGeneration(const Vector3& position)
 	arrow->SetGameScene(this);
 
 	Arrows_.push_back(static_cast<std::unique_ptr<RotatingArrow>>(arrow));
+}
+
+void GameScene::LoadStage2BarrierPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//Stage2BarrierPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	stage2barrierPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateStage2BarrierPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(stage2barrierPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			Stage2BarrierGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::Stage2BarrierGeneration(const Vector3& position)
+{
+	// 敵の生成
+	Stage2Barrier* stage2barrier = new Stage2Barrier();
+
+	stage2barrier->Initialize(model_, position);
+	stage2barrier->SetGameScene(this);
+
+	stage2barriers_.push_back(static_cast<std::unique_ptr<Stage2Barrier>>(stage2barrier));
+}
+
+void GameScene::LoadSpeedDownPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//SpeedDownPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	speedDownPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateSpeedDownPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(speedDownPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			SpeedDownGeneration(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::SpeedDownGeneration(const Vector3& position)
+{
+	// 敵の生成
+	SpeedDown* speeddown = new SpeedDown();
+
+	speeddown->Initialize(model_, position);
+	speeddown->SetGameScene(this);
+
+	speeddowns_.push_back(static_cast<std::unique_ptr<SpeedDown>>(speeddown));
 }
 
 void GameScene::CheckAllCollisions() {
@@ -1855,6 +2031,11 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision7();
 			}
 
+			if (player_->GetRadius().x <= 0.5f)
+			{
+				scene = GAMEOVER;
+			}
+
 		}
 	}
 #pragma endregion
@@ -2040,6 +2221,26 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		downarrow_->OnCollision(player_.get());
+	}
+
+#pragma endregion
+
+#pragma region プレイヤーとスピードダウン
+	for (const std::unique_ptr<SpeedDown>& speeddown : speeddowns_) {
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+		PosB = speeddown->GetPosition();
+		RadiusB = speeddown->GetScale();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			player_->SpeedDownOnCollision();
+		}
 	}
 
 #pragma endregion

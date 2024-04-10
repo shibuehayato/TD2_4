@@ -14,6 +14,8 @@ void Player::Initialize(Model* head)
 
 	e = 0.4f;
 	ArrowRot_ = { 0.0f,0.0f,0.0f };
+	speeddown_ = 0.01f;
+	speedup_ = 0.01f;
 }
 
 void Player::Update() {
@@ -43,9 +45,10 @@ void Player::Update() {
 				isMove = true;
 			}
 
-			if ((KeepMove_.x >= -0.010f && KeepMove_.x <= 0.010f) && (KeepMove_.z >= -0.010f && KeepMove_.z <= 0.010f)) {
+			if ((KeepMove_.x >= -0.020f && KeepMove_.x <= 0.020f) && (KeepMove_.z >= -0.020f && KeepMove_.z <= 0.020f)) {
 				KeepMove_.x = 0;
 				KeepMove_.z = 0;
+				speeddown_ = 0.01f;
 				e = 0.4f;
 				isMove = false;
 			}
@@ -82,16 +85,16 @@ void Player::Update() {
 		
 		// 速度を落とす
 		if (KeepMove_.x > 0) {
-			KeepMove_.x -= 0.01f;
+			KeepMove_.x -= speeddown_;
 		}
 		if (KeepMove_.x < 0) {
-			KeepMove_.x += 0.01f;
+			KeepMove_.x += speeddown_;
 		}
 		if (KeepMove_.z > 0) {
-			KeepMove_.z -= 0.01f;
+			KeepMove_.z -= speeddown_;
 		}
 		if (KeepMove_.z < 0) {
-			KeepMove_.z += 0.01f;
+			KeepMove_.z += speeddown_;
 		}
 
 	
@@ -112,7 +115,7 @@ void Player::Update() {
 
 	ImGui::DragFloat("e", &e);
 	ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
-	ImGui::DragFloat3("Position", &worldTransformHead_.scale_.x, 0.1f);
+	ImGui::DragFloat("Position", &speeddown_, 0.1f);
 
 	ImGui::End();
 }
@@ -210,6 +213,17 @@ void Player::OnCollision7()
 		worldTransformHead_.scale_.y -= 0.5f;
 		worldTransformHead_.scale_.z -= 0.5f;
 	}
+}
+
+void Player::SpeedDownOnCollision()
+{
+	speeddown_ = 0.02f;
+}
+
+void Player::NoSpeedOnCollision()
+{
+	speeddown_ = 0.0f;
+	speedup_ = 0.0f;
 }
 
 void Player::WarpOnCollision()

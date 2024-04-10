@@ -36,6 +36,9 @@
 #include"Stage2Recovery.h"
 #include"Stage2.h"
 #include"Fire2.h"
+#include"Stage2Barrier.h"
+#include"Stage2RotatingArrow.h"
+#include"SpeedDown.h"
 
 /// <summary>
 /// ゲームシーン
@@ -128,6 +131,18 @@ public: // メンバ関数
 
 	void ArrowGeneration(const Vector3& position);
 
+	void LoadStage2BarrierPopData();
+
+	void UpdateStage2BarrierPopCommands();
+
+	void Stage2BarrierGeneration(const Vector3& position);
+
+	void LoadSpeedDownPopData();
+
+	void UpdateSpeedDownPopCommands();
+
+	void SpeedDownGeneration(const Vector3& position);
+
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
@@ -199,6 +214,8 @@ private: // メンバ変数
 	//2つめのバリアの宣言
 	std::list <std::unique_ptr<Barrier2>> barriers2_;
 	std::unique_ptr<Barrier2> barrier2_;
+	//ステージ2のバリアの宣言
+	std::list < std::unique_ptr<Stage2Barrier>> stage2barriers_;
 	//玉
 	std::unique_ptr<Model> modelBall_;
 	std::unique_ptr <Ball> ball_;
@@ -215,6 +232,8 @@ private: // メンバ変数
 	//std::unique_ptr<RotatingArrow> rotatingarrow_;
 	std::unique_ptr<Model> modelArrow_;
 	std::list<std::unique_ptr<RotatingArrow>> Arrows_;
+	//ステージ2の回転矢印の宣言
+	std::unique_ptr<Stage2RotatingArrow> stage2rotatingarrow_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
@@ -223,6 +242,9 @@ private: // メンバ変数
 	bool isrecoverydead_ = false;
 	bool isrecoverydeadflag = false;
 	float recoveryTime_ = 0;
+	//スピードダウン
+	std::list<std::unique_ptr<SpeedDown>> speeddowns_;
+	std::unique_ptr<Model> modelspeeddown_;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
@@ -245,6 +267,10 @@ private: // メンバ変数
 	std::stringstream stage2recoveryPopCommands;
 	//矢印のギミックの発生コマンド
 	std::stringstream arrowPopCommands;
+	//ステージ2のバリア発生コマンド
+	std::stringstream stage2barrierPopCommands;
+	//スピードダウンの発生コマンド
+	std::stringstream speedDownPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;

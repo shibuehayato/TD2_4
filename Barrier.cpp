@@ -7,6 +7,9 @@ void Barrier::Initialize(Model* model, Vector3 position)
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+
+	textureHandle_ = TextureManager::Load("barrier.png");
+
 	/*for (int i = 0; i < 50; i++)
 	{
 		model_[i] = model;
@@ -48,7 +51,7 @@ void Barrier::Draw(ViewProjection& viewProjection)
 {
 	if (isDead_==false)
 	{
-		model_->Draw(worldTransform_, viewProjection);
+		model_->Draw(worldTransform_, viewProjection,textureHandle_);
 	}
 	/*for (int i = 0; i < 50; i++)
 	{

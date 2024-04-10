@@ -37,5 +37,7 @@ private:
 
 	bool isDead_ = true;
 
+	uint32_t textureHandle_ = 0u;
+
 };
 
