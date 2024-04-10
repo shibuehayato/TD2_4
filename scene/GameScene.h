@@ -70,77 +70,62 @@ public: // メンバ関数
 	void Draw();
 	//複数化に必要な関数
 	void LoadWallPopData();
-
 	void UpdateWallPopCommands();
-
 	void WallGeneration(const Vector3& position);
 
 	void Stage1LoadWallPopData();
-
 	void Stage1UpdateWallPopCommands();
-
 	void Stage1WallGeneration(const Vector3& position);
 
 	void Stage2LoadWallPopData();
-
 	void Stage2UpdateWallPopCommands();
-
 	void Stage2WallGeneration(const Vector3& position);
 
 	void LoadFlamePopData();
-
 	void UpdateFlamePopCommands();
-
 	void FlameGeneration(const Vector3& position);
 
 	void LoadStage2FlamePopData();
-
 	void UpdateStage2FlamePopCommands();
-
 	void Stage2FlameGeneration(const Vector3& position);
 
 	void LoadWindPopData();
-
 	void UpdateWindPopCommands();
-
 	void WindGeneration(const Vector3& position);
 
 	void LoadBarrierPopData();
-
 	void UpdateBarrierPopCommands();
-
 	void BarrierGeneration(const Vector3& position);
 
 	void LoadBarrier2PopData();
-
 	void UpdateBarrier2PopCommands();
-
 	void Barrier2Generation(const Vector3& position);
 
 	void LoadPitfallPopData();
-
 	void UpdatePitfallPopCommands();
-
 	void PitfallGeneration(const Vector3& position);
 
 	void LoadArrowPopData();
-
 	void UpdateArrowPopCommands();
-
 	void ArrowGeneration(const Vector3& position);
 
+	//ゴールステージ１
 	void LoadGoalWhitePopData();
-
 	void UpdateGoalWhitePopCommands();
-
 	void GoalWhiteGeneration(const Vector3& position);
 
 	void LoadGoalBlackPopData();
-
 	void UpdateGoalBlackPopCommands();
-
 	void GoalBlackGeneration(const Vector3& position);
 
+	//ゴールチュートリアル
+	void LoadTutorialGoalWhitePopData();
+	void UpdateTutorialGoalWhitePopCommands();
+	void TutorialGoalWhiteGeneration(const Vector3& position);
+
+	void LoadTutorialGoalBlackPopData();
+	void UpdateTutorialGoalBlackPopCommands();
+	void TutorialGoalBlackGeneration(const Vector3& position);
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
@@ -232,8 +217,10 @@ private: // メンバ変数
 	//ゴールの白と黒
 	std::unique_ptr<Model> modelGoalWhite_;
 	std::list<std::unique_ptr<Goal>> GoalWhites_;
+	std::list<std::unique_ptr<Goal>> TutorialGoalWhites_;
 	std::unique_ptr<Model> modelGoalBlack_;
 	std::list<std::unique_ptr<Goal>> GoalBlacks_;
+	std::list<std::unique_ptr<Goal>> TutorialGoalBlacks_;
 
 	//回復
 	std::unique_ptr<Model> modelRecovery_;
@@ -267,6 +254,8 @@ private: // メンバ変数
 	//ゴールのギミックの発生コマンド
 	std::stringstream GoalWhitePopCommands;
 	std::stringstream GoalBlackPopCommands;
+	std::stringstream TutorialGoalWhitePopCommands;
+	std::stringstream TutorialGoalBlackPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
