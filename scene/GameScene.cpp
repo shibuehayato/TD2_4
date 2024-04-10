@@ -390,6 +390,7 @@ void GameScene::Update() {
 		}
 		UpdateSpeedDownPopCommands();
 	}
+
 	//回復
 	if (isstage1_ && recovery_ || recovery_ && isstage2_) {
 		recovery_->Update();
