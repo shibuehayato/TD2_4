@@ -41,6 +41,7 @@
 #include"SpeedDown.h"
 #include <Goal.h>
 #include "FollowCamera.h"
+#include"WindParticle.h"
 
 /// <summary>
 /// ゲームシーン
@@ -198,6 +199,9 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelnormalbutton_;
 	//風のギミックの宣言
 	std::list<std::unique_ptr<Wind>> winds_;
+	//風パーティクルのギミックの宣言
+	std::list<std::unique_ptr<WindParticle>> windParticles_;
+	std::unique_ptr<Model> modelWind_;
 	//落とし穴の宣言
 	std::list<std::unique_ptr<Pitfall>> pitfalls_;
 	//バリアの宣言

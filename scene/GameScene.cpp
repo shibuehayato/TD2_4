@@ -83,6 +83,11 @@ void GameScene::Initialize() {
 	recovery_->SetGameScene(this);
 	recoveryTime_ = 0;
 
+	//風のパーティクルの生成
+	windParticles_ = std::make_unique<WindParticle>();
+	//3Dモデルの生成
+	modelWind_.reset(Model::CreateFromOBJ("Cyclone", true));
+
 	//複数の壁を読み込むための関数
 
 	//複数の壁やギミックを読み込むための関数
@@ -642,9 +647,9 @@ void GameScene::Draw() {
 			normalswitch_->Draw(viewProjection_);
 
 		//風のギミックの描画消す
-		/*for (const auto& wind : winds_) {
+		for (const auto& wind : winds_) {
 			wind->Draw(viewProjection_);
-		}*/
+		}
 		//落とし穴の描画
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);

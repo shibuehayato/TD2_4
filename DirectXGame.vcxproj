@@ -141,6 +141,7 @@
     <ClCompile Include="Warp.cpp" />
     <ClCompile Include="Warp2.cpp" />
     <ClCompile Include="Wind.cpp" />
+    <ClCompile Include="WindParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Warp.h" />
     <ClInclude Include="Warp2.h" />
     <ClInclude Include="Wind.h" />
+    <ClInclude Include="WindParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">
