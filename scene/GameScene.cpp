@@ -84,7 +84,7 @@ void GameScene::Initialize() {
 	recoveryTime_ = 0;
 
 	//風のパーティクルの生成
-	windParticles_ = std::make_unique<WindParticle>();
+	//windParticles_ = std::make_unique<WindParticle>();
 	//3Dモデルの生成
 	modelWind_.reset(Model::CreateFromOBJ("Cyclone", true));
 
@@ -341,6 +341,11 @@ void GameScene::Update() {
 				wind->Update();
 			}
 			UpdateWindPopCommands();
+			//風のパーティクル
+			for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
+				wind->Update();
+			}
+			UpdateWindParticlePopCommands();
 			//落とし穴の更新
 			for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
 				pitfall->Update();
@@ -647,9 +652,12 @@ void GameScene::Draw() {
 			normalswitch_->Draw(viewProjection_);
 
 		//風のギミックの描画消す
-		for (const auto& wind : winds_) {
+		/*for (const auto& wind : winds_) {
 			wind->Draw(viewProjection_);
-		}
+		}*/
+			for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
+				wind->Draw(viewProjection_);
+			}
 		//落とし穴の描画
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
@@ -1616,6 +1624,52 @@ void GameScene::ArrowGeneration(const Vector3& position)
 	arrow->SetGameScene(this);
 
 	Arrows_.push_back(static_cast<std::unique_ptr<RotatingArrow>>(arrow));
+}
+
+void GameScene::UpdateWindParticlePopCommands()
+{
+		WindParticleGeneration();
+
+		for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
+			winddeadtime_ -= 0.1f;
+			if (winddeadtime_ <= 0) {
+				wind->IsDead();
+				winddeadtime_ = 5;
+			}
+
+			if (wind->IsDead()==true) {
+
+			}
+
+		}
+}
+void GameScene::WindParticleGeneration() {
+	// ランダムな初期位置を生成する
+	float startX, startY,startZ;
+	WindParticleStartPosition(startX, startY, startZ);
+
+
+	windtime_ -= 0.1f;
+
+	if (windtime_ <= 0) {
+	// WindParticle オブジェクトを生成し、初期位置を渡す
+	WindParticle* wind = new WindParticle();
+	wind->Initialize(modelWind_.get(), startX, startY, startZ);
+
+	windParticles_.push_back(static_cast<std::unique_ptr<WindParticle>>(wind));
+	windtime_ = 8;
+	}
+	
+}
+
+void GameScene::WindParticleStartPosition(float& startX, float& startY, float& startZ)
+{
+	const float range = 10.0f; // XとY座標の範囲を適宜調整する
+
+	// X座標とY座標を-10から10の範囲でランダムに生成する
+	startX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
+	startY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
+	startZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
 }
 
 //ゴールステージ１

@@ -42,6 +42,8 @@
 #include <Goal.h>
 #include "FollowCamera.h"
 #include"WindParticle.h"
+#include <cstdlib>
+#include <ctime>  
 
 /// <summary>
 /// ゲームシーン
@@ -113,6 +115,11 @@ public: // メンバ関数
 	void LoadArrowPopData();
 	void UpdateArrowPopCommands();
 	void ArrowGeneration(const Vector3& position);
+
+	//風のパーティクル
+	void UpdateWindParticlePopCommands();
+	void WindParticleGeneration();
+	void WindParticleStartPosition(float& startX, float& startY, float& startZ);
 
 	//ゴールステージ１
 	void LoadGoalWhitePopData();
@@ -345,6 +352,10 @@ private: // メンバ変数
 
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
+
+	//風のパーティクル
+	float windtime_ = 3;
+	float winddeadtime_ = 5;
 
 	/// <summary>
 	/// ゲームシーン用
