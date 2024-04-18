@@ -619,10 +619,10 @@ void GameScene::Draw() {
 
 			}
 
-		//炎の描画
-		for (const auto& fire : fires_) {
-			fire->Draw(viewProjection_);
-		}
+			//炎の描画
+			for (const auto& fire : fires_) {
+				fire->Draw(viewProjection_);
+			}
 
 
 			//小スイッチの描画
@@ -631,26 +631,27 @@ void GameScene::Draw() {
 			//中スイッチの描画
 			normalswitch_->Draw(viewProjection_);
 
-		//風のギミックの描画消す
-		/*for (const auto& wind : winds_) {
-			wind->Draw(viewProjection_);
-		}*/
-		//落とし穴の描画
-		for (const auto& pitfall : pitfalls_) {
-			pitfall->Draw(viewProjection_);
-		}
+			//風のギミックの描画消す
+			/*for (const auto& wind : winds_) {
+				wind->Draw(viewProjection_);
+			}*/
+			//落とし穴の描画
+			for (const auto& pitfall : pitfalls_) {
+				pitfall->Draw(viewProjection_);
+			}
+
+			//回転矢印
+			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+				arrow->Draw(viewProjection_);
+			}
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+				goalW->Draw(viewProjection_);
+			}
+			for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+				goalB->Draw(viewProjection_);
+			}
 		
-		//回転矢印
-		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-			arrow->Draw(viewProjection_);
-		}
-		//ゴール
-		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
-			goalW->Draw(viewProjection_);
-		}
-		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
-			goalB->Draw(viewProjection_);
-		}
 	}
 
 	if (isstage2_)
@@ -713,15 +714,18 @@ void GameScene::Draw() {
 			}
 			rotatecannon_->Draw(viewProjection_);
 		}
+		if (isstage1_)
+		{
+			//バリアの描画
+			for (const auto& barrier : barriers_) {
+				barrier->Draw(viewProjection_);
+			}
 
-		//バリアの描画
-		for (const auto& barrier : barriers_) {
-			barrier->Draw(viewProjection_);
-		}
+			//2つめのバリアの描画
+			for (const auto& barrier2 : barriers2_) {
+				barrier2->Draw(viewProjection_);
+			}
 
-		//2つめのバリアの描画
-		for (const auto& barrier2 : barriers2_) {
-			barrier2->Draw(viewProjection_);
 		}
 		if (isstage1_ || isstage2_)
 		{
@@ -736,18 +740,22 @@ void GameScene::Draw() {
 		if (isstage1_&&ball_||isstage2_&&ball_) {
 			ball_->Draw(viewProjection_);
 		}
-		//ワープの描画
-		warp_->Draw(viewProjection_);
-		//2つめのワープの描画
-		warp2_->Draw(viewProjection_);
-		//右矢印の描画
-		rightarrow_->Draw(viewProjection_);
-		//左矢印の描画
-		leftarrow_->Draw(viewProjection_);
-		//上矢印の描画
-		uparrow_->Draw(viewProjection_);
-		//下矢印の描画
-		downarrow_->Draw(viewProjection_);
+		if (isstage1_)
+		{
+			//ワープの描画
+			warp_->Draw(viewProjection_);
+			//2つめのワープの描画
+			warp2_->Draw(viewProjection_);
+
+			//右矢印の描画
+			rightarrow_->Draw(viewProjection_);
+			//左矢印の描画
+			leftarrow_->Draw(viewProjection_);
+			//上矢印の描画
+			uparrow_->Draw(viewProjection_);
+			//下矢印の描画
+			downarrow_->Draw(viewProjection_);
+		}
 		//回転矢印の描画
 		//rotatingarrow_->Draw(viewProjection_);
 
