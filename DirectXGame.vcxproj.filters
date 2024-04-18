@@ -73,6 +73,12 @@
     <Filter Include="ソース ファイル\Switch">
       <UniqueIdentifier>{0a4379a6-59d0-46d9-ae63-4d72ab50c015}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Cannon">
+      <UniqueIdentifier>{196fca2f-9752-4c9c-968c-ba88d409e456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Cannon">
+      <UniqueIdentifier>{a0ab8661-094c-423a-a0b8-76faa276ec06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +176,24 @@
     </ClCompile>
     <ClCompile Include="Goal.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedDown.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage2RotatingArrow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Cannonbullet.cpp">
+      <Filter>ソース ファイル\Cannon</Filter>
+    </ClCompile>
+    <ClCompile Include="Cannon.cpp">
+      <Filter>ソース ファイル\Cannon</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateCannon.cpp">
+      <Filter>ソース ファイル\Cannon</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateCannonBullet.cpp">
+      <Filter>ソース ファイル\Cannon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,6 +358,24 @@
     </ClInclude>
     <ClInclude Include="Goal.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedDown.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage2RotatingArrow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Cannon.h">
+      <Filter>ヘッダー ファイル\Cannon</Filter>
+    </ClInclude>
+    <ClInclude Include="Cannonbullet.h">
+      <Filter>ヘッダー ファイル\Cannon</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateCannon.h">
+      <Filter>ヘッダー ファイル\Cannon</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateCannonBullet.h">
+      <Filter>ヘッダー ファイル\Cannon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

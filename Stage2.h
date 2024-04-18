@@ -22,7 +22,9 @@ public:
 	//ゲームシーンからアドレスをもらうための関数
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
-	
+	Vector3 GetPosition();
+
+	Vector3 GetScale();
 
 private:
 	//モデルの大きさや回転や座標を入れる変数

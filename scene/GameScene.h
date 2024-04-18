@@ -40,6 +40,9 @@
 #include"Stage2RotatingArrow.h"
 #include"SpeedDown.h"
 #include <Goal.h>
+#include"Cannon.h"
+#include"RotateCannon.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -127,25 +130,30 @@ public: // メンバ関数
 	void TutorialGoalWhiteGeneration(const Vector3& position);
 
 	void LoadStage2BarrierPopData();
-
 	void UpdateStage2BarrierPopCommands();
-
 	void Stage2BarrierGeneration(const Vector3& position);
 
 	void LoadSpeedDownPopData();
-
 	void UpdateSpeedDownPopCommands();
-
 	void SpeedDownGeneration(const Vector3& position);
 
 	void LoadTutorialGoalBlackPopData();
 	void UpdateTutorialGoalBlackPopCommands();
 	void TutorialGoalBlackGeneration(const Vector3& position);
+
+	void LoadCannonPopData();
+	void UpdateCannonPopCommands();
+	void CannonGenerate(const Vector3& position, const Vector3& Headposition, const Vector3& rotation);
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
 
 	void CheckAllCollisions();
+
+	//大砲の弾を登録するための関数
+	void AddCannonBullet(Cannonbullet* cannonbullet);
+	//回転大砲の弾を登録するための関数
+	void AddRotateCannonBullet(RotateCannonBullet* rotatecannonbullet);
 
 	//それぞれのギミックをステージごとに位置を変えるために必要なフラグの関数
 	bool IsStage1() { return isstage1_; }
@@ -251,6 +259,17 @@ private: // メンバ変数
 	//スピードダウン
 	std::list<std::unique_ptr<SpeedDown>> speeddowns_;
 	std::unique_ptr<Model> modelspeeddown_;
+	//大砲
+	std::list<std::unique_ptr<Cannon>> cannons_;
+	std::unique_ptr<Model> modelcannon_;
+	std::unique_ptr<Model>modelcannonhead_;
+	std::list <Cannonbullet*> cannonbullets_;
+	//回転大砲
+	std::unique_ptr<RotateCannon> rotatecannon_;
+	std::list <RotateCannonBullet*> rotatecannonbullets_;
+	//csvに読み込まれた数値を代入するための変数
+	Vector3 position_;
+	Vector3 rotation_;
 
 	// 壁発生コマンド
 	std::stringstream wallPopCommands;
@@ -282,6 +301,8 @@ private: // メンバ変数
 	std::stringstream GoalBlackPopCommands;
 	std::stringstream TutorialGoalWhitePopCommands;
 	std::stringstream TutorialGoalBlackPopCommands;
+	//大砲の発生コマンド
+	std::stringstream CannonPopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;

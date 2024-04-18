@@ -428,4 +428,22 @@ void Stage2::Draw(ViewProjection& viewProjection)
 
 }
 
+Vector3 Stage2::GetPosition()
+{
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}
+
+Vector3 Stage2::GetScale()
+{
+	Vector3 worldScale;
+	worldScale.x = worldTransform_.scale_.x;
+	worldScale.y = worldTransform_.scale_.y;
+	worldScale.z = worldTransform_.scale_.z;
+	return worldScale;
+}
+
 

@@ -275,3 +275,12 @@ Vector3 Transform(Vector3 v1, Vector3 v2) {
 
 	return num;
 }
+
+Vector3 Multiply(float scalar, const Vector3& v)
+{
+	Vector3 result;
+	result.x = scalar * v.x;
+	result.y = scalar * v.y;
+	result.z = scalar * v.z;
+	return result;
+}

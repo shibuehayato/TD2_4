@@ -92,6 +92,7 @@ void GameScene::Initialize() {
 	LoadStage2FlamePopData();
 	LoadStage2BarrierPopData();
 	LoadSpeedDownPopData();
+	LoadCannonPopData();
 	//--------------------//
 	
 	modelbarrier_.reset(Model::CreateFromOBJ("barrier", true));
@@ -168,8 +169,9 @@ void GameScene::Initialize() {
 	stage2rotatingarrow_ = std::make_unique<Stage2RotatingArrow>();
 	stage2rotatingarrow_->Initialize(modelArrow_.get());
 
-	
-	
+	rotatecannon_ = std::make_unique<RotateCannon>();
+	rotatecannon_->Initialize(model_, model_);
+	rotatecannon_->SetGameScene(this);
 }
 
 void GameScene::Update() {
@@ -389,6 +391,14 @@ void GameScene::Update() {
 			speeddown->Update();
 		}
 		UpdateSpeedDownPopCommands();
+		for (const std::unique_ptr<Cannon>& cannon : cannons_)
+		{
+			cannon->Update();
+		}
+		UpdateCannonPopCommands();
+
+		rotatecannon_->Update();
+
 	}
 
 	//回復
@@ -464,6 +474,35 @@ void GameScene::Update() {
 	BarrierRemoved();
 	//当たり判定
 	CheckAllCollisions();
+
+	for (Cannonbullet* bullet : cannonbullets_)
+	{
+		bullet->Update();
+	}
+
+	// デスフラグの立った弾を削除
+	cannonbullets_.remove_if([](Cannonbullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
+
+	for (RotateCannonBullet* rotatebullet : rotatecannonbullets_)
+	{
+		rotatebullet->Update();
+	}
+
+	// デスフラグの立った弾を削除
+	rotatecannonbullets_.remove_if([](RotateCannonBullet* rotatebullet) {
+		if (rotatebullet->IsDead()) {
+			delete rotatebullet;
+			return true;
+		}
+		return false;
+		});
 
 	////玉をとって位置に来たらクリア
 	//if (player_->GetTransformZ() >= 71&&ball_==nullptr) {
@@ -668,6 +707,11 @@ void GameScene::Draw() {
 			{
 				speeddown->Draw(viewProjection_);
 			}
+			for (const auto& cannon : cannons_)
+			{
+				cannon->Draw(viewProjection_);
+			}
+			rotatecannon_->Draw(viewProjection_);
 		}
 
 		//バリアの描画
@@ -706,6 +750,16 @@ void GameScene::Draw() {
 		downarrow_->Draw(viewProjection_);
 		//回転矢印の描画
 		//rotatingarrow_->Draw(viewProjection_);
+
+		for (Cannonbullet* bullet : cannonbullets_)
+		{
+			bullet->Draw(viewProjection_);
+		}
+
+		for (RotateCannonBullet* rotatebullet : rotatecannonbullets_)
+		{
+			rotatebullet->Draw(viewProjection_);
+		}
 		
 		// 天球の描画
 		skydome_->Draw(viewProjection_);
@@ -1853,6 +1907,112 @@ void GameScene::TutorialGoalBlackGeneration(const Vector3& position)
 	TutorialGoalBlacks_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
 }
 
+void GameScene::LoadCannonPopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//CannonPop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	CannonPopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateCannonPopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(CannonPopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+		// ROTATIONコマンド
+		if (word2.find("ROT") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			rotation_.x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			rotation_.y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			rotation_.z = (float)std::atof(word2.c_str());
+		}
+
+		// ROTATIONコマンド
+		if (word2.find("POP2") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			position_.x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			position_.y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			position_.z = (float)std::atof(word2.c_str());
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			CannonGenerate(Vector3(x, y, z),position_,rotation_);
+		}
+	}
+}
+
+void GameScene::CannonGenerate(const Vector3& position,const Vector3& Headposition,const Vector3& rotation)
+{
+	// 敵の生成
+	Cannon* cannon = new Cannon();
+
+	cannon->Initialize(model_, model_,position,Headposition,rotation);
+	cannon->SetGameScene(this);
+
+	cannons_.push_back(static_cast<std::unique_ptr<Cannon>>(cannon));
+}
+
 
 
 //当たり判定
@@ -2140,6 +2300,47 @@ void GameScene::CheckAllCollisions() {
 			//1つめのステージの座標
 			PosB = stage1->GetPosition();
 			RadiusB = stage1->GetScale();
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision2();
+			}
+
+			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision3();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+			{
+				player_->OnCollision4();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+			{
+				player_->OnCollision5();
+			}
+
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーと2つめのステージの壁
+	for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
+		if (stage2 && isstage2_) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//1つめのステージの座標
+			PosB = stage2->GetPosition();
+			RadiusB = stage2->GetScale();
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
@@ -2696,5 +2897,367 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 
+#pragma endregion プレイヤーと大砲の弾
+
+	for (Cannonbullet* cannonbullet : cannonbullets_) {
+		if (cannonbullet && isstage1_) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//炎の座標
+			PosB = cannonbullet->GetPosition();
+			RadiusB = cannonbullet->GetScale();
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->CannonOnCollision();
+			}
+
+			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->CannonOnCollision2();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+			{
+				player_->CannonOnCollision3();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+			{
+				player_->CannonOnCollision4();
+			}
+
+			
+
+		}
+	}
 #pragma endregion
+
+#pragma endregion プレイヤーと大砲の弾
+
+	for (Cannonbullet* cannonbullet : cannonbullets_) {
+		if (cannonbullet ) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//炎の座標
+			PosB = cannonbullet->GetPosition();
+			RadiusB = cannonbullet->GetScale();
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->CannonOnCollision();
+				cannonbullet->OnCollision();
+			}
+
+			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->CannonOnCollision2();
+				cannonbullet->OnCollision();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+			{
+				player_->CannonOnCollision3();
+				cannonbullet->OnCollision();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+			{
+				player_->CannonOnCollision4();
+				cannonbullet->OnCollision();
+			}
+
+
+
+		}
+	}
+#pragma endregion
+
+#pragma endregion プレイヤーと大砲 当たったら反射
+
+	for (const std::unique_ptr<Cannon>& cannon : cannons_) {
+		if (cannon ) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//炎の座標
+			PosB = cannon->GetPosition();
+			RadiusB = cannon->GetScale();
+			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision2();
+			}
+
+			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+			{
+				player_->OnCollision2();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+			{
+				player_->OnCollision2();
+			}
+
+			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+			{
+				player_->OnCollision2();
+			}
+
+
+
+		}
+	}
+#pragma endregion
+
+#pragma endregion 大砲と壁 
+
+	
+		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
+			for (Cannonbullet* bullet : cannonbullets_)
+			{
+				if (isstage2_) {
+					// プレイヤーの座標
+					PosA = stage2->GetPosition();
+					RadiusA = stage2->GetScale();
+					//炎の座標
+					PosB = bullet->GetPosition();
+					RadiusB = bullet->GetScale();
+					if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+					{
+						bullet->OnCollision();
+					}
+
+					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+					{
+						bullet->OnCollision();
+					}
+
+					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+					{
+						bullet->OnCollision();
+					}
+
+					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+					{
+						bullet->OnCollision();
+					}
+
+				}
+
+			}
+		
+	}
+#pragma endregion
+
+
+
+#pragma endregion プレイヤーと回転大砲の弾
+
+		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_) {
+			if (rotatecannonbullet) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//炎の座標
+				PosB = rotatecannonbullet->GetPosition();
+				RadiusB = rotatecannonbullet->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->CannonOnCollision();
+					rotatecannonbullet->OnCollision();
+				}
+
+				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->CannonOnCollision2();
+					rotatecannonbullet->OnCollision();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+				{
+					player_->CannonOnCollision3();
+					rotatecannonbullet->OnCollision();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+				{
+					player_->CannonOnCollision4();
+					rotatecannonbullet->OnCollision();
+				}
+
+
+
+			}
+		}
+#pragma endregion
+
+#pragma endregion プレイヤーと大砲の本体 当たったら反射
+
+		
+			if (isstage2_) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//炎の座標
+				PosB = rotatecannon_->GetPosition();
+				RadiusB = rotatecannon_->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision2();
+				}
+
+				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision2();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+				{
+					player_->OnCollision2();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+				{
+					player_->OnCollision2();
+				}
+
+
+
+			}
+		
+#pragma endregion
+
+#pragma endregion 回転大砲と壁 
+
+
+		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
+			for (RotateCannonBullet* rotatebullet : rotatecannonbullets_)
+			{
+				if (isstage2_) {
+					// プレイヤーの座標
+					PosA = stage2->GetPosition();
+					RadiusA = stage2->GetScale();
+					//炎の座標
+					PosB = rotatebullet->GetPosition();
+					RadiusB = rotatebullet->GetScale();
+					if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+					{
+						rotatebullet->OnCollision();
+					}
+
+					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+					{
+						rotatebullet->OnCollision();
+					}
+
+					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+					{
+						rotatebullet->OnCollision();
+					}
+
+					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+					{
+						rotatebullet->OnCollision();
+					}
+
+				}
+
+			}
+
+		}
+#pragma endregion
+
+#pragma region プレイヤーとステージ2の回復
+		if (isstage2_ && stage2recovery_) {
+			// プレイヤーの座標
+			PosA = player_->GetWorldPosition();
+			RadiusA = player_->GetRadius();
+			//回復の座標
+			PosB = stage2recovery_->GetWorldPosition();
+			RadiusB = stage2recovery_->GetRadius();
+
+
+
+			// 座標AとBの距離を求める
+			PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+				(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+				(PosB.z - PosA.z) * (PosB.z - PosA.z);
+			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+
+
+			// 弾と弾の交差判定
+			if (PositionMeasure <= RadiusMeasure) {
+				stage2recovery_->OnCollision();
+				player_->RecoveryOnCollision();
+			}
+
+		}
+#pragma endregion
+
+}
+
+void GameScene::AddCannonBullet(Cannonbullet* cannonbullet)
+{
+	cannonbullets_.push_back(cannonbullet);
+}
+
+void GameScene::AddRotateCannonBullet(RotateCannonBullet* rotatecannonbullet)
+{
+	rotatecannonbullets_.push_back(rotatecannonbullet);
 }

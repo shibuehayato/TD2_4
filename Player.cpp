@@ -3,6 +3,7 @@
 
 #include <Mymath.h>
 #include <ImGuiManager.h>
+#include"Cannonbullet.h"
 
 void Player::Initialize(Model* head)
 {
@@ -267,4 +268,45 @@ void Player::ArrowOnCollision()
 	float Adjustment = 0.3f;
 
 	KeepMove_ = V3FDot(ArrowRot_, Adjustment);
+}
+
+void Player::CannonOnCollision()
+{
+	
+	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
+	{
+		
+		worldTransformHead_.translation_.x += 10.0f;
+	}
+	else if(worldTransformHead_.translation_.x<=-10.1f&&worldTransformHead_.translation_.x>=-18.0f||
+		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
+	{
+		worldTransformHead_.translation_.x += 1.0f;
+	}
+	
+}
+
+void Player::CannonOnCollision2()
+{
+	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
+	{
+		worldTransformHead_.translation_.x -= 10.0f;
+		
+	}
+	else if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
+	{
+		worldTransformHead_.translation_.x -= 1.0f;
+	}
+	
+}
+
+void Player::CannonOnCollision3()
+{
+	worldTransformHead_.translation_.z += 10.0f;
+}
+
+void Player::CannonOnCollision4()
+{
+	worldTransformHead_.translation_.z -= 10.0f;
 }

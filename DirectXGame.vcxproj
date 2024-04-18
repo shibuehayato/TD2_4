@@ -112,6 +112,8 @@
     <ClCompile Include="Barrier2.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="Cannon.cpp" />
+    <ClCompile Include="Cannonbullet.cpp" />
     <ClCompile Include="DownArrow.cpp" />
     <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
@@ -124,6 +126,8 @@
     <ClCompile Include="Pitfall.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RightArrow.cpp" />
+    <ClCompile Include="RotateCannon.cpp" />
+    <ClCompile Include="RotateCannonBullet.cpp" />
     <ClCompile Include="RotatingArrow.cpp" />
     <ClCompile Include="Recovery.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
@@ -167,6 +171,8 @@
     <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="Cannon.h" />
+    <ClInclude Include="Cannonbullet.h" />
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
     <ClInclude Include="Fire2.h" />
@@ -182,6 +188,8 @@
     <ClInclude Include="Pitfall.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RightArrow.h" />
+    <ClInclude Include="RotateCannon.h" />
+    <ClInclude Include="RotateCannonBullet.h" />
     <ClInclude Include="RotatingArrow.h" />
     <ClInclude Include="Recovery.h" />
     <ClInclude Include="scene\GameScene.h" />

@@ -37,3 +37,5 @@ float Dot(const Vector3& v1, const Vector3& v2);
 Vector3 V3FDot(const Vector3& v1, const float& v2);
 
 Vector3 Transform(Vector3 v1, Vector3 v2);
+
+Vector3 Multiply(float scalar, const Vector3& v);

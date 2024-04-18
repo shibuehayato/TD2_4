@@ -1,6 +1,7 @@
 ﻿#include "model.h"
 #include "WorldTransform.h"
 #include <Input.h>
+class Cannonbullet;
 class Player {
 public:
 
@@ -32,6 +33,12 @@ public:
 	void PitfallOnCollision(); 
 	//矢印の当たり判定
 	void ArrowOnCollision();
+	//大砲に当たった時の関数
+	void CannonOnCollision();  //右
+	void CannonOnCollision2(); //左
+	void CannonOnCollision3(); //上
+	void CannonOnCollision4(); //下
+	//-----------------------//
 
 	float GetTransformZ() { return worldTransformHead_.translation_.z; };
 
@@ -91,4 +98,6 @@ private:
 	XINPUT_STATE joyState;
 
 	Vector3 ArrowRot_ = { 0.0f,0.0f,0.0f };
+
+	Cannonbullet* cannonbullet_ = nullptr;
 };
