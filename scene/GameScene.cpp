@@ -172,16 +172,13 @@ void GameScene::Initialize() {
 	//rotatingarrow_ = std::make_unique<RotatingArrow>();
 	//rotatingarrow_->Initialize(modelRotationArrow_.get());
 	
-	//rotatingarrow_->Initialize(modelRotationArrow_.get());
-	
+	//rotatingarrow_->Initialize(modelRotationArrow_.get());	
 	stage2recovery_ = std::make_unique<Stage2Recovery>();
 	stage2recovery_->Initialize(modelRecovery_.get());
 	stage2recovery_->SetGameScene(this);
 
 	stage2rotatingarrow_ = std::make_unique<Stage2RotatingArrow>();
 	stage2rotatingarrow_->Initialize(modelArrow_.get());
-
-	
 	
 	// 追従カメラの生成
 	followCamera_ = std::make_unique<FollowCamera>();
@@ -380,7 +377,6 @@ void GameScene::Update() {
 			downarrow_->Update();
 			//回転矢印の更新
 			//rotatingarrow_->Update();
-
 		}
 
 		if (isstage2_)
@@ -408,6 +404,7 @@ void GameScene::Update() {
 				speeddown->Update();
 			}
 			UpdateSpeedDownPopCommands();
+
 		}
 
 		//回復
