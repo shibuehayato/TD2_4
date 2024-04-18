@@ -208,7 +208,7 @@ private: // メンバ変数
 	//風のギミックの宣言
 	std::list<std::unique_ptr<Wind>> winds_;
 	//風パーティクルのギミックの宣言
-	std::list<std::unique_ptr<WindParticle>> windParticles_;
+	std::list<WindParticle*> windParticles_;
 	std::unique_ptr<Model> modelWind_;
 	//風ファンのギミックの宣言
 	std::unique_ptr<Cyclone> cyclone_;
@@ -359,7 +359,6 @@ private: // メンバ変数
 
 	//風のパーティクル
 	float windtime_ = 3;
-	float winddeadtime_ = 5;
 
 	/// <summary>
 	/// ゲームシーン用

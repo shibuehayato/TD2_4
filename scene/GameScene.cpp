@@ -9,6 +9,9 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
+	for (WindParticle* wind :windParticles_) {
+		delete wind;
+	}
 }
 
 void GameScene::Initialize() {
@@ -348,7 +351,7 @@ void GameScene::Update() {
 			}
 			UpdateWindPopCommands();
 			//風のパーティクル
-			for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
+			for (WindParticle* wind : windParticles_) {
 				wind->Update();
 			}
 			UpdateWindParticlePopCommands();
@@ -662,10 +665,10 @@ void GameScene::Draw() {
 		//風のギミックの描画消す
 		/*for (const auto& wind : winds_) {
 			wind->Draw(viewProjection_);
-		}
-			for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
+		}*/
+			for (WindParticle* wind : windParticles_) {
 				wind->Draw(viewProjection_);
-			}*/
+			}
 		//落とし穴の描画
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
@@ -1640,15 +1643,9 @@ void GameScene::UpdateWindParticlePopCommands()
 {
 		WindParticleGeneration();
 
-		for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
-			winddeadtime_ -= 0.1f;
-			if (winddeadtime_ <= 0) {
-				wind->IsDead();
-				winddeadtime_ = 5;
-			}
-
+		for (WindParticle* wind : windParticles_) {
 			if (wind->IsDead()==true) {
-
+				delete wind;
 			}
 
 		}
@@ -1664,9 +1661,9 @@ void GameScene::WindParticleGeneration() {
 	if (windtime_ <= 0) {
 	// WindParticle オブジェクトを生成し、初期位置を渡す
 	WindParticle* wind = new WindParticle();
+	windParticles_.push_back(wind);
 	wind->Initialize(modelWind_.get(), startX, startY, startZ);
 
-	windParticles_.push_back(static_cast<std::unique_ptr<WindParticle>>(wind));
 	windtime_ = 8;
 	}
 	

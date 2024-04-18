@@ -20,6 +20,6 @@ private:
 	// デスフラグ
 	bool isDead_ = false;
 	// デスタイマー
-	int32_t deathTimer_ =5;
+	float deathTimer_ = 500;
 };
 
