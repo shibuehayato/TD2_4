@@ -15,8 +15,8 @@ void FollowCamera::Update()
 	if (target_) {
 
 		ImGui::Begin("camera");
-		ImGui::DragFloat3("translation", &offset.x);
-		ImGui::DragFloat3("rotation", &rotation.x);
+		ImGui::DragFloat3("translation", &offset.x,0.01f);
+		ImGui::DragFloat3("rotation", &rotation.x,0.01f);
 		ImGui::End();
 
 		// 座標をコピーしてオフセット分ずらす

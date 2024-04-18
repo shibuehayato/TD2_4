@@ -88,6 +88,12 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	modelWind_.reset(Model::CreateFromOBJ("Cyclone", true));
 
+	//風ファンの生成
+	cyclone_ = std::make_unique<Cyclone>();
+	//3Dモデルの生成
+	modelCyclone_.reset(Model::CreateFromOBJ("Cyclone", true));
+	cyclone_->Initialize(modelCyclone_.get());
+
 	//複数の壁を読み込むための関数
 
 	//複数の壁やギミックを読み込むための関数
@@ -226,8 +232,8 @@ void GameScene::Update() {
 		debugCamera_->Update();
 
 		ImGui::Begin("viewprojection");
-		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
-		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+		ImGui::DragFloat3("translation", &viewProjection_.translation_.x),0.01f;
+		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x),0.01f;
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
 		ImGui::End();
@@ -388,6 +394,8 @@ void GameScene::Update() {
 			uparrow_->Update();
 			//下矢印の更新
 			downarrow_->Update();
+			//風ファンの更新
+			cyclone_->Update();
 			//回転矢印の更新
 			//rotatingarrow_->Update();
 
@@ -654,10 +662,10 @@ void GameScene::Draw() {
 		//風のギミックの描画消す
 		/*for (const auto& wind : winds_) {
 			wind->Draw(viewProjection_);
-		}*/
+		}
 			for (const std::unique_ptr<WindParticle>& wind : windParticles_) {
 				wind->Draw(viewProjection_);
-			}
+			}*/
 		//落とし穴の描画
 		for (const auto& pitfall : pitfalls_) {
 			pitfall->Draw(viewProjection_);
@@ -674,6 +682,8 @@ void GameScene::Draw() {
 		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
 			goalB->Draw(viewProjection_);
 		}
+		//風ファンの描画
+		cyclone_->Draw(viewProjection_);
 	}
 
 	if (isstage2_)

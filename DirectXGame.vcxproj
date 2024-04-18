@@ -112,6 +112,7 @@
     <ClCompile Include="Barrier2.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="Cyclone.cpp" />
     <ClCompile Include="DownArrow.cpp" />
     <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="Cyclone.h" />
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
     <ClInclude Include="Fire2.h" />
