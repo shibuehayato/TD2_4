@@ -162,16 +162,21 @@ void GameScene::Initialize() {
 	
 	//rotatingarrow_->Initialize(modelRotationArrow_.get());
 	
+	//ステージ2の回復
 	stage2recovery_ = std::make_unique<Stage2Recovery>();
 	stage2recovery_->Initialize(modelRecovery_.get());
 	stage2recovery_->SetGameScene(this);
 
+	//ステージ2の回転矢印
 	stage2rotatingarrow_ = std::make_unique<Stage2RotatingArrow>();
 	stage2rotatingarrow_->Initialize(modelArrow_.get());
 
+	//回転大砲
 	rotatecannon_ = std::make_unique<RotateCannon>();
 	rotatecannon_->Initialize(model_, model_);
 	rotatecannon_->SetGameScene(this);
+
+	
 }
 
 void GameScene::Update() {
@@ -195,6 +200,7 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					scene = GAME;
+
 				}
 			}
 		}
@@ -228,6 +234,8 @@ void GameScene::Update() {
 	}
 #endif
 
+	
+
 	// 自キャラの更新
 	player_->Update();
 
@@ -246,6 +254,15 @@ void GameScene::Update() {
 		istutorial_ = true;
 		isstage1_ = false;
 		isstage2_ = false;
+
+		for (Cannonbullet* cannonbullet : cannonbullets_)
+		{
+			cannonbullet->OnCollision();
+		}
+		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+		{
+			rotatecannonbullet->OnCollision();
+		}
 	}
 	//ステージ1のフラグを立てるためのif文
 	if (input_->TriggerKey(DIK_B))
@@ -254,6 +271,14 @@ void GameScene::Update() {
 		isstage1_ = true;
 		istutorial_ = false;
 		isstage2_ = false;
+		for (Cannonbullet* cannonbullet : cannonbullets_)
+		{
+			cannonbullet->OnCollision();
+		}
+		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+		{
+			rotatecannonbullet->OnCollision();
+		}
 	}
 	if (input_->TriggerKey(DIK_C))
 	{
@@ -569,6 +594,9 @@ void GameScene::Draw() {
 	if (scene == GAMEOVER) {
 		GameOverSprite_->Draw();
 	}
+
+	
+	
 	
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -639,10 +667,12 @@ void GameScene::Draw() {
 			for (const auto& pitfall : pitfalls_) {
 				pitfall->Draw(viewProjection_);
 			}
-
-			//回転矢印
-			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-				arrow->Draw(viewProjection_);
+			if (isstage1_)
+			{
+				//回転矢印
+				for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+					arrow->Draw(viewProjection_);
+				}
 			}
 			//ゴール
 			for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
@@ -669,9 +699,12 @@ void GameScene::Draw() {
 		{
 			stage2recovery_->Draw(viewProjection_);
 		}
-		//回転矢印
-		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-			arrow->Draw(viewProjection_);
+		if (isstage1_)
+		{
+			//回転矢印
+			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+				arrow->Draw(viewProjection_);
+			}
 		}
 		////ゴール
 		//for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
@@ -696,8 +729,11 @@ void GameScene::Draw() {
 			{
 				stage2recovery_->Draw(viewProjection_);
 			}
-			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-				arrow->Draw(viewProjection_);
+			if (isstage1_)
+			{
+				for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+					arrow->Draw(viewProjection_);
+				}
 			}
 			for (const auto& stage2barrier : stage2barriers_)
 			{
@@ -713,6 +749,15 @@ void GameScene::Draw() {
 				cannon->Draw(viewProjection_);
 			}
 			rotatecannon_->Draw(viewProjection_);
+			for (Cannonbullet* bullet : cannonbullets_)
+			{
+				bullet->Draw(viewProjection_);
+			}
+
+			for (RotateCannonBullet* rotatebullet : rotatecannonbullets_)
+			{
+				rotatebullet->Draw(viewProjection_);
+			}
 		}
 		if (isstage1_)
 		{
@@ -759,15 +804,7 @@ void GameScene::Draw() {
 		//回転矢印の描画
 		//rotatingarrow_->Draw(viewProjection_);
 
-		for (Cannonbullet* bullet : cannonbullets_)
-		{
-			bullet->Draw(viewProjection_);
-		}
-
-		for (RotateCannonBullet* rotatebullet : rotatecannonbullets_)
-		{
-			rotatebullet->Draw(viewProjection_);
-		}
+		
 		
 		// 天球の描画
 		skydome_->Draw(viewProjection_);
@@ -784,6 +821,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	
+	
+	
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

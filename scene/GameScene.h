@@ -42,7 +42,7 @@
 #include <Goal.h>
 #include"Cannon.h"
 #include"RotateCannon.h"
-
+#include"StageSelect.h"
 
 /// <summary>
 /// ゲームシーン
@@ -267,6 +267,8 @@ private: // メンバ変数
 	//回転大砲
 	std::unique_ptr<RotateCannon> rotatecannon_;
 	std::list <RotateCannonBullet*> rotatecannonbullets_;
+	//ステージセレクト
+	std::unique_ptr<StageSelect> stageselect_;
 	//csvに読み込まれた数値を代入するための変数
 	Vector3 position_;
 	Vector3 rotation_;

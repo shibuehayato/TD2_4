@@ -24,5 +24,7 @@ private:
 	Model* model_ = nullptr;
 
 	GameScene* gameScene_=nullptr;
+
+	uint32_t textureHandle_ = 0u;
 };
 
