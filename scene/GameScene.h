@@ -40,6 +40,7 @@
 #include"Stage2RotatingArrow.h"
 #include"SpeedDown.h"
 #include <Goal.h>
+#include "FollowCamera.h"
 #include"Cannon.h"
 #include"RotateCannon.h"
 #include"StageSelect.h"
@@ -342,6 +343,30 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> OperationSprite_ = nullptr;
 	std::unique_ptr<Sprite> ClearSprite_ = nullptr;
 	std::unique_ptr<Sprite> GameOverSprite_ = nullptr;
+
+	//大きさ
+	enum Size {
+		Big_,
+		Medium_,
+		Small_
+	};
+	Size size_ = Small_;
+
+	//テクスチャハンドル
+	uint32_t BigTexture_ = 0;
+	uint32_t MediumTexture_ = 0;
+	uint32_t SmallTexture_ = 0;
+
+	//大きさのスプライト
+	std::unique_ptr<Sprite> BigSprite_ = nullptr;
+	std::unique_ptr<Sprite> MediumSprite_ = nullptr;
+	std::unique_ptr<Sprite> SmallSprite_ = nullptr;
+
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
+
+	// マップ全体を映すカメラ
+	bool IsFullMapCamera = false;
 
 	/// <summary>
 	/// ゲームシーン用

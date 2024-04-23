@@ -38,6 +38,19 @@ void GameScene::Initialize() {
 	ClearSprite_.reset(Sprite::Create(ClearTexture_, { 0, 0 }));
 	GameOverSprite_.reset(Sprite::Create(GameOverTexture_, { 0, 0 }));
 
+	//大きさ
+	BigTexture_ = TextureManager::Load("Size/Big.png");
+	MediumTexture_ = TextureManager::Load("Size/Medium.png");
+	SmallTexture_ = TextureManager::Load("Size/Small.png");
+
+	BigSprite_ = std::make_unique<Sprite>();
+	MediumSprite_ = std::make_unique<Sprite>();
+	SmallSprite_ = std::make_unique<Sprite>();
+
+	BigSprite_.reset(Sprite::Create(BigTexture_, { 0, 0 }));
+	MediumSprite_.reset(Sprite::Create(MediumTexture_, { 0, 0 }));
+	SmallSprite_.reset(Sprite::Create(SmallTexture_, { 0, 0 }));
+
 	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
 	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
@@ -177,6 +190,13 @@ void GameScene::Initialize() {
 	rotatecannon_->SetGameScene(this);
 
 	
+	
+	// 追従カメラの生成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	// 自キャラのワールドトランスフォームを追従カメラにセット
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+
 }
 
 void GameScene::Update() {
@@ -207,31 +227,31 @@ void GameScene::Update() {
 		break;
 	case GameScene::GAME:
 
-	debugCamera_->Update();
+		debugCamera_->Update();
 
-	ImGui::Begin("viewprojection");
-	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
-	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
-	ImGui::DragInt("rotation", &warpcooltime_);
-	ImGui::Checkbox("isstage2", &isstage2_);
-	ImGui::End();
+		ImGui::Begin("viewprojection");
+		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
+		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+		ImGui::DragInt("rotation", &warpcooltime_);
+		ImGui::Checkbox("isstage2", &isstage2_);
+		ImGui::End();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		isDebugCameraAcctive_ = true;
-	}
-	if (isDebugCameraAcctive_) {
+		if (input_->TriggerKey(DIK_SPACE)) {
+			isDebugCameraAcctive_ = true;
+		}
+		if (isDebugCameraAcctive_) {
 
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		// ビュープロジェクション行列の転送
-		viewProjection_.TransferMatrix();
-	}
-	else {
+			viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+			viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+			// ビュープロジェクション行列の転送
+			viewProjection_.TransferMatrix();
+		}
+		else {
 
-		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
-	}
+			// ビュープロジェクション行列の更新と転送
+			viewProjection_.UpdateMatrix();
+		}
 #endif
 
 	
@@ -239,17 +259,17 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	
-	
 
 
 
-	// 天球の更新
-	skydome_->Update();
 
-	//チュートリアルのフラグを立てるためのif文
-	if (input_->TriggerKey(DIK_A))
-	{
+
+		// 天球の更新
+		skydome_->Update();
+
+		//チュートリアルのフラグを立てるためのif文
+		if (input_->TriggerKey(DIK_A))
+		{
 
 		istutorial_ = true;
 		isstage1_ = false;
@@ -288,108 +308,137 @@ void GameScene::Update() {
 		isballdead_ = false;
 	}
 
-	//チュートリアルのフラグがたったら実行する
-	if (istutorial_)
-	{
-		//ステージの更新
-		for (const std::unique_ptr<Tutorial>& stage : tutorials_) {
-			if (stage != nullptr) {
-				stage->Update();
+		//チュートリアルのフラグがたったら実行する
+		if (istutorial_)
+		{
+			//ステージの更新
+			for (const std::unique_ptr<Tutorial>& stage : tutorials_) {
+				if (stage != nullptr) {
+					stage->Update();
+
+				}
+			}
+			//複数の壁を出すための関数
+			UpdateWallPopCommands();
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : TutorialGoalWhites_) {
+				goalW->Update();
+			}
+			UpdateTutorialGoalWhitePopCommands();
+			for (const std::unique_ptr<Goal>& goalB : TutorialGoalBlacks_) {
+				goalB->Update();
+			}
+			UpdateTutorialGoalBlackPopCommands();
+
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == false) {
+							IsFullMapCamera = true;
+						}
+					}
+				}
+			}
+
+			if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == true) {
+							IsFullMapCamera = false;
+						}
+					}
+				}
+			}
+
+			if (IsFullMapCamera == true) {
+				viewProjection_.translation_ = { 0,130.0f,0 };
+				viewProjection_.rotation_ = { -11.0f,0,0 };
+			}
+
+		}
+
+		ImGui::Begin("FullMap");
+		ImGui::Checkbox("FullMap", &IsFullMapCamera);
+		ImGui::End();
+
+		if (isstage1_ || isstage2_)
+		{
+			//中スイッチの更新
+			normalswitch_->Update();
+		}
+
+		if (isstage1_)
+		{
+			//ステージの更新
+			for (const std::unique_ptr<Stage1>& stage1 : stages1_) {
+				if (stage1 != nullptr) {
+					stage1->Update();
+
+				}
+			}
+			//複数の壁を出すための関数
+			Stage1UpdateWallPopCommands();
+			//複数の炎ギミックを出すための関数
+			UpdateFlamePopCommands();
+
+			for (const std::unique_ptr<Fire>& fire : fires_) {
+				fire->Update();
+			}
+			//小スイッチの更新
+			smallswitch_->Update();
+
+			//風のギミックの更新
+			for (const std::unique_ptr<Wind>& wind : winds_) {
+				wind->Update();
+			}
+			UpdateWindPopCommands();
+			//落とし穴の更新
+			for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
+				pitfall->Update();
+			}
+			UpdatePitfallPopCommands();
+			//バリアの更新
+			for (const std::unique_ptr<Barrier>& barrier : barriers_) {
+				barrier->Update();
 
 			}
-		}
-		//複数の壁を出すための関数
-		UpdateWallPopCommands();
-		//ゴール
-		for (const std::unique_ptr<Goal>& goalW : TutorialGoalWhites_) {
-			goalW->Update();
-		}
-		UpdateTutorialGoalWhitePopCommands();
-		for (const std::unique_ptr<Goal>& goalB : TutorialGoalBlacks_) {
-			goalB->Update();
-		}
-		UpdateTutorialGoalBlackPopCommands();
-	
-	}
-
-
-	if (isstage1_ || isstage2_)
-	{
-		//中スイッチの更新
-		normalswitch_->Update();
-	}
-
-	if (isstage1_)
-	{
-		//ステージの更新
-		for (const std::unique_ptr<Stage1>& stage1 : stages1_) {
-			if (stage1 != nullptr) {
-				stage1->Update();
-
+			UpdateBarrierPopCommands();
+			//2つめのバリアの更新
+			for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
+				barrier2->Update();
 			}
-		}
-		//複数の壁を出すための関数
-		Stage1UpdateWallPopCommands();
-		//複数の炎ギミックを出すための関数
-		UpdateFlamePopCommands();
+			UpdateBarrier2PopCommands();
+			for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+				arrow->Update();
+			}
+			UpdateArrowPopCommands();
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
+				goalW->Update();
+			}
+			UpdateGoalWhitePopCommands();
+			for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
+				goalB->Update();
+			}
+			UpdateGoalBlackPopCommands();
 
-		for (const std::unique_ptr<Fire>& fire : fires_) {
-			fire->Update();
+			//ワープの更新
+			warp_->Update();
+			//2つめのワープの更新
+			warp2_->Update();
+			//右矢印の更新
+			rightarrow_->Update();
+			//左矢印の更新
+			leftarrow_->Update();
+			//上矢印の更新
+			uparrow_->Update();
+			//下矢印の更新
+			downarrow_->Update();
+			//回転矢印の更新
+			//rotatingarrow_->Update();
 		}
-		//小スイッチの更新
-		smallswitch_->Update();
-		
-		//風のギミックの更新
-		for (const std::unique_ptr<Wind>& wind : winds_) {
-			wind->Update();
-		}
-		UpdateWindPopCommands();
-		//落とし穴の更新
-		for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
-			pitfall->Update();
-		}
-		UpdatePitfallPopCommands();
-		//バリアの更新
-		for (const std::unique_ptr<Barrier>& barrier : barriers_) {
-			barrier->Update();
-
-		}
-		UpdateBarrierPopCommands();
-		//2つめのバリアの更新
-		for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
-			barrier2->Update();
-		}
-		UpdateBarrier2PopCommands();
-		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-			arrow->Update();
-		}
-		UpdateArrowPopCommands();
-		//ゴール
-		for (const std::unique_ptr<Goal>& goalW : GoalWhites_) {
-			goalW->Update();
-		}
-		UpdateGoalWhitePopCommands();
-		for (const std::unique_ptr<Goal>& goalB : GoalBlacks_) {
-			goalB->Update();
-		}
-		UpdateGoalBlackPopCommands();
-
-		//ワープの更新
-		warp_->Update();
-		//2つめのワープの更新
-		warp2_->Update();
-		//右矢印の更新
-		rightarrow_->Update();
-		//左矢印の更新
-		leftarrow_->Update();
-		//上矢印の更新
-		uparrow_->Update();
-		//下矢印の更新
-		downarrow_->Update();
-		//回転矢印の更新
-		//rotatingarrow_->Update();
-	
-	}
 
 	if (isstage2_)
 	{
@@ -426,80 +475,96 @@ void GameScene::Update() {
 
 	}
 
-	//回復
-	if (isstage1_ && recovery_ || recovery_ && isstage2_) {
-		recovery_->Update();
-		//消す
-		if (recovery_->IsDead()) {
-			recovery_.reset();
+		//回復
+		if (isstage1_ && recovery_ || recovery_ && isstage2_) {
+			recovery_->Update();
+			//消す
+			if (recovery_->IsDead()) {
+				recovery_.reset();
+			}
 		}
-	}
-	//回復
-	if (isstage1_ && stage2recovery_|| stage2recovery_ && isstage2_) {
-		stage2recovery_->Update();
-		//消す
-		if (stage2recovery_->IsDead()) {
-			stage2recovery_.reset();
+		//回復
+		if (isstage1_ && stage2recovery_ || stage2recovery_ && isstage2_) {
+			stage2recovery_->Update();
+			//消す
+			if (stage2recovery_->IsDead()) {
+				stage2recovery_.reset();
+			}
 		}
-	}
 
 
-	if (!stage2recovery_) {
-		recoveryTime_++;
+		if (!stage2recovery_) {
+			recoveryTime_++;
 
-		if (recoveryTime_ >= 180) {
-			//回復の生成
-			stage2recovery_ = std::make_unique<Stage2Recovery>();
-			//回復の初期化
-			stage2recovery_->Initialize(modelRecovery_.get());
-			recoveryTime_ = 0;
+			if (recoveryTime_ >= 180) {
+				//回復の生成
+				stage2recovery_ = std::make_unique<Stage2Recovery>();
+				//回復の初期化
+				stage2recovery_->Initialize(modelRecovery_.get());
+				recoveryTime_ = 0;
+			}
 		}
-	}
 
-	if (!recovery_) {
-		recoveryTime_++;
+		if (!recovery_) {
+			recoveryTime_++;
 
-		if (recoveryTime_ >= 180) {
-			//回復の生成
-			recovery_ = std::make_unique<Recovery>();
-			//回復の初期化
-			recovery_->SetGameScene(this);
-			recovery_->Initialize(modelRecovery_.get());
-			recoveryTime_ = 0;
+			if (recoveryTime_ >= 180) {
+				//回復の生成
+				recovery_ = std::make_unique<Recovery>();
+				//回復の初期化
+				recovery_->SetGameScene(this);
+				recovery_->Initialize(modelRecovery_.get());
+				recoveryTime_ = 0;
+			}
 		}
-	}
 
-	if (!ball_)
-	{
-		if (isstage2_&&isballdead_==false) {
-			//回復の生成
-			ball_ = std::make_unique<Ball>();
-			//回復の初期化
-			ball_->SetGameScene(this);
-			ball_->Initialize(modelBall_.get());
+		if (!ball_)
+		{
+			if (isstage2_ && isballdead_ == false) {
+				//回復の生成
+				ball_ = std::make_unique<Ball>();
+				//回復の初期化
+				ball_->SetGameScene(this);
+				ball_->Initialize(modelBall_.get());
+			}
 		}
-	}
-	//玉
-	if (isstage1_ && ball_ || isstage2_ && ball_) {
-		ball_->Update();
-	}
-	if (ball_ && ball_->IsDead()) {
-		ball_.reset();
-	}
-	/*if (player_->IsMove()&&warpcooltime_<=10)
-	{
-		warpcooltime_++;
-	}*/
-	 if (player_->IsMove() == false && movestoptime <= 10)
-	{
-		movestoptime++;
-	}
+		//玉
+		if (isstage1_ && ball_ || isstage2_ && ball_) {
+			ball_->Update();
+		}
+		if (ball_ && ball_->IsDead()) {
+			ball_.reset();
+		}
+		/*if (player_->IsMove()&&warpcooltime_<=10)
+		{
+			warpcooltime_++;
+		}*/
+		if (player_->IsMove() == false && movestoptime <= 10)
+		{
+			movestoptime++;
+		}
 
-	//バリアが解除されたかを確認する関数
-	BarrierRemoved();
-	//当たり判定
-	CheckAllCollisions();
+		//バリアが解除されたかを確認する関数
+		BarrierRemoved();
+		//当たり判定
+		CheckAllCollisions();
 
+		////玉をとって位置に来たらクリア
+		//if (player_->GetTransformZ() >= 71&&ball_==nullptr) {
+		//		scene = CLEAR;
+		//		player_->Initialize(modelPlayerHead_.get());
+		//}
+
+		//大きさ合わせ
+		if (player_->GetPlayerScaleX() == 1.0) {
+			size_ = Small_;
+		}
+		if (player_->GetPlayerScaleX() == 1.5) {
+			size_ = Medium_;
+		}
+		if (player_->GetPlayerScaleX() == 2.0) {
+			size_ = Big_;
+		}
 	for (Cannonbullet* bullet : cannonbullets_)
 	{
 		bullet->Update();
@@ -536,16 +601,35 @@ void GameScene::Update() {
 	//}
 	
 
-	// コントローラーのBボタンを押すとゲームオーバー
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
-				!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
-				scene = GAMEOVER;
-			}
+		if (IsFullMapCamera == false) {
+			// 追従カメラの更新
+			followCamera_->Update();
+			viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+			viewProjection_.matView = followCamera_->GetViewProjection().matView;
+			viewProjection_.TransferMatrix();
 		}
-	}
-	break;
+
+			// コントローラーのAボタンを押すとクリア
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+						scene = CLEAR;
+					}
+				}
+			}
+
+
+			// コントローラーのBボタンを押すとゲームオーバー
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+						scene = GAMEOVER;
+					}
+				}
+			}
+			break;
 	case GameScene::CLEAR:
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
@@ -566,8 +650,9 @@ void GameScene::Update() {
 			}
 		}
 		break;
+		}
 	}
-}
+
 
 void GameScene::Draw() {
 
@@ -582,6 +667,7 @@ void GameScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 
+	
 	if (scene == TITLE) {
 		TitleSprite_->Draw();
 	}
@@ -821,9 +907,27 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	//大きさの描画
+	//これで場所替え
 	
+	Vector2 position = { 670,240 };
+	//position = { 605,200 };
 	
-	
+	if (istutorial_ == true && scene == GAME || isstage1_ == true && scene == GAME || isstage2_ == true&&scene==GAME) {
+		if (size_ == Big_) {
+			BigSprite_->SetPosition(position);
+			BigSprite_->Draw();
+		}
+		if (size_ == Medium_) {
+			MediumSprite_->SetPosition(position);
+			MediumSprite_->Draw();
+		}
+		if (size_ == Small_) {
+			SmallSprite_->SetPosition(position);
+			SmallSprite_->Draw();	
+		}
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -2900,7 +3004,7 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
 		}
@@ -2920,7 +3024,7 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&istutorial_) {
+		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
 		}

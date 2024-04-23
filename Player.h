@@ -60,7 +60,12 @@ public:
 	//矢印の向きのセッター
 	void SetKeepMove(const Vector3& ArrowRot) { ArrowRot_ = ArrowRot; };
 
+	//プレイヤーの大きさの取得xだけ
+	float GetPlayerScaleX() { return worldTransformHead_.scale_.x; };
+
 	bool IsMove() { return isMove; }
+
+	const WorldTransform& GetWorldTransform() { return worldTransformHead_; }
 
 private:
 	// ワールド変換データ
