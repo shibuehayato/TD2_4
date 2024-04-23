@@ -13,9 +13,9 @@ void Warp::Update()
 {
 	worldTransform_.UpdateMatrix();
 
-	ImGui::Begin("Warp");
-	ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.01f);
-	ImGui::End();
+	//ImGui::Begin("Warp");
+	//ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x, 0.01f);
+	//ImGui::End();
 }
 
 void Warp::Draw(ViewProjection& viewProjection)

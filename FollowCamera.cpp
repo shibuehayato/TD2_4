@@ -14,10 +14,10 @@ void FollowCamera::Update()
 	// 追従対象がいれば
 	if (target_) {
 
-		ImGui::Begin("camera");
+		/*ImGui::Begin("camera");
 		ImGui::DragFloat3("translation", &offset.x);
 		ImGui::DragFloat3("rotation", &rotation.x);
-		ImGui::End();
+		ImGui::End();*/
 
 		// 座標をコピーしてオフセット分ずらす
 		viewProjection_.translation_ = Add(target_->translation_, offset);

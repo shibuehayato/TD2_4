@@ -92,11 +92,11 @@ void Stage2RotatingArrow::Update()
 		worldTransform_.rotation_.y = 0.0f;
 	}
 
-	ImGui::Begin("arrow");
-	ImGui::DragFloat("arrowrotation.x", &ArrowRot.x, 0.1f);
-	ImGui::DragFloat("arrowrotation.z", &ArrowRot.z, 0.1f);
-	ImGui::DragFloat("worldtransform.y", &worldTransform_.rotation_.y, 0.5f);
-	ImGui::End();
+	//ImGui::Begin("arrow");
+	//ImGui::DragFloat("arrowrotation.x", &ArrowRot.x, 0.1f);
+	//ImGui::DragFloat("arrowrotation.z", &ArrowRot.z, 0.1f);
+	//ImGui::DragFloat("worldtransform.y", &worldTransform_.rotation_.y, 0.5f);
+	//ImGui::End();
 }
 
 void Stage2RotatingArrow::Draw(ViewProjection& viewProjection)

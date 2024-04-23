@@ -33,11 +33,11 @@ void Cannon::Update()
 
 	FiringUpdate();
 
-	ImGui::Begin("Cannon");
-	ImGui::DragFloat3("translationHead", &worldTransformHead_.translation_.x, 1.0f);
-	ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 1.0f);
-	ImGui::DragFloat3("Rotation", &worldTransformHead_.rotation_.x, 0.01f);
-	ImGui::End();
+	//ImGui::Begin("Cannon");
+	//ImGui::DragFloat3("translationHead", &worldTransformHead_.translation_.x, 1.0f);
+	//ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 1.0f);
+	//ImGui::DragFloat3("Rotation", &worldTransformHead_.rotation_.x, 0.01f);
+	//ImGui::End();
 }
 
 void Cannon::Draw(ViewProjection& viewProjection)

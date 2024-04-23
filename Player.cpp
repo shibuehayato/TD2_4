@@ -111,7 +111,7 @@ void Player::Update() {
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
 
-	ImGui::Begin("speed");
+	/*ImGui::Begin("speed");
 	ImGui::DragInt("speed", &Oncollisiontimer_);
 	ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
 	
@@ -120,7 +120,7 @@ void Player::Update() {
 	ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
 	ImGui::DragFloat("Position", &speeddown_, 0.1f);
 
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
@@ -317,4 +317,8 @@ void Player::Reset()
 {
 	worldTransformHead_.translation_ = { 0,0,-45.0f };
 	worldTransformHead_.scale_ = { 1,1,1 };
+	KeepMove_ = { 0,0,0 };
+	isOncollision_ = false;
+	Oncollisiontimer_ = 0;
+	blikingtimer_ = 0;
 }

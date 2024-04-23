@@ -234,13 +234,14 @@ void GameScene::Update() {
 	case GameScene::GAME:
 
 		debugCamera_->Update();
-
-		ImGui::Begin("viewprojection");
+#ifdef _DEBUG
+		/*ImGui::Begin("viewprojection");
 		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
-		ImGui::End();
+		ImGui::End();*/
+#endif
 
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_SPACE)) {
@@ -273,46 +274,46 @@ void GameScene::Update() {
 		// 天球の更新
 		skydome_->Update();
 
-		//チュートリアルのフラグを立てるためのif文
-		if (input_->TriggerKey(DIK_A))
-		{
+	//	//チュートリアルのフラグを立てるためのif文
+	//	if (input_->TriggerKey(DIK_A))
+	//	{
 
-		istutorial_ = true;
-		isstage1_ = false;
-		isstage2_ = false;
+	//	istutorial_ = true;
+	//	isstage1_ = false;
+	//	isstage2_ = false;
 
-		for (Cannonbullet* cannonbullet : cannonbullets_)
-		{
-			cannonbullet->OnCollision();
-		}
-		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
-		{
-			rotatecannonbullet->OnCollision();
-		}
-	}
-	//ステージ1のフラグを立てるためのif文
-	if (input_->TriggerKey(DIK_B))
-	{
+	//	for (Cannonbullet* cannonbullet : cannonbullets_)
+	//	{
+	//		cannonbullet->OnCollision();
+	//	}
+	//	for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+	//	{
+	//		rotatecannonbullet->OnCollision();
+	//	}
+	//}
+	////ステージ1のフラグを立てるためのif文
+	//if (input_->TriggerKey(DIK_B))
+	//{
 
-		isstage1_ = true;
-		istutorial_ = false;
-		isstage2_ = false;
-		for (Cannonbullet* cannonbullet : cannonbullets_)
-		{
-			cannonbullet->OnCollision();
-		}
-		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
-		{
-			rotatecannonbullet->OnCollision();
-		}
-	}
-	if (input_->TriggerKey(DIK_C))
-	{
-		istutorial_ = false;
-		isstage1_ = false;
-		isstage2_ = true;
-		isballdead_ = false;
-	}
+	//	isstage1_ = true;
+	//	istutorial_ = false;
+	//	isstage2_ = false;
+	//	for (Cannonbullet* cannonbullet : cannonbullets_)
+	//	{
+	//		cannonbullet->OnCollision();
+	//	}
+	//	for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+	//	{
+	//		rotatecannonbullet->OnCollision();
+	//	}
+	//}
+	//if (input_->TriggerKey(DIK_C))
+	//{
+	//	istutorial_ = false;
+	//	isstage1_ = false;
+	//	isstage2_ = true;
+	//	isballdead_ = false;
+	//}
 
 		//チュートリアルのフラグがたったら実行する
 		if (istutorial_)
@@ -887,9 +888,9 @@ void GameScene::Draw() {
 			//右矢印の描画
 			rightarrow_->Draw(viewProjection_);
 			//左矢印の描画
-			leftarrow_->Draw(viewProjection_);
+			//leftarrow_->Draw(viewProjection_);
 			//上矢印の描画
-			uparrow_->Draw(viewProjection_);
+			//uparrow_->Draw(viewProjection_);
 			//下矢印の描画
 			downarrow_->Draw(viewProjection_);
 		}
@@ -3422,6 +3423,13 @@ void GameScene::GameReset()
 	normalswitch_->Reset();
 	player_->Reset();
 	scene = GAME;
+	//玉の生成
+	ball_ = std::make_unique<Ball>();
+	//3Dモデルの生成
+	modelBall_.reset(Model::CreateFromOBJ("Ball", true));
+	//玉の初期化
+	ball_->Initialize(modelBall_.get());
+	ball_->SetGameScene(this);
 }
 
 void GameScene::AddCannonBullet(Cannonbullet* cannonbullet)

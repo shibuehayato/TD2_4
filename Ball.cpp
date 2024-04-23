@@ -20,11 +20,11 @@ void Ball::Initialize(Model* model)
 void Ball::Update()
 {
 
-	ImGui::Begin("window");
+	/*ImGui::Begin("window");
 	ImGui::DragFloat3("balltransrate", &WorldTransform_.translation_.x, 0.01f);
 	ImGui::DragFloat3("ballangle", &WorldTransform_.rotation_.x, 0.01f);
 	ImGui::DragFloat3("ballsize", &WorldTransform_.scale_.x, 0.01f);
-	ImGui::End();
+	ImGui::End();*/
 	if (gamescene_->IsStage1() && isDead_ == false)
 	{
 		WorldTransform_.translation_ = { 7.5f,0,4 };

@@ -42,9 +42,9 @@ void RotateCannon::Update()
 
 	FiringUpdate();
 
-	ImGui::Begin("RotateCannon");
+	/*ImGui::Begin("RotateCannon");
 	ImGui::DragFloat3("rotation", &worldTransformHead_.rotation_.x, 0.1f);
-	ImGui::End();
+	ImGui::End();*/
 
 }
 

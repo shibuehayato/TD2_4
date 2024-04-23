@@ -38,11 +38,11 @@ void SmallSwitch::Update()
 
 	
 
-	ImGui::Begin("SmallSwitch");
-	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
-	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x,0.1f);
-	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
-	ImGui::End();
+	//ImGui::Begin("SmallSwitch");
+	//ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
+	//ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x,0.1f);
+	//ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
+	//ImGui::End();
 }
 
 void SmallSwitch::Draw(ViewProjection& viewProjection)

@@ -35,11 +35,11 @@ void NormalSwitch::Update()
 		isScale_ = true;
 	}
 
-	ImGui::Begin("NormalSwitch");
+	/*ImGui::Begin("NormalSwitch");
 	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
 	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x, 0.1f);
 	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
-	ImGui::End();
+	ImGui::End();*/
 
 	if (gamescene_->IsStage1())
 	{

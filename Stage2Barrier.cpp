@@ -38,9 +38,9 @@ void Stage2Barrier::Update()
 	{
 		worldTransform_[i].UpdateMatrix();
 	}*/
-	ImGui::Begin("Barrier2");
+	/*ImGui::Begin("Barrier2");
 	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Stage2Barrier::Draw(ViewProjection& viewProjection)
