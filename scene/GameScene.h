@@ -119,7 +119,7 @@ public: // メンバ関数
 
 	//風のパーティクル
 	void UpdateWindParticlePopCommands();
-	void WindParticleGeneration();
+	void WindParticleInitilize();
 	void WindParticleStartPosition(float& startX, float& startY, float& startZ);
 
 	//ゴールステージ１
@@ -359,6 +359,10 @@ private: // メンバ変数
 
 	//風のパーティクル
 	float windtime_ = 3;
+
+	//風のパーティクル範囲
+	Vector3 rangestart;
+	Vector3 rangeend;
 
 	/// <summary>
 	/// ゲームシーン用

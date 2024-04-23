@@ -12,7 +12,9 @@ void WindParticle::Initialize(Model* model, float startX, float startY, float st
 	worldTransform_.translation_.y = startY;
 	worldTransform_.translation_.z = startZ;
 
-	deathTimer_ = 500;
+	isDead_ = false;
+
+	deathTimer_ = 23;
 }
 
 void WindParticle::Update()
@@ -21,8 +23,8 @@ void WindParticle::Update()
 
 	deathTimer_ -= 0.1f;
 	if (deathTimer_ <= 0) {
-		IsDead();
-		deathTimer_ = 500;
+		isDead_ = true;
+		deathTimer_ = 50;
 	}
 
 	worldTransform_.UpdateMatrix();
@@ -35,5 +37,5 @@ void WindParticle::Draw(ViewProjection& viewProjection)
 
 bool WindParticle::IsDead()
 {
- return isDead_=true;
+ return isDead_;
 }

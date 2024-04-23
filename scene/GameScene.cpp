@@ -89,7 +89,7 @@ void GameScene::Initialize() {
 	//風のパーティクルの生成
 	//windParticles_ = std::make_unique<WindParticle>();
 	//3Dモデルの生成
-	modelWind_.reset(Model::CreateFromOBJ("Cyclone", true));
+	modelWind_.reset(Model::CreateFromOBJ("WinPar", true));
 
 	//風ファンの生成
 	cyclone_ = std::make_unique<Cyclone>();
@@ -203,6 +203,9 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
+	//風のパーティクル範囲
+	rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
+	rangeend = { -12.0f,3.5f,23.0f }; //範囲終わり
 }
 
 void GameScene::Update() {
@@ -235,8 +238,8 @@ void GameScene::Update() {
 		debugCamera_->Update();
 
 		ImGui::Begin("viewprojection");
-		ImGui::DragFloat3("translation", &viewProjection_.translation_.x),0.01f;
-		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x),0.01f;
+		ImGui::DragFloat3("translation", &viewProjection_.translation_.x,0.01f);
+		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x,0.01f);
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
 		ImGui::End();
@@ -1641,16 +1644,18 @@ void GameScene::ArrowGeneration(const Vector3& position)
 
 void GameScene::UpdateWindParticlePopCommands()
 {
-		WindParticleGeneration();
+		WindParticleInitilize();
 
-		for (WindParticle* wind : windParticles_) {
-			if (wind->IsDead()==true) {
+		windParticles_.remove_if([](WindParticle* wind) {
+			if (wind->IsDead()) {
 				delete wind;
+				return true;
 			}
+			return false;
+			});
 
-		}
 }
-void GameScene::WindParticleGeneration() {
+void GameScene::WindParticleInitilize() {
 	// ランダムな初期位置を生成する
 	float startX, startY,startZ;
 	WindParticleStartPosition(startX, startY, startZ);
@@ -1664,19 +1669,23 @@ void GameScene::WindParticleGeneration() {
 	windParticles_.push_back(wind);
 	wind->Initialize(modelWind_.get(), startX, startY, startZ);
 
-	windtime_ = 8;
+	windtime_ = 5;
 	}
 	
 }
 
 void GameScene::WindParticleStartPosition(float& startX, float& startY, float& startZ)
 {
-	const float range = 10.0f; // XとY座標の範囲を適宜調整する
-
+	
 	// X座標とY座標を-10から10の範囲でランダムに生成する
-	startX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
-	startY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
-	startZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * range * 2.0f - range;
+	startX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.x * 2.0f - rangeend.x;
+	startY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.y * 2.0f - rangeend.y;
+	startZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.z * 2.0f - rangeend.z;
+	
+	ImGui::Begin("WinPar");
+	ImGui::DragFloat3("Start", &rangestart.x,0.1f);
+	ImGui::DragFloat3("end", &rangeend.x,0.1f);;
+	ImGui::End();
 }
 
 //ゴールステージ１
