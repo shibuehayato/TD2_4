@@ -14,12 +14,12 @@ void WindParticle::Initialize(Model* model, float startX, float startY, float st
 
 	isDead_ = false;
 
-	deathTimer_ = 23;
+	deathTimer_ = 8;
 }
 
 void WindParticle::Update()
 {
-	worldTransform_.translation_.x -= 0.1f;
+	worldTransform_.translation_.x -= 0.25f;
 
 	deathTimer_ -= 0.1f;
 	if (deathTimer_ <= 0) {

@@ -1666,7 +1666,7 @@ void GameScene::WindParticleInitilize() {
 	windParticles_.push_back(wind);
 	wind->Initialize(modelWind_.get(), startX, startY, startZ);
 
-	windtime_ = 5;
+	windtime_ = 2;
 	}
 	
 }
