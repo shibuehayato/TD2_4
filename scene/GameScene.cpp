@@ -197,6 +197,11 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
+	isstage1_ = true;
+
+	modelpitfall_.reset(Model::CreateFromOBJ("Pitfall", true));
+
+
 }
 
 void GameScene::Update() {
@@ -219,8 +224,9 @@ void GameScene::Update() {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					GameReset();
 					scene = GAME;
-
+					
 				}
 			}
 		}
@@ -259,7 +265,7 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-
+	
 
 
 
@@ -1510,7 +1516,7 @@ void GameScene::PitfallGeneration(const Vector3& position)
 
 
 
-	pitfall->Initialize(modelwall_.get(), position);
+	pitfall->Initialize(modelpitfall_.get(), position);
 	pitfall->SetGameScene(this);
 
 	pitfalls_.push_back(static_cast<std::unique_ptr<Pitfall>>(pitfall));
@@ -3402,6 +3408,20 @@ void GameScene::CheckAllCollisions() {
 		}
 #pragma endregion
 
+}
+
+void GameScene::GameReset()
+{
+	for (const std::unique_ptr<Barrier>& barrier : barriers_) {
+		barrier->Reset();
+	}
+	for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
+		barrier2->Reset();
+	}
+	smallswitch_->Reset();
+	normalswitch_->Reset();
+	player_->Reset();
+	scene = GAME;
 }
 
 void GameScene::AddCannonBullet(Cannonbullet* cannonbullet)

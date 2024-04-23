@@ -10,7 +10,7 @@ void Player::Initialize(Model* head)
 	assert(head);
 	HeadModel_ = head;
 
-	worldTransformHead_.translation_ = { 0,0,-15.0f };
+	worldTransformHead_.translation_ = { 0,0,-45.0f };
 	worldTransformHead_.Initialize();
 
 	e = 0.4f;
@@ -311,4 +311,10 @@ void Player::CannonOnCollision3()
 void Player::CannonOnCollision4()
 {
 	worldTransformHead_.translation_.z -= 10.0f;
+}
+
+void Player::Reset()
+{
+	worldTransformHead_.translation_ = { 0,0,-45.0f };
+	worldTransformHead_.scale_ = { 1,1,1 };
 }

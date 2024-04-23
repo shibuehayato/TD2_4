@@ -16,6 +16,8 @@ public:
 	//当たった時の処理
 	void OnCollision();
 
+	void Reset();
+
 	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
 	//ワールド座標を取得

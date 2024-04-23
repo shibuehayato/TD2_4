@@ -151,6 +151,9 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	//ゲームをクリアしたりゲームオーバーになった時ゲームを終了せずにゲームができるようにリセットする関数
+	void GameReset();
+
 	//大砲の弾を登録するための関数
 	void AddCannonBullet(Cannonbullet* cannonbullet);
 	//回転大砲の弾を登録するための関数
@@ -208,6 +211,7 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Wind>> winds_;
 	//落とし穴の宣言
 	std::list<std::unique_ptr<Pitfall>> pitfalls_;
+	std::unique_ptr<Model> modelpitfall_;
 	//バリアの宣言
 	std::list<std::unique_ptr<Barrier>> barriers_;
 	std::unique_ptr<Model> modelbarrier_;

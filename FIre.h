@@ -32,5 +32,7 @@ private:
 
 	GameScene* gameScene_ = nullptr;
 
+	uint32_t textureHandle_ = 0u;
+
 };
 

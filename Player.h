@@ -40,6 +40,8 @@ public:
 	void CannonOnCollision4(); //下
 	//-----------------------//
 
+	void Reset();
+
 	float GetTransformZ() { return worldTransformHead_.translation_.z; };
 
 	// ワールド座標を取得

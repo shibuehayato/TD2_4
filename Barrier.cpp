@@ -64,6 +64,11 @@ void Barrier::OnCollision()
 	isDead_ = true;
 }
 
+void Barrier::Reset()
+{
+	isDead_ = false;
+}
+
 Vector3 Barrier::GetPosition()
 {
 	Vector3 worldPos;

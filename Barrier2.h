@@ -16,6 +16,8 @@ public:
 
 	void OnCollision();
 
+	void Reset();
+
 	//ゲームシーンからアドレスをもらうための関数
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 

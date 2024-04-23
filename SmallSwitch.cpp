@@ -57,6 +57,13 @@ void SmallSwitch::OnCollision()
 	
 }
 
+void SmallSwitch::Reset()
+{
+	isOncollision_ = false;
+	isScale_ = false;
+	worldTransformbutton_.scale_ = { 1,1,1 };
+}
+
 Vector3 SmallSwitch::GetPosition()
 {
 	Vector3 worldPos;

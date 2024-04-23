@@ -20,6 +20,8 @@ public:
 
 	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
+	void Reset();
+
 	//ワールド座標を取得
 	Vector3 GetPosition();
 

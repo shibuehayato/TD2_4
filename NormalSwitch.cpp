@@ -74,6 +74,13 @@ void NormalSwitch::Position()
 	
 }
 
+void NormalSwitch::Reset()
+{
+	isOncollision_ = false;
+	isScale_ = false;
+	worldTransformbutton_.scale_ = { 2.0f,2.0f,2.0f };
+}
+
 Vector3 NormalSwitch::GetPosition()
 {
 	Vector3 worldPos;
