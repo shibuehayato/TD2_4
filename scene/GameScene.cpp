@@ -254,13 +254,13 @@ void GameScene::Update() {
 		skydome_->Update();
 
 		//チュートリアルのフラグを立てるためのif文
-	/*	if (input_->TriggerKey(DIK_A))
+		if (input_->TriggerKey(DIK_A))
 		{
 
 			istutorial_ = true;
 			isstage1_ = false;
 			isstage2_ = false;
-		}*/
+		}
 
 		//ステージ1のフラグを立てるためのif文
 		if (input_->TriggerKey(DIK_B))
@@ -300,8 +300,38 @@ void GameScene::Update() {
 			}
 			UpdateTutorialGoalBlackPopCommands();
 
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == false) {
+							IsFullMapCamera = true;
+						}
+					}
+				}
+			}
+
+			if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == true) {
+							IsFullMapCamera = false;
+						}
+					}
+				}
+			}
+
+			if (IsFullMapCamera == true) {
+				viewProjection_.translation_ = { 0,130.0f,0 };
+				viewProjection_.rotation_ = { -11.0f,0,0 };
+			}
+
 		}
 
+		ImGui::Begin("FullMap");
+		ImGui::Checkbox("FullMap", &IsFullMapCamera);
+		ImGui::End();
 
 		if (isstage1_ || isstage2_)
 		{
@@ -498,11 +528,14 @@ void GameScene::Update() {
 		if (player_->GetPlayerScaleX() == 2.0) {
 			size_ = Big_;
 		}
+
+		if (IsFullMapCamera == false) {
 			// 追従カメラの更新
 			followCamera_->Update();
 			viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 			viewProjection_.matView = followCamera_->GetViewProjection().matView;
 			viewProjection_.TransferMatrix();
+		}
 
 			// コントローラーのAボタンを押すとクリア
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {

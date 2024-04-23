@@ -342,6 +342,9 @@ private: // メンバ変数
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
+	// マップ全体を映すカメラ
+	bool IsFullMapCamera = false;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
