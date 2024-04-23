@@ -203,9 +203,6 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
-	//風のパーティクル範囲
-	rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
-	rangeend = { -12.0f,3.5f,23.0f }; //範囲終わり
 }
 
 void GameScene::Update() {
@@ -1682,10 +1679,10 @@ void GameScene::WindParticleStartPosition(float& startX, float& startY, float& s
 	startY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.y * 2.0f - rangeend.y;
 	startZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.z * 2.0f - rangeend.z;
 	
-	ImGui::Begin("WinPar");
+	/*ImGui::Begin("WinPar");
 	ImGui::DragFloat3("Start", &rangestart.x,0.1f);
 	ImGui::DragFloat3("end", &rangeend.x,0.1f);;
-	ImGui::End();
+	ImGui::End();*/
 }
 
 //ゴールステージ１

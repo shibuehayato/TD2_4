@@ -361,8 +361,8 @@ private: // メンバ変数
 	float windtime_ = 3;
 
 	//風のパーティクル範囲
-	Vector3 rangestart;
-	Vector3 rangeend;
+	const Vector3 rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
+	const Vector3 rangeend = { -14.0f,3.5f,26.0f }; //範囲終わり
 
 	/// <summary>
 	/// ゲームシーン用
