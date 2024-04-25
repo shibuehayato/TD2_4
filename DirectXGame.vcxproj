@@ -114,6 +114,7 @@
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="Cannonbullet.cpp" />
+    <ClCompile Include="Cyclone.cpp" />
     <ClCompile Include="DownArrow.cpp" />
     <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Warp.cpp" />
     <ClCompile Include="Warp2.cpp" />
     <ClCompile Include="Wind.cpp" />
+    <ClCompile Include="WindParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="Cannonbullet.h" />
+    <ClInclude Include="Cyclone.h" />
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
     <ClInclude Include="Fire2.h" />
@@ -210,6 +213,7 @@
     <ClInclude Include="Warp.h" />
     <ClInclude Include="Warp2.h" />
     <ClInclude Include="Wind.h" />
+    <ClInclude Include="WindParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

@@ -9,6 +9,9 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
+	for (WindParticle* wind :windParticles_) {
+		delete wind;
+	}
 }
 
 void GameScene::Initialize() {
@@ -82,6 +85,17 @@ void GameScene::Initialize() {
 	recovery_->Initialize(modelRecovery_.get());
 	recovery_->SetGameScene(this);
 	recoveryTime_ = 0;
+
+	//風のパーティクルの生成
+	//windParticles_ = std::make_unique<WindParticle>();
+	//3Dモデルの生成
+	modelWind_.reset(Model::CreateFromOBJ("WinPar", true));
+
+	//風ファンの生成
+	cyclone_ = std::make_unique<Cyclone>();
+	//3Dモデルの生成
+	modelCyclone_.reset(Model::CreateFromOBJ("Cyclone", true));
+	cyclone_->Initialize(modelCyclone_.get());
 
 	//複数の壁を読み込むための関数
 
@@ -401,6 +415,11 @@ void GameScene::Update() {
 				wind->Update();
 			}
 			UpdateWindPopCommands();
+			//風のパーティクル
+			for (WindParticle* wind : windParticles_) {
+				wind->Update();
+			}
+			UpdateWindParticlePopCommands();
 			//落とし穴の更新
 			for (const std::unique_ptr<Pitfall>& pitfall : pitfalls_) {
 				pitfall->Update();
@@ -443,6 +462,8 @@ void GameScene::Update() {
 			uparrow_->Update();
 			//下矢印の更新
 			downarrow_->Update();
+			//風ファンの更新
+			cyclone_->Update();
 			//回転矢印の更新
 			//rotatingarrow_->Update();
 		}
@@ -752,6 +773,18 @@ void GameScene::Draw() {
 			//中スイッチの描画
 			normalswitch_->Draw(viewProjection_);
 
+		//風のギミックの描画消す
+		/*for (const auto& wind : winds_) {
+			wind->Draw(viewProjection_);
+		}*/
+			for (WindParticle* wind : windParticles_) {
+				wind->Draw(viewProjection_);
+			}
+		
+		
+		
+		//風ファンの描画
+		cyclone_->Draw(viewProjection_);
 			//風のギミックの描画消す
 			/*for (const auto& wind : winds_) {
 				wind->Draw(viewProjection_);
@@ -1754,6 +1787,52 @@ void GameScene::ArrowGeneration(const Vector3& position)
 	arrow->SetGameScene(this);
 
 	Arrows_.push_back(static_cast<std::unique_ptr<RotatingArrow>>(arrow));
+}
+
+void GameScene::UpdateWindParticlePopCommands()
+{
+		WindParticleInitilize();
+
+		windParticles_.remove_if([](WindParticle* wind) {
+			if (wind->IsDead()) {
+				delete wind;
+				return true;
+			}
+			return false;
+			});
+
+}
+void GameScene::WindParticleInitilize() {
+	// ランダムな初期位置を生成する
+	float startX, startY,startZ;
+	WindParticleStartPosition(startX, startY, startZ);
+
+
+	windtime_ -= 0.1f;
+
+	if (windtime_ <= 0) {
+	// WindParticle オブジェクトを生成し、初期位置を渡す
+	WindParticle* wind = new WindParticle();
+	windParticles_.push_back(wind);
+	wind->Initialize(modelWind_.get(), startX, startY, startZ);
+
+	windtime_ = 3;
+	}
+	
+}
+
+void GameScene::WindParticleStartPosition(float& startX, float& startY, float& startZ)
+{
+	
+	// X座標とY座標を-10から10の範囲でランダムに生成する
+	startX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.x * 2.0f - rangeend.x;
+	startY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.y * 2.0f - rangeend.y;
+	startZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * rangestart.z * 2.0f - rangeend.z;
+	
+	/*ImGui::Begin("WinPar");
+	ImGui::DragFloat3("Start", &rangestart.x,0.1f);
+	ImGui::DragFloat3("end", &rangeend.x,0.1f);;
+	ImGui::End();*/
 }
 
 //ゴールステージ１

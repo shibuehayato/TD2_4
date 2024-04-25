@@ -41,6 +41,10 @@
 #include"SpeedDown.h"
 #include <Goal.h>
 #include "FollowCamera.h"
+#include"WindParticle.h"
+#include <cstdlib>
+#include <ctime>  
+#include"Cyclone.h"
 #include"Cannon.h"
 #include"RotateCannon.h"
 #include"StageSelect.h"
@@ -115,6 +119,11 @@ public: // メンバ関数
 	void LoadArrowPopData();
 	void UpdateArrowPopCommands();
 	void ArrowGeneration(const Vector3& position);
+
+	//風のパーティクル
+	void UpdateWindParticlePopCommands();
+	void WindParticleInitilize();
+	void WindParticleStartPosition(float& startX, float& startY, float& startZ);
 
 	//ゴールステージ１
 	void LoadGoalWhitePopData();
@@ -209,6 +218,12 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelnormalbutton_;
 	//風のギミックの宣言
 	std::list<std::unique_ptr<Wind>> winds_;
+	//風パーティクルのギミックの宣言
+	std::list<WindParticle*> windParticles_;
+	std::unique_ptr<Model> modelWind_;
+	//風ファンのギミックの宣言
+	std::unique_ptr<Cyclone> cyclone_;
+	std::unique_ptr<Model> modelCyclone_;
 	//落とし穴の宣言
 	std::list<std::unique_ptr<Pitfall>> pitfalls_;
 	std::unique_ptr<Model> modelpitfall_;
@@ -368,6 +383,13 @@ private: // メンバ変数
 
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
+
+	//風のパーティクル
+	float windtime_ = 3;
+
+	//風のパーティクル範囲
+	const Vector3 rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
+	const Vector3 rangeend = { -14.0f,3.5f,26.0f }; //範囲終わり
 
 	// マップ全体を映すカメラ
 	bool IsFullMapCamera = false;
