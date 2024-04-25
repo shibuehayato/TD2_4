@@ -239,6 +239,7 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					GameReset();
+				
 					scene = GAME;
 					
 				}

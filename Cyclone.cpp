@@ -24,10 +24,10 @@ void Cyclone::Update()
 
 	worldTransform_.UpdateMatrix();
 
-	ImGui::Begin("Cyclone");
+	/*ImGui::Begin("Cyclone");
 	ImGui::DragFloat3("translation", &worldTransform_.translation_.x);
 	ImGui::DragFloat3("rotation", &worldTransform_.rotation_.x);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Cyclone::Draw(ViewProjection& viewProjection)
