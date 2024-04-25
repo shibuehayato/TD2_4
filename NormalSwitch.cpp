@@ -50,10 +50,10 @@ void NormalSwitch::Update()
 	
 	if (gamescene_->IsStage2())
 	{
-		worldTransformswitch_.translation_= { -19.25f,0.0f,53.0f };
+		worldTransformswitch_.translation_= { -19.25f,1.0f,54.0f };
 		
 		worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
-		worldTransformbutton_.translation_ = { -18.0f,0.0f,53.0f };
+		worldTransformbutton_.translation_ = { -18.0f,1.0f,54.0f };
 	}
 }
 

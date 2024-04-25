@@ -289,46 +289,46 @@ void GameScene::Update() {
 		// 天球の更新
 		skydome_->Update();
 
-	//	//チュートリアルのフラグを立てるためのif文
-	//	if (input_->TriggerKey(DIK_A))
-	//	{
+		//チュートリアルのフラグを立てるためのif文
+		if (input_->TriggerKey(DIK_A))
+		{
 
-	//	istutorial_ = true;
-	//	isstage1_ = false;
-	//	isstage2_ = false;
+		istutorial_ = true;
+		isstage1_ = false;
+		isstage2_ = false;
 
-	//	for (Cannonbullet* cannonbullet : cannonbullets_)
-	//	{
-	//		cannonbullet->OnCollision();
-	//	}
-	//	for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
-	//	{
-	//		rotatecannonbullet->OnCollision();
-	//	}
-	//}
-	////ステージ1のフラグを立てるためのif文
-	//if (input_->TriggerKey(DIK_B))
-	//{
+		for (Cannonbullet* cannonbullet : cannonbullets_)
+		{
+			cannonbullet->OnCollision();
+		}
+		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+		{
+			rotatecannonbullet->OnCollision();
+		}
+	}
+	//ステージ1のフラグを立てるためのif文
+	if (input_->TriggerKey(DIK_B))
+	{
 
-	//	isstage1_ = true;
-	//	istutorial_ = false;
-	//	isstage2_ = false;
-	//	for (Cannonbullet* cannonbullet : cannonbullets_)
-	//	{
-	//		cannonbullet->OnCollision();
-	//	}
-	//	for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
-	//	{
-	//		rotatecannonbullet->OnCollision();
-	//	}
-	//}
-	//if (input_->TriggerKey(DIK_C))
-	//{
-	//	istutorial_ = false;
-	//	isstage1_ = false;
-	//	isstage2_ = true;
-	//	isballdead_ = false;
-	//}
+		isstage1_ = true;
+		istutorial_ = false;
+		isstage2_ = false;
+		for (Cannonbullet* cannonbullet : cannonbullets_)
+		{
+			cannonbullet->OnCollision();
+		}
+		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+		{
+			rotatecannonbullet->OnCollision();
+		}
+	}
+	if (input_->TriggerKey(DIK_C))
+	{
+		istutorial_ = false;
+		isstage1_ = false;
+		isstage2_ = true;
+		isballdead_ = false;
+	}
 
 		//チュートリアルのフラグがたったら実行する
 		if (istutorial_)
@@ -638,26 +638,26 @@ void GameScene::Update() {
 			viewProjection_.TransferMatrix();
 		}
 
-			// コントローラーのAボタンを押すとクリア
-			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
-					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-						scene = CLEAR;
-					}
-				}
-			}
+			//// コントローラーのAボタンを押すとクリア
+			//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			//	if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+			//		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+			//			!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+			//			scene = CLEAR;
+			//		}
+			//	}
+			//}
 
 
-			// コントローラーのBボタンを押すとゲームオーバー
-			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
-					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
-						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
-						scene = GAMEOVER;
-					}
-				}
-			}
+			//// コントローラーのBボタンを押すとゲームオーバー
+			//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			//	if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+			//		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+			//			!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+			//			scene = GAMEOVER;
+			//		}
+			//	}
+			//}
 			break;
 	case GameScene::CLEAR:
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -1711,6 +1711,12 @@ void GameScene::BarrierRemoved()
 			barrier->OnCollision();
 		}
 	}
+	for (const std::unique_ptr<Stage2Barrier>& stage2barrier : stage2barriers_) {
+		if (normalswitch_->IsScale() && isstage2_)
+		{
+			stage2barrier->OnCollision();
+		}
+	}
 }
 
 void GameScene::LoadArrowPopData()
@@ -2749,7 +2755,7 @@ void GameScene::CheckAllCollisions() {
 
 #pragma region プレイヤーと普通のスイッチ
 
-	if (isstage1_) {
+	if (isstage1_ || isstage2_) {
 		// プレイヤーの座標
 		PosA = player_->GetWorldPosition();
 		RadiusA = player_->GetRadius();
@@ -3486,6 +3492,56 @@ void GameScene::CheckAllCollisions() {
 				player_->RecoveryOnCollision();
 			}
 
+		}
+#pragma endregion
+
+#pragma region プレイヤーとステージ2の炎
+		for (const std::unique_ptr<Fire2>& fire2 : fires2_) {
+			if (fire2 && isstage2_) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//炎の座標
+				PosB = fire2->GetPosition();
+				RadiusB = fire2->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision2();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->OnCollision3();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+				{
+					player_->OnCollision4();
+					player_->OnCollision7();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+				{
+					player_->OnCollision5();
+					player_->OnCollision7();
+				}
+
+				if (player_->GetRadius().x <= 0.5f)
+				{
+					scene = GAMEOVER;
+				}
+
+			}
 		}
 #pragma endregion
 
