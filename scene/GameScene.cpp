@@ -51,8 +51,8 @@ void GameScene::Initialize() {
 	MediumSprite_.reset(Sprite::Create(MediumTexture_, { 0, 0 }));
 	SmallSprite_.reset(Sprite::Create(SmallTexture_, { 0, 0 }));
 
-	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
-	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
+	viewProjection_.translation_ = { 0,167.0f,8.0f };
+	viewProjection_.rotation_ = { -11.0f,0,0 };
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -132,7 +132,6 @@ void GameScene::Initialize() {
 	warp2_ = std::make_unique<Warp2>();
 	warp2_->Initialize(modelwarp_.get());
 
-	
 	
 	// 3Dモデルの生成
 	modelSkydome_.reset(Model::CreateFromOBJ("Skydome", true));
@@ -300,6 +299,7 @@ void GameScene::Update() {
 			}
 			UpdateTutorialGoalBlackPopCommands();
 
+			//Xボタンを押すと全マップが見える処理
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
@@ -323,7 +323,7 @@ void GameScene::Update() {
 			}
 
 			if (IsFullMapCamera == true) {
-				viewProjection_.translation_ = { 0,130.0f,0 };
+				viewProjection_.translation_ = { 0,167.0f,8.0f };
 				viewProjection_.rotation_ = { -11.0f,0,0 };
 			}
 
