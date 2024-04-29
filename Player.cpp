@@ -313,6 +313,38 @@ void Player::CannonOnCollision4()
 	worldTransformHead_.translation_.z -= 10.0f;
 }
 
+void Player::RotateCannonOnCollision()
+{
+	
+	if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f||
+		worldTransformHead_.translation_.x>=-9.0f&&worldTransformHead_.translation_.x<=6.0f)
+	{
+		worldTransformHead_.translation_.x += 1.0f;
+	}
+	else
+	{
+
+		worldTransformHead_.translation_.x += 10.0f;
+	}
+}
+
+void Player::RotateCannonOnCollision2()
+{
+	
+	if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f ||
+		worldTransformHead_.translation_.x >= -2.0f && worldTransformHead_.translation_.x <= 6.0f)
+	{
+		worldTransformHead_.translation_.x -= 1.0f;
+	}
+	else
+	{
+		worldTransformHead_.translation_.x -= 10.0f;
+
+	}
+}
+
 void Player::Reset()
 {
 	worldTransformHead_.translation_ = { 0,0,-45.0f };

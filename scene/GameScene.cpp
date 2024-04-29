@@ -2965,7 +2965,7 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure) {
+		if (PositionMeasure <= RadiusMeasure&&isstage1_) {
 			arrow->OnCollision(player_.get());
 		}
 	}
@@ -3342,7 +3342,7 @@ void GameScene::CheckAllCollisions() {
 
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 				{
-					player_->CannonOnCollision();
+					player_->RotateCannonOnCollision();
 					rotatecannonbullet->OnCollision();
 				}
 
@@ -3350,7 +3350,7 @@ void GameScene::CheckAllCollisions() {
 
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 				{
-					player_->CannonOnCollision2();
+					player_->RotateCannonOnCollision2();
 					rotatecannonbullet->OnCollision();
 				}
 
@@ -3539,6 +3539,47 @@ void GameScene::CheckAllCollisions() {
 				if (player_->GetRadius().x <= 0.5f)
 				{
 					scene = GAMEOVER;
+				}
+
+			}
+		}
+#pragma endregion
+
+#pragma region プレイヤーとステージ2のバリア
+		for (const std::unique_ptr<Stage2Barrier>& stage2barrier : stage2barriers_) {
+			if (stage2barrier && isstage2_) {
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				//2つめのバリアの座標
+				PosB = stage2barrier->GetPosition();
+				RadiusB = stage2barrier->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage2barrier->IsDead() == false)
+				{
+					player_->OnCollision2();
+				}
+
+				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage2barrier->IsDead() == false)
+				{
+					player_->OnCollision3();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage2barrier->IsDead() == false)
+				{
+					player_->OnCollision4();
+				}
+
+				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage2barrier->IsDead() == false)
+				{
+					player_->OnCollision5();
 				}
 
 			}

@@ -38,6 +38,9 @@ public:
 	void CannonOnCollision2(); //左
 	void CannonOnCollision3(); //上
 	void CannonOnCollision4(); //下
+	//回転大砲に当たった時の関数
+	void RotateCannonOnCollision();
+	void RotateCannonOnCollision2();
 	//-----------------------//
 
 	void Reset();
