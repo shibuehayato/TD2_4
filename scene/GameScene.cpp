@@ -283,12 +283,7 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	
-
-
-
-
-		// 天球の更新
+	// 天球の更新
 		skydome_->Update();
 
 		//チュートリアルのフラグを立てるためのif文
@@ -413,11 +408,14 @@ void GameScene::Update() {
 			//小スイッチの更新
 			smallswitch_->Update();
 
-			//風のギミックの更新
-			for (const std::unique_ptr<Wind>& wind : winds_) {
-				wind->Update();
-			}
-			UpdateWindPopCommands();
+			//?なぜかチュートリアルでも動いちゃう
+			//if (!istutorial_) {
+				//風のギミックの更新
+				for (const std::unique_ptr<Wind>& wind : winds_) {
+					wind->Update();
+				}
+				UpdateWindPopCommands();
+			//}
 			//風のパーティクル
 			for (WindParticle* wind : windParticles_) {
 				wind->Update();
