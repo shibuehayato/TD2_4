@@ -134,6 +134,15 @@ public: // メンバ関数
 	void UpdateGoalBlackPopCommands();
 	void GoalBlackGeneration(const Vector3& position);
 
+	//ゴールステージ１
+	void LoadGoalWhite2PopData();
+	void UpdateGoalWhite2PopCommands();
+	void GoalWhite2Generation(const Vector3& position);
+
+	void LoadGoalBlack2PopData();
+	void UpdateGoalBlack2PopCommands();
+	void GoalBlack2Generation(const Vector3& position);
+
 	//ゴールチュートリアル
 	void LoadTutorialGoalWhitePopData();
 	void UpdateTutorialGoalWhitePopCommands();
@@ -263,10 +272,12 @@ private: // メンバ変数
 
 	//ゴールの白と黒
 	std::unique_ptr<Model> modelGoalWhite_;
-	std::list<std::unique_ptr<Goal>> GoalWhites_;
-	std::list<std::unique_ptr<Goal>> TutorialGoalWhites_;
 	std::unique_ptr<Model> modelGoalBlack_;
+	std::list<std::unique_ptr<Goal>> GoalWhites_;
 	std::list<std::unique_ptr<Goal>> GoalBlacks_;
+	std::list<std::unique_ptr<Goal>> GoalWhites2_;
+	std::list<std::unique_ptr<Goal>> GoalBlacks2_;
+	std::list<std::unique_ptr<Goal>> TutorialGoalWhites_;
 	std::list<std::unique_ptr<Goal>> TutorialGoalBlacks_;
 
 	//回復
@@ -321,6 +332,8 @@ private: // メンバ変数
 	//ゴールのギミックの発生コマンド
 	std::stringstream GoalWhitePopCommands;
 	std::stringstream GoalBlackPopCommands;
+	std::stringstream GoalWhite2PopCommands;
+	std::stringstream GoalBlack2PopCommands;
 	std::stringstream TutorialGoalWhitePopCommands;
 	std::stringstream TutorialGoalBlackPopCommands;
 	//大砲の発生コマンド
