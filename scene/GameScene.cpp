@@ -488,7 +488,6 @@ void GameScene::Update() {
 		}
 		UpdateStage2BarrierPopCommands();
 		
-		stage2rotatingarrow_->Update();
 		for (const std::unique_ptr<SpeedDown>& speeddown : speeddowns_)
 		{
 			speeddown->Update();
@@ -501,6 +500,7 @@ void GameScene::Update() {
 		UpdateCannonPopCommands();
 
 		rotatecannon_->Update();
+		stage2rotatingarrow_->Update();
 
 	}
 
@@ -2969,6 +2969,24 @@ void GameScene::CheckAllCollisions() {
 			arrow->OnCollision(player_.get());
 		}
 	}
+
+#pragma endregion
+
+#pragma region プレイヤーと回る矢印
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+		PosB = stage2rotatingarrow_->GetWorldPosition();
+		RadiusB = stage2rotatingarrow_->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && isstage2_) {
+			stage2rotatingarrow_->OnCollision(player_.get());
+		}
 
 #pragma endregion
 
