@@ -48,6 +48,27 @@
 #include"Cannon.h"
 #include"RotateCannon.h"
 #include"StageSelect.h"
+#include"Stage3Wall.h"
+#include"Stage3Barrier.h"
+#include"Stage3Barrier2nd.h"
+#include"Stage3Barrier3rd.h"
+#include"Stage3Barrier4th.h"
+#include"Stage3Warp.h"
+#include"Stage3Warp2.h"
+#include"Stage3Warp2nd.h"
+#include"Stage3Warp2nd2.h"
+#include"Stage3Warp3rd.h"
+#include"Stage3Warp3rd2.h"
+#include"Stage3Warp4th.h"
+#include"Stage3Warp4th2.h"
+#include"Stage3Warp5th.h"
+#include"Stage3Warp5th2.h"
+#include"Stage3Fire.h"
+#include"BigSwitch.h"
+#include"BigSwitch2.h"
+#include"Stage3SpeedDown.h"
+#include"SpeedUp.h"
+#include"Stage3RotateConnon.h"
 
 /// <summary>
 /// ゲームシーン
@@ -154,6 +175,33 @@ public: // メンバ関数
 	void LoadCannonPopData();
 	void UpdateCannonPopCommands();
 	void CannonGenerate(const Vector3& position, const Vector3& Headposition, const Vector3& rotation);
+
+	//ステージ3の壁生成の関数
+	void LoadStage3WallPopData();
+	void UpdateStage3WallPopCommands();
+	void Stage3WallGenerate(const Vector3& position);
+
+	void LoadStage3BarrierPopData();
+	void UpdateStage3BarrierPopCommands();
+	void Stage3BarrierGenerate(const Vector3& position);
+
+	void LoadStage3Barrier2ndPopData();
+	void UpdateStage3Barrier2ndPopCommands();
+	void Stage3Barrier2ndGenerate(const Vector3& position);
+
+	void LoadStage3Barrier3rdPopData();
+	void UpdateStage3Barrier3rdPopCommands();
+	void Stage3Barrier3rdGenerate(const Vector3& position);
+
+	void LoadStage3Barrier4thPopData();
+	void UpdateStage3Barrier4thPopCommands();
+	void Stage3Barrier4thGenerate(const Vector3& position);
+	//-------------------------------//
+	//ステージ3の炎
+	void LoadStage3FirePopData();
+	void UpdateStage3FirePopCommands();
+	void Stage3FireGeneration(const Vector3& position);
+
 	//--------------------------------------------//
 	//バリアが解除した時の処理の関数
 	void BarrierRemoved();
@@ -167,11 +215,14 @@ public: // メンバ関数
 	void AddCannonBullet(Cannonbullet* cannonbullet);
 	//回転大砲の弾を登録するための関数
 	void AddRotateCannonBullet(RotateCannonBullet* rotatecannonbullet);
-
+	//ステージ3の回転大砲の弾を登録するための関数
+	void AddStage3RotateCannonBullet(Stage3RotateCannonBullet* stage3rotatecannonbullet);
+	
 	//それぞれのギミックをステージごとに位置を変えるために必要なフラグの関数
+	bool IsTutorial() { return istutorial_; }
 	bool IsStage1() { return isstage1_; }
 	bool IsStage2() { return isstage2_; }
-	
+	bool IsStage3() { return isstage3_; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -289,6 +340,55 @@ private: // メンバ変数
 	std::list <RotateCannonBullet*> rotatecannonbullets_;
 	//ステージセレクト
 	std::unique_ptr<StageSelect> stageselect_;
+
+	//ステージ3の壁
+	std::list<std::unique_ptr<Stage3Wall>> stage3walls_;
+
+	//ステージ3のバリア
+	std::list<std::unique_ptr<Stage3Barrier>> stage3barriers_;
+	std::list<std::unique_ptr<Stage3Barrier2nd>> stage3barrier2nds_;
+	std::list<std::unique_ptr<Stage3Barrier3rd>> stage3barrier3rds_;
+	std::list<std::unique_ptr<Stage3Barrier4th>> stage3barrier4ths_;
+	//------------------------------//
+	//ステージ3のワープ
+	std::unique_ptr<Stage3Warp> stage3warp_;
+	int32_t stage3warpcooltime_ = 0;
+	std::unique_ptr<Stage3Warp2> stage3warp2_;
+	int32_t stage3warp2cooltime_ = 0;
+	std::unique_ptr<Stage3Warp2nd> stage3warp2nd_;
+	int32_t stage3warp2ndcooltime_ = 0;
+	std::unique_ptr<Stage3Warp2nd2> stage3warp2nd2_;
+	int32_t stage3warp2nd2cooltime_ = 0;
+	std::unique_ptr<Stage3Warp3rd> stage3warp3rd_;
+	int32_t stage3warp3rdcooltime_ = 0;
+	std::unique_ptr<Stage3Warp3rd2> stage3warp3rd2_;
+	int32_t stage3warp3rd2cooltime_ = 0;
+	std::unique_ptr<Stage3Warp4th> stage3warp4th_;
+	int32_t stage3warp4thcooltime_ = 0;
+	std::unique_ptr<Stage3Warp4th2> stage3warp4th2_;
+	int32_t stage3warp4th2cooltime_ = 0;
+	std::unique_ptr<Stage3Warp5th> stage3warp5th_;
+	int32_t stage3warp5thcooltime_ = 0;
+	std::unique_ptr<Stage3Warp5th2> stage3warp5th2_;
+	int32_t stage3warp5th2cooltime_ = 0;
+	//----------------------------------//
+	//ステージ3の炎
+	std::list<std::unique_ptr<Stage3Fire>> stage3fires_;
+	//大のスイッチ
+	std::unique_ptr<BigSwitch> bigswitch_;
+	std::unique_ptr<BigSwitch2> bigswitch2_;
+	std::unique_ptr<Model> modelbigswitch_;
+	std::unique_ptr<Model> modelbigbutton_;
+	std::unique_ptr<Model> modelbigbutton2_;
+	//-----------------------------//
+	//ステージ3のスピードダウン
+	std::unique_ptr<Stage3SpeedDown> stage3speeddown_;
+	//スピードアップ
+	std::unique_ptr<SpeedUp> speedup_;
+	//ステージ3の回転大砲
+	std::unique_ptr<Stage3RotateConnon> stage3rotatecannon_;
+	std::list <Stage3RotateCannonBullet*> stage3rotatecannonbullets_;
+
 	//csvに読み込まれた数値を代入するための変数
 	Vector3 position_;
 	Vector3 rotation_;
@@ -325,11 +425,23 @@ private: // メンバ変数
 	std::stringstream TutorialGoalBlackPopCommands;
 	//大砲の発生コマンド
 	std::stringstream CannonPopCommands;
+	//ステージ3の発生コマンド
+	std::stringstream stage3wallPopCommands;
+	//ステージ3のバリア発生コマンド
+	std::stringstream stage3barrierPopCommands;
+	std::stringstream stage3barrier2ndPopCommands;
+	std::stringstream stage3barrier3rdPopCommands;
+	std::stringstream stage3barrier4thPopCommands;
+	//----------------------------//
+	//ステージ3の炎
+	std::stringstream stage3firePopCommands;
 
 	//ステージを分けるためのフラグ
 	bool istutorial_ = false;
 	bool isstage1_ = false;
 	bool isstage2_ = false;
+	bool isstage3_ = false;
+
 	
 
 	// 天球

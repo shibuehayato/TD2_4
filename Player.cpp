@@ -5,6 +5,8 @@
 #include <ImGuiManager.h>
 #include"Cannonbullet.h"
 
+
+
 void Player::Initialize(Model* head)
 {
 	assert(head);
@@ -16,7 +18,7 @@ void Player::Initialize(Model* head)
 	e = 0.4f;
 	ArrowRot_ = { 0.0f,0.0f,0.0f };
 	speeddown_ = 0.01f;
-	speedup_ = 0.01f;
+	speedup_ = 0.00f;
 
 	KeepMove_ = { 0,0,0 };
 }
@@ -35,8 +37,8 @@ void Player::Update() {
 
 				// スピードが上がりすぎないようにする
 				if (speed < 0.04f) {
-					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed;
-					KeepMove_.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed;
+					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed ;
+					KeepMove_.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed ;
 				}
 			}
 		}
@@ -52,6 +54,7 @@ void Player::Update() {
 				KeepMove_.x = 0;
 				KeepMove_.z = 0;
 				speeddown_ = 0.01f;
+				speedup_ = 0.0f;
 				e = 0.4f;
 				isMove = false;
 			}
@@ -83,7 +86,7 @@ void Player::Update() {
 	// 移動量
 	Vector3 move = { 0,0,0 };
 	move.x -= KeepMove_.x;
-	move.z -= KeepMove_.z;
+	move.z -= KeepMove_.z ;
 	if (isMove == true) {
 		
 		// 速度を落とす
@@ -91,13 +94,26 @@ void Player::Update() {
 			KeepMove_.x -= speeddown_;
 		}
 		if (KeepMove_.x < 0) {
-			KeepMove_.x += speeddown_;
+			KeepMove_.x += speeddown_ ;
 		}
 		if (KeepMove_.z > 0) {
-			KeepMove_.z -= speeddown_;
+			KeepMove_.z -= speeddown_ ;
 		}
 		if (KeepMove_.z < 0) {
-			KeepMove_.z += speeddown_;
+			KeepMove_.z += speeddown_ ;
+		}
+
+		if (KeepMove_.x > 0) {
+			KeepMove_.x -=  speedup_;
+		}
+		if (KeepMove_.x < 0) {
+			KeepMove_.x += speedup_;
+		}
+		if (KeepMove_.z > 0) {
+			KeepMove_.z -=  speedup2_;
+		}
+		if (KeepMove_.z < 0) {
+			KeepMove_.z +=  speedup2_;
 		}
 
 	
@@ -223,10 +239,35 @@ void Player::SpeedDownOnCollision()
 	speeddown_ = 0.02f;
 }
 
+void Player::SpeedUpOnCollision()
+{
+	speedup_ = 0.1f;
+	//KeepMove_.x += 0.1f;
+}
+
+void Player::SpeedUpOnCollision2()
+{
+	speedup_ = -0.1f;
+	//KeepMove_.x -= 0.1f;
+}
+
+void Player::SpeedUpOnCollision3()
+{
+	speedup2_ = -0.1f;
+	//KeepMove_.z += 0.1f;
+}
+
+void Player::SpeedUpOnCollision4()
+{
+	speedup2_ = -0.1f;
+	//KeepMove_.z -= 0.1f;
+}
+
 void Player::NoSpeedOnCollision()
 {
-	speeddown_ = 0.0f;
+	
 	speedup_ = 0.0f;
+	speedup2_ = 0.0f;
 }
 
 void Player::WarpOnCollision()
@@ -247,6 +288,60 @@ void Player::MoveStop()
 	KeepMove_.z = 0;
 	speed = 0;
 	isMove = false;
+}
+
+void Player::Stage3WarpOnCollision()
+{
+
+	worldTransformHead_.translation_ = { 16.0f, 0.0f, -38.0f };
+}
+
+void Player::Stage3Warp2OnCollision()
+{
+
+	worldTransformHead_.translation_ = { -13.0f,0.0f,-12.0f };
+}
+
+void Player::Stage3Warp2ndOnCollision()
+{
+
+	worldTransformHead_.translation_ = { -10.0f,0.0f,2.0f };
+}
+
+void Player::Stage3Warp2nd2OnCollision()
+{
+	
+	worldTransformHead_.translation_ = { 16.0f, 0.0f, 23.0f };
+}
+
+void Player::Stage3Warp3rdOnCollision()
+{
+	worldTransformHead_.translation_ = { -16.0f,0.0f,-66.0f };
+}
+
+void Player::Stage3Warp3rd2OnCollision()
+{
+	worldTransformHead_.translation_ = { -13.0f,0.0f,-19.0f };
+}
+
+void Player::Stage3Warp4thOnCollision()
+{
+	worldTransformHead_.translation_ = { -6.0f,0.0f,-30.0f };
+}
+
+void Player::Stage3Warp4th2OnCollision()
+{
+	worldTransformHead_.translation_ = { 14.0f,0.0f,-27.0f };
+}
+
+void Player::Stage3Warp5thOnCollision()
+{
+	worldTransformHead_.translation_ = { 0.0f,0.0f,45.0f };
+}
+
+void Player::Stage3Warp5th2OnCollision()
+{
+	worldTransformHead_.translation_ = { 14.0f,0.0f,-11.0f };
 }
 
 
@@ -343,6 +438,18 @@ void Player::RotateCannonOnCollision2()
 		worldTransformHead_.translation_.x -= 10.0f;
 
 	}
+}
+
+void Player::SetPlayerPosition()
+{
+	
+	worldTransformHead_.translation_ = { 0,0,-10.0f };
+	
+}
+
+void Player::SetPlayerPosition2()
+{
+	worldTransformHead_.translation_ = { 0,0,-45.0f };
 }
 
 void Player::Reset()

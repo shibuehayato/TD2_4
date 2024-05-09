@@ -1,7 +1,7 @@
-#include "RotateCannonBullet.h"
+#include "Stage3RotateCannonBullet.h"
 #include<cassert>
 #include"Mymath.h"
-void RotateCannonBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity)
+void Stage3RotateCannonBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity)
 {
 	assert(model);
 	model_ = model;
@@ -10,7 +10,7 @@ void RotateCannonBullet::Initialize(Model* model, const Vector3& position, const
 	velocity_ = velocity;
 }
 
-void RotateCannonBullet::Update()
+void Stage3RotateCannonBullet::Update()
 {
 	worldTransform_.UpdateMatrix();
 	// 座標を移動させる(1フレーム分の移動量を足し込む)
@@ -20,22 +20,22 @@ void RotateCannonBullet::Update()
 	}
 }
 
-void RotateCannonBullet::Draw(ViewProjection& viewProjection)
+void Stage3RotateCannonBullet::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection);
 }
 
-void RotateCannonBullet::OnCollision()
+void Stage3RotateCannonBullet::OnCollision()
 {
 	isDead_ = true;
 }
 
-void RotateCannonBullet::OnCollision2()
+void Stage3RotateCannonBullet::OnCollision2()
 {
 	isDead_ = true;
 }
 
-Vector3 RotateCannonBullet::GetVelocity()
+Vector3 Stage3RotateCannonBullet::GetVelocity()
 {
 	Vector3 velocity;
 	velocity.x = velocity_.x;
@@ -44,7 +44,7 @@ Vector3 RotateCannonBullet::GetVelocity()
 	return velocity;
 }
 
-Vector3 RotateCannonBullet::GetPosition()
+Vector3 Stage3RotateCannonBullet::GetPosition()
 {
 	Vector3 worldPos;
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
@@ -53,7 +53,7 @@ Vector3 RotateCannonBullet::GetPosition()
 	return worldPos;
 }
 
-Vector3 RotateCannonBullet::GetScale()
+Vector3 Stage3RotateCannonBullet::GetScale()
 {
 	Vector3 worldScale;
 	worldScale.x = worldTransform_.scale_.x;

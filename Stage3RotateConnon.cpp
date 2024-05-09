@@ -1,7 +1,7 @@
-#include "RotateCannon.h"
+#include "Stage3RotateConnon.h"
 #include<cassert>
 #include"GameScene.h"
-void RotateCannon::Initialize(Model* modelHead, Model* model)
+void Stage3RotateConnon::Initialize(Model* modelHead, Model* model)
 {
 	assert(modelHead);
 	assert(model);
@@ -9,15 +9,15 @@ void RotateCannon::Initialize(Model* modelHead, Model* model)
 	model_[1] = model;
 
 	worldTransform_.Initialize();
-
+	worldTransform_.translation_ = { -16.0f, 0.5f, 46.0f };
 	worldTransformHead_.Initialize();
-
+	worldTransformHead_.translation_ = { -15.0f, 0.5f, 46.0f };
 	worldTransformHead_.scale_ = { 0.5f,1.0f,1.0f };
 	worldTransformHead_.rotation_ = { 0.0f,-5.23f,0.0f };
 	FiringInitialize();
 }
 
-void RotateCannon::Update()
+void Stage3RotateConnon::Update()
 {
 	worldTransformHead_.UpdateMatrix();
 	worldTransform_.UpdateMatrix();
@@ -39,12 +39,8 @@ void RotateCannon::Update()
 	{
 		isrotation_ = false;
 	}
-	if (gameScene_->IsStage2())
-	{
-		worldTransform_.translation_ = { -18.0f,0.0f,46.0f };
-		worldTransformHead_.translation_ = { -17.0f,0.0f,46.0f };
-	}
 	
+
 
 	FiringUpdate();
 
@@ -54,19 +50,19 @@ void RotateCannon::Update()
 
 }
 
-void RotateCannon::Draw(ViewProjection& viewProjection)
+void Stage3RotateConnon::Draw(ViewProjection& viewProjection)
 {
 	model_[0]->Draw(worldTransformHead_, viewProjection);
 	model_[1]->Draw(worldTransform_, viewProjection);
 }
 
-void RotateCannon::FiringInitialize()
+void Stage3RotateConnon::FiringInitialize()
 {
 	// 発射タイマーを初期化
 	kFireTimer_ = kFireInterval_;
 }
 
-void RotateCannon::FiringUpdate()
+void Stage3RotateConnon::FiringUpdate()
 {
 	// 発射タイマーカウントダウン
 	kFireTimer_--;
@@ -79,7 +75,7 @@ void RotateCannon::FiringUpdate()
 	}
 }
 
-void RotateCannon::Fire()
+void Stage3RotateConnon::Fire()
 {
 	const float kBulletSpeed = 1.0f;
 	Vector3 velocity(0, 0, kBulletSpeed);
@@ -89,13 +85,13 @@ void RotateCannon::Fire()
 	velocity = Normalize(velocity);
 	velocity = Multiply(kBulletSpeed, velocity);
 
-	RotateCannonBullet* newRotateCannonBullet = new RotateCannonBullet();
-	newRotateCannonBullet->Initialize(model_[1], worldTransformHead_.translation_, velocity);
+	Stage3RotateCannonBullet* newstage3RotateCannonBullet = new Stage3RotateCannonBullet();
+	newstage3RotateCannonBullet->Initialize(model_[1], worldTransformHead_.translation_, velocity);
 
-	gameScene_->AddRotateCannonBullet(newRotateCannonBullet);
+	gameScene_->AddStage3RotateCannonBullet(newstage3RotateCannonBullet);
 }
 
-Vector3 RotateCannon::GetPosition()
+Vector3 Stage3RotateConnon::GetPosition()
 {
 	Vector3 worldPos;
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
@@ -104,7 +100,7 @@ Vector3 RotateCannon::GetPosition()
 	return worldPos;
 }
 
-Vector3 RotateCannon::GetScale()
+Vector3 Stage3RotateConnon::GetScale()
 {
 	Vector3 worldScale;
 	worldScale.x = worldTransform_.scale_.x;

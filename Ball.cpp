@@ -41,6 +41,14 @@ void Ball::Update()
 
 	}
 
+	if (gamescene_->IsStage3() && isDead_ == false)
+	{
+		WorldTransform_.translation_ = { -16.0f,0.0f,-42.0f };
+
+
+
+	}
+
 	// 行列を定数バッファに転送
 	WorldTransform_.UpdateMatrix();
 }

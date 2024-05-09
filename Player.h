@@ -1,6 +1,8 @@
 ﻿#include "model.h"
 #include "WorldTransform.h"
 #include <Input.h>
+
+
 class Cannonbullet;
 class Player {
 public:
@@ -21,11 +23,26 @@ public:
 	void OnCollision7();
 	//スピードダウンに当たった時の関数
 	void SpeedDownOnCollision();
+	void SpeedUpOnCollision();
+	void SpeedUpOnCollision2();
+	void SpeedUpOnCollision3();
+	void SpeedUpOnCollision4();
 	void NoSpeedOnCollision();
 	//1つめのワープに当たった時の関数
 	void WarpOnCollision();
 	void WarpOnCollision2();
 	void MoveStop();
+	//ステージ3のワープに当たった時の関数
+	void Stage3WarpOnCollision();
+	void Stage3Warp2OnCollision();
+	void Stage3Warp2ndOnCollision();
+	void Stage3Warp2nd2OnCollision();
+	void Stage3Warp3rdOnCollision();
+	void Stage3Warp3rd2OnCollision();
+	void Stage3Warp4thOnCollision();
+	void Stage3Warp4th2OnCollision();
+	void Stage3Warp5thOnCollision();
+	void Stage3Warp5th2OnCollision();
 	//当た後
 	void RecoveryOnCollision();
 	void WindOnCollision();
@@ -42,6 +59,11 @@ public:
 	void RotateCannonOnCollision();
 	void RotateCannonOnCollision2();
 	//-----------------------//
+
+	//プレイヤーの位置調整の関数
+	void SetPlayerPosition();
+	void SetPlayerPosition2();
+	
 
 	void Reset();
 
@@ -100,6 +122,7 @@ private:
 	float speeddown_ = 0.0f;
 	//スピードアップに必要な変数
 	float speedup_ = 0.0f;
+	float speedup2_ = 0.0f;
 
 	//当たった時点滅する用の変数
 	int32_t blikingtimer_;
@@ -110,4 +133,6 @@ private:
 	Vector3 ArrowRot_ = { 0.0f,0.0f,0.0f };
 
 	Cannonbullet* cannonbullet_ = nullptr;
+
+	
 };

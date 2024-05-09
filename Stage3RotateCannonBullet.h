@@ -1,7 +1,7 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
-class RotateCannonBullet
+class Stage3RotateCannonBullet
 {
 public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);

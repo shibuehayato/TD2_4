@@ -46,6 +46,13 @@ void Recovery::Update()
 		WorldTransform_.rotation_ = { 0.0f,3.9f,0.0f };
 		
 	}
+
+	if (gamescene_->IsStage3() && isDead_ == false)
+	{
+		WorldTransform_.translation_ = { -6.0f,0.0f,22.0f };
+
+		WorldTransform_.rotation_ = { 0.0f,3.9f,0.0f };
+	}
 	
 }
 

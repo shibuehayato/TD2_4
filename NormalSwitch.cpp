@@ -55,6 +55,13 @@ void NormalSwitch::Update()
 		worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
 		worldTransformbutton_.translation_ = { -18.0f,1.0f,54.0f };
 	}
+	if (gamescene_->IsStage3())
+	{
+		worldTransformswitch_.translation_ = { 3.75f,1.0f,-45.0f };
+
+		worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+		worldTransformbutton_.translation_ = { 5.0f,1.0f,-45.0f };
+	}
 }
 
 void NormalSwitch::Draw(ViewProjection& viewProjection)
