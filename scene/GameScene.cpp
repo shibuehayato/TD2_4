@@ -308,12 +308,12 @@ void GameScene::Update() {
 
 		debugCamera_->Update();
 #ifdef _DEBUG
-		/*ImGui::Begin("viewprojection");
+		ImGui::Begin("viewprojection");
 		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
-		ImGui::End();*/
+		ImGui::End();
 #endif
 
 #ifdef _DEBUG
