@@ -11,7 +11,7 @@ void Stage2RotatingArrow::Initialize(Model* model)
 	worldTransform_.Initialize();
 	
 
-	worldTransform_.translation_ = { 0.0f,0.0f,-2.0f };
+	worldTransform_.translation_ = {-3.0f,0.0f,-3.0f };
 
 	velocity_ = { 1.0f, 1.0f, 1.0f };
 	ArrowRot = { 1.0f,1.0f,1.0f };

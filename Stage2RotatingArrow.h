@@ -33,6 +33,7 @@ public:
 	// 大きさ取得
 	Vector3 GetRadius() { return worldTransform_.scale_; };
 
+
 	//ゲームシーンからアドレスをもらうための関数
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
