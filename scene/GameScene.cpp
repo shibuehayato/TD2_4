@@ -497,15 +497,12 @@ void GameScene::Update() {
 				fire->Update();
 			}
 			
-
-			//?なぜかチュートリアルでも動いちゃう
-			//if (!istutorial_) {
 				//風のギミックの更新
 				for (const std::unique_ptr<Wind>& wind : winds_) {
 					wind->Update();
 				}
 				UpdateWindPopCommands();
-			//}
+
 			//風のパーティクル
 			for (WindParticle* wind : windParticles_) {
 				wind->Update();
