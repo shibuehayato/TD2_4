@@ -39,6 +39,8 @@ private:
 
 	bool isDead_ = true;
 
+	bool isOnCollision_ = false;
+
 	uint32_t textureHandle_ = 0u;
 
 };

@@ -127,16 +127,16 @@ void Player::Update() {
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
 
-	/*ImGui::Begin("speed");
-	ImGui::DragInt("speed", &Oncollisiontimer_);
-	ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
-	
+	//ImGui::Begin("speed");
+	//ImGui::DragInt("speed", &Oncollisiontimer_);
+	//ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
+	//
 
-	ImGui::DragFloat("e", &e);
-	ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
-	ImGui::DragFloat("Position", &speeddown_, 0.1f);
+	//ImGui::DragFloat("e", &e);
+	//ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
+	//ImGui::DragFloat("Position", &speeddown_, 0.1f);
 
-	ImGui::End();*/
+	//ImGui::End();
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
@@ -373,13 +373,13 @@ void Player::CannonOnCollision()
 	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
 	{
 		
-		worldTransformHead_.translation_.x += 10.0f;
+		KeepMove_.x -= 1.0f;
 	}
-	else if(worldTransformHead_.translation_.x<=-10.1f&&worldTransformHead_.translation_.x>=-18.0f||
+	/*else if(worldTransformHead_.translation_.x<=-10.1f&&worldTransformHead_.translation_.x>=-18.0f||
 		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
 	{
 		worldTransformHead_.translation_.x += 1.0f;
-	}
+	}*/
 	
 }
 
@@ -387,57 +387,55 @@ void Player::CannonOnCollision2()
 {
 	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
 	{
-		worldTransformHead_.translation_.x -= 10.0f;
+		KeepMove_.x += 1.0f;
 		
 	}
-	else if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+	/*else if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
 		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
 	{
 		worldTransformHead_.translation_.x -= 1.0f;
-	}
+	}*/
 	
 }
 
 void Player::CannonOnCollision3()
 {
-	worldTransformHead_.translation_.z += 10.0f;
+	KeepMove_.z -= 1.0f;
 }
 
 void Player::CannonOnCollision4()
 {
-	worldTransformHead_.translation_.z -= 10.0f;
+	KeepMove_.z += 1.0f;
 }
 
 void Player::RotateCannonOnCollision()
 {
 	
-	if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+	/*if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
 		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f||
 		worldTransformHead_.translation_.x>=-9.0f&&worldTransformHead_.translation_.x<=6.0f)
 	{
 		worldTransformHead_.translation_.x += 1.0f;
-	}
-	else
-	{
+	}*/
+	
 
-		worldTransformHead_.translation_.x += 10.0f;
-	}
+		KeepMove_.x -= 1.0f;
+	
 }
 
 void Player::RotateCannonOnCollision2()
 {
 	
-	if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
-		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f ||
-		worldTransformHead_.translation_.x >= -2.0f && worldTransformHead_.translation_.x <= 6.0f)
-	{
-		worldTransformHead_.translation_.x -= 1.0f;
-	}
-	else
-	{
-		worldTransformHead_.translation_.x -= 10.0f;
+	//if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
+	//	worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f ||
+	//	worldTransformHead_.translation_.x >= -2.0f && worldTransformHead_.translation_.x <= 6.0f)
+	//{
+	//	worldTransformHead_.translation_.x -= 1.0f;
+	//}
+	
+		KeepMove_.x += 1.0f;
 
-	}
+	
 }
 
 void Player::SetPlayerPosition()
@@ -450,6 +448,18 @@ void Player::SetPlayerPosition()
 void Player::SetPlayerPosition2()
 {
 	worldTransformHead_.translation_ = { 0,0,-45.0f };
+}
+
+void Player::SetPlayerPosition3()
+{
+	worldTransformHead_.translation_.x = 17.0f;
+	KeepMove_ = { 0,0 };
+}
+
+void Player::SetPlayerPosition4()
+{
+	worldTransformHead_.translation_.x = -17.0f;
+	KeepMove_ = { 0,0 };
 }
 
 void Player::Reset()

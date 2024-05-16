@@ -15,6 +15,15 @@ void Stage3Barrier2nd::Update()
 	/*ImGui::Begin("Barrier3");
 	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
 	ImGui::End();*/
+	if (isOnCollision_ == true)
+	{
+		worldTransform_.translation_.y++;
+	}
+	if (worldTransform_.translation_.y >= 10.0f)
+	{
+		isDead_ = true;
+		isOnCollision_ = false;
+	}
 }
 
 void Stage3Barrier2nd::Draw(ViewProjection& viewProjection)
@@ -27,7 +36,14 @@ void Stage3Barrier2nd::Draw(ViewProjection& viewProjection)
 
 void Stage3Barrier2nd::OnCollision()
 {
-	isDead_ = true;
+	isOnCollision_ = true;
+}
+
+void Stage3Barrier2nd::Reset()
+{
+	isDead_ = false;
+	isOnCollision_ = false;
+	worldTransform_.translation_.y = 0;
 }
 
 Vector3 Stage3Barrier2nd::GetPosition()

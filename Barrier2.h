@@ -38,6 +38,8 @@ private:
 
 	bool isDead_ = false;
 
+	bool isOnCollision_ = false;
+
 };
 
 

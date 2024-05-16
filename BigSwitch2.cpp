@@ -11,11 +11,13 @@ void BigSwitch2::Initialize(Model* model, Model* modelbutton)
 	worldTransformbutton_.Initialize();
 
 
-	worldTransformswitch_.translation_ = { -17.5f,1.0f,-55.0f };
-	worldTransformswitch_.rotation_ = { 0.0f,3.15f,0.0f };
+	worldTransformswitch_.translation_ = { -16.5f,1.0f,-55.0f };
+	worldTransformswitch_.rotation_ = { 1.6f,3.15f,0.0f };
 	worldTransformswitch_.scale_ = { 2.0f,2.0f,2.0f };
-	worldTransformbutton_.translation_ = { -16.25f,1.0f,-55.0f };
+	worldTransformbutton_.translation_ = { -15.25f,1.0f,-55.0f };
 	worldTransformbutton_.scale_ = { 2.0f,2.0f,2.0f };
+
+	textureHandle_ = TextureManager::Load("switch_big2.png");
 
 }
 
@@ -46,7 +48,7 @@ void BigSwitch2::Update()
 
 void BigSwitch2::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransformswitch_, viewProjection);
+	model_->Draw(worldTransformswitch_, viewProjection, textureHandle_);
 	modelbutton_->Draw(worldTransformbutton_, viewProjection);
 }
 

@@ -454,7 +454,7 @@ private: // メンバ変数
 	bool isstage1_ = false;
 	bool isstage2_ = false;
 	bool isstage3_ = false;
-
+	bool isselect_ = false;
 	
 
 	// 天球
@@ -506,6 +506,8 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> MediumSprite_ = nullptr;
 	std::unique_ptr<Sprite> SmallSprite_ = nullptr;
 
+	std::unique_ptr<Sprite> StageSelectsprite_ = nullptr;
+
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
@@ -518,6 +520,7 @@ private: // メンバ変数
 
 	// マップ全体を映すカメラ
 	bool IsFullMapCamera = false;
+	int32_t fullmapcameracooltimer_=0;
 
 	/// <summary>
 	/// ゲームシーン用

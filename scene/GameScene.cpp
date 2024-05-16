@@ -220,7 +220,7 @@ void GameScene::Initialize() {
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
-	isstage1_ = true;
+	//isstage1_ = true;
 
 	modelpitfall_.reset(Model::CreateFromOBJ("Pitfall", true));
 
@@ -255,7 +255,7 @@ void GameScene::Initialize() {
 	stage3warp5th2_->Initialize(modelwarp_.get());
 
 	bigswitch_ = std::make_unique<BigSwitch>();
-	modelbigswitch_.reset(Model::CreateFromOBJ("switch_big", true));
+	modelbigswitch_.reset(Model::CreateFromOBJ("switch_normal", true));
 	modelbigbutton_.reset(Model::CreateFromOBJ("switch_push", true));
 	bigswitch_->Initialize(modelbigswitch_.get(), modelbigbutton_.get());
 
@@ -274,6 +274,12 @@ void GameScene::Initialize() {
 	stage3rotatecannon_->Initialize(model_, model_);
 	stage3rotatecannon_->SetGameScene(this);
 
+	stageselect_ = std::make_unique<StageSelect>();
+	stageselect_->Initialize();
+	uint32_t StageSelecttexture_ = TextureManager::Load("choice.png");
+
+	StageSelectsprite_ = std::make_unique<Sprite>();
+	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f}));
 }
 
 void GameScene::Update() {
@@ -297,7 +303,7 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					GameReset();
-				
+					stageselect_->Reset();
 					scene = GAME;
 					
 				}
@@ -308,12 +314,12 @@ void GameScene::Update() {
 
 		debugCamera_->Update();
 #ifdef _DEBUG
-		ImGui::Begin("viewprojection");
+		/*ImGui::Begin("viewprojection");
 		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
-		ImGui::End();
+		ImGui::End();*/
 #endif
 
 #ifdef _DEBUG
@@ -339,8 +345,14 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
-	
-	
+	if (stageselect_->IsTutorial() || stageselect_->IsStage1() || stageselect_->IsStage2() || stageselect_->IsStage3())
+	{
+		isselect_ = false;
+	}
+	else
+	{
+		isselect_ = true;
+	}
 
 
 
@@ -348,70 +360,150 @@ void GameScene::Update() {
 		skydome_->Update();
 
 		//チュートリアルのフラグを立てるためのif文
-		if (input_->TriggerKey(DIK_A))
-		{
+		if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
+				if (stageselect_->IsTutorial() &&stageselect_->IsCleck())
+				{
 
-		istutorial_ = true;
-		isstage1_ = false;
-		isstage2_ = false;
-		isstage3_ = false;
-		player_->SetPlayerPosition2();
 
-		for (Cannonbullet* cannonbullet : cannonbullets_)
-		{
-			cannonbullet->OnCollision();
-		}
-		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
-		{
-			rotatecannonbullet->OnCollision();
-		}
-		for (Stage3RotateCannonBullet* stage3rotatecannonbullet : stage3rotatecannonbullets_)
-		{
-			stage3rotatecannonbullet->OnCollision();
+					player_->SetPlayerPosition2();
+
+					for (Cannonbullet* cannonbullet : cannonbullets_)
+					{
+						cannonbullet->OnCollision();
+					}
+					for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+					{
+						rotatecannonbullet->OnCollision();
+					}
+					for (Stage3RotateCannonBullet* stage3rotatecannonbullet : stage3rotatecannonbullets_)
+					{
+						stage3rotatecannonbullet->OnCollision();
+					}
+
+				}
+				//ステージ1のフラグを立てるためのif文
+				else if (stageselect_->IsStage1() && stageselect_->IsCleck())
+				{
+
+
+					player_->SetPlayerPosition2();
+					for (Cannonbullet* cannonbullet : cannonbullets_)
+					{
+						cannonbullet->OnCollision();
+					}
+					for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+					{
+						rotatecannonbullet->OnCollision();
+					}
+					for (Stage3RotateCannonBullet* stage3rotatecannonbullet : stage3rotatecannonbullets_)
+					{
+						stage3rotatecannonbullet->OnCollision();
+					}
+				}
+				else if (stageselect_->IsStage2() && stageselect_->IsCleck())
+				{
+
+					player_->SetPlayerPosition2();
+				}
+				else if (stageselect_->IsStage3() && stageselect_->IsCleck())
+				{
+
+					player_->SetPlayerPosition();
+				}
+			}
 		}
 
-	}
-	//ステージ1のフラグを立てるためのif文
-	if (input_->TriggerKey(DIK_B))
-	{
+		if (stageselect_->IsTutorial())
+		{
+			istutorial_ = true;
+			isstage1_ = false;
+			isstage2_ = false;
+			isstage3_ = false;
+		}
+		else if (stageselect_->IsStage1())
+		{
+			istutorial_ = false;
+			isstage1_ = true;
+			isstage2_ = false;
+			isstage3_ = false;
+		}
+		else if (stageselect_->IsStage2())
+		{
+			istutorial_ = false;
+			isstage2_ = true;
+			isstage1_ = false;
+			isstage3_ = false;
+		}
+		else if (stageselect_->IsStage3())
+		{
+			istutorial_ = false;
+			isstage3_ = true;
+			isstage1_ = false;
+			isstage2_ = false;
+		}
 
-		isstage1_ = true;
-		istutorial_ = false;
-		isstage2_ = false;
-		isstage3_ = false;
-		player_->SetPlayerPosition2();
-		for (Cannonbullet* cannonbullet : cannonbullets_)
-		{
-			cannonbullet->OnCollision();
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y)&&stageselect_->IsTutorial()) {
+					player_->SetPlayerPosition2();
+				}
+				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && stageselect_->IsStage1())
+				{
+					player_->SetPlayerPosition2();
+				}
+				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && stageselect_->IsStage2())
+				{
+					player_->SetPlayerPosition2();
+				}
+				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y &&
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && stageselect_->IsStage3())
+				{
+					player_->SetPlayerPosition();
+				}
+			}
 		}
-		for (RotateCannonBullet* rotatecannonbullet : rotatecannonbullets_)
+		if (istutorial_ || isstage1_ || isstage2_ || isstage3_)
 		{
-			rotatecannonbullet->OnCollision();
-		}
-		for (Stage3RotateCannonBullet* stage3rotatecannonbullet : stage3rotatecannonbullets_)
-		{
-			stage3rotatecannonbullet->OnCollision();
-		}
-	}
-	if (input_->TriggerKey(DIK_C))
-	{
-		istutorial_ = false;
-		isstage1_ = false;
-		isstage2_ = true;
-		isballdead_ = false;
-		isstage3_ = false;
-		player_->SetPlayerPosition2();
-	}
-	if (input_->TriggerKey(DIK_D))
-	{
-		istutorial_ = false;
-		isstage1_ = false;
-		isstage2_ = false;
-		isballdead_ = false;
-		isstage3_ = true;
-		player_->SetPlayerPosition();
-	}
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == false) {
+							IsFullMapCamera = true;
+							fullmapcameracooltimer_ = 0;
+						}
+					}
+				}
+			}
 
+			if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
+						if (IsFullMapCamera == true && fullmapcameracooltimer_ >= 10) {
+							IsFullMapCamera = false;
+						}
+					}
+				}
+			}
+
+			if (IsFullMapCamera == true&&player_->GetWorldPosition().z<=20.0f) {
+				viewProjection_.translation_ = { 0,130.0f,0 };
+				viewProjection_.rotation_ = { -11.0f,0,0 };
+			}
+			else if(IsFullMapCamera == true && player_->GetWorldPosition().z >= 20.1f) {
+				viewProjection_.translation_ = { 0,130.0f,20 };
+				viewProjection_.rotation_ = { -11.0f,0,0 };
+			}
+			if (IsFullMapCamera == true && fullmapcameracooltimer_ <= 10)
+			{
+				fullmapcameracooltimer_++;
+			}
+		}
 		//チュートリアルのフラグがたったら実行する
 		if (istutorial_)
 		{
@@ -433,42 +525,16 @@ void GameScene::Update() {
 				goalB->Update();
 			}
 			UpdateTutorialGoalBlackPopCommands();
-
-			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
-					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
-						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
-						if (IsFullMapCamera == false) {
-							IsFullMapCamera = true;
-						}
-					}
-				}
-			}
-
-			if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
-				if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
-					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X &&
-						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
-						if (IsFullMapCamera == true) {
-							IsFullMapCamera = false;
-						}
-					}
-				}
-			}
-
-			if (IsFullMapCamera == true) {
-				viewProjection_.translation_ = { 0,130.0f,0 };
-				viewProjection_.rotation_ = { -11.0f,0,0 };
-			}
+			
 
 		}
 
-		ImGui::Begin("FullMap");
+		/*ImGui::Begin("FullMap");
 		ImGui::Checkbox("FullMap", &IsFullMapCamera);
-		ImGui::End();
+		ImGui::End();*/
 
 		
-			
+		stageselect_->Update();
 		
 
 		if (isstage1_ || isstage2_ || isstage3_)
@@ -1193,8 +1259,12 @@ void GameScene::Draw() {
 	
 	Vector2 position = { 670,240 };
 	//position = { 605,200 };
-	
-	if (istutorial_ == true && scene == GAME || isstage1_ == true && scene == GAME || isstage2_ == true&&scene==GAME) {
+	if (isselect_ == true&&scene==GAME)
+	{
+		StageSelectsprite_->Draw();
+		stageselect_->Draw();
+	}
+	if (istutorial_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage1_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage2_ == true&&scene==GAME&&isselect_==false&&IsFullMapCamera==false) {
 		if (size_ == Big_) {
 			BigSprite_->SetPosition(position);
 			BigSprite_->Draw();
@@ -1208,6 +1278,8 @@ void GameScene::Draw() {
 			SmallSprite_->Draw();	
 		}
 	}
+
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -3423,6 +3495,14 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision5();
 			}
+			if (PosA.x <= -19.1f)
+			{
+				player_->SetPlayerPosition4();
+			}
+			else if (PosA.x >= 19.1f)
+			{
+				player_->SetPlayerPosition3();
+			}
 
 		}
 	}
@@ -3464,7 +3544,14 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision5();
 			}
-
+			if (PosA.x <= -19.1f)
+			{
+				player_->SetPlayerPosition4();
+			}
+			else if (PosA.x >= 19.1f)
+			{
+				player_->SetPlayerPosition3();
+			}
 		}
 	}
 #pragma endregion
@@ -3505,7 +3592,14 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision5();
 			}
-
+			if (PosA.x <= -19.1f)
+			{
+				player_->SetPlayerPosition4();
+			}
+			else if (PosA.x >= 19.1f)
+			{
+				player_->SetPlayerPosition3();
+			}
 		}
 	}
 #pragma endregion
@@ -4096,52 +4190,52 @@ void GameScene::CheckAllCollisions() {
 
 #pragma region プレイヤーと大砲の弾
 
-	for (Cannonbullet* cannonbullet : cannonbullets_) {
-		if (cannonbullet && isstage1_) {
-			// プレイヤーの座標
-			PosA = player_->GetWorldPosition();
-			RadiusA = player_->GetRadius();
-			//炎の座標
-			PosB = cannonbullet->GetPosition();
-			RadiusB = cannonbullet->GetScale();
-			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+	//for (Cannonbullet* cannonbullet : cannonbullets_) {
+	//	if (cannonbullet && isstage2_) {
+	//		// プレイヤーの座標
+	//		PosA = player_->GetWorldPosition();
+	//		RadiusA = player_->GetRadius();
+	//		//炎の座標
+	//		PosB = cannonbullet->GetPosition();
+	//		RadiusB = cannonbullet->GetScale();
+	//		if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->CannonOnCollision();
-			}
+	//			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+	//		{
+	//			player_->CannonOnCollision();
+	//		}
 
-			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+	//		if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->CannonOnCollision2();
-			}
+	//			PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+	//		{
+	//			player_->CannonOnCollision2();
+	//		}
 
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+	//		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
-			{
-				player_->CannonOnCollision3();
-			}
+	//			PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+	//		{
+	//			player_->CannonOnCollision3();
+	//		}
 
-			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+	//		if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
-			{
-				player_->CannonOnCollision4();
-			}
+	//			PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+	//		{
+	//			player_->CannonOnCollision4();
+	//		}
 
-			
+	//		
 
-		}
-	}
+	//	}
+	//}
 #pragma endregion
 
 #pragma region プレイヤーと大砲の弾
 
 	for (Cannonbullet* cannonbullet : cannonbullets_) {
-		if (cannonbullet ) {
+		if (isstage2_ ) {
 			// プレイヤーの座標
 			PosA = player_->GetWorldPosition();
 			RadiusA = player_->GetRadius();
@@ -4974,7 +5068,14 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision5();
 				}
-
+				if (PosA.x <= -19.1f)
+				{
+					player_->SetPlayerPosition4();
+				}
+				else if (PosA.x >= 19.1f)
+				{
+					player_->SetPlayerPosition3();
+				}
 			}
 		}
 #pragma endregion
@@ -5476,6 +5577,18 @@ void GameScene::GameReset()
 	}
 	for (const std::unique_ptr<Barrier2>& barrier2 : barriers2_) {
 		barrier2->Reset();
+	}
+	for (const std::unique_ptr<Stage2Barrier>& stage2barrier : stage2barriers_) {
+		stage2barrier->Reset();
+	}
+	for (const std::unique_ptr<Stage3Barrier2nd>& stage3barrier2nd : stage3barrier2nds_) {
+		stage3barrier2nd->Reset();
+	}
+	for (const std::unique_ptr<Stage3Barrier3rd>& stage3barrier3rd : stage3barrier3rds_) {
+		stage3barrier3rd->Reset();
+	}
+	for (const std::unique_ptr<Stage3Barrier4th>& stage3barrier4th : stage3barrier4ths_) {
+		stage3barrier4th->Reset();
 	}
 	smallswitch_->Reset();
 	normalswitch_->Reset();

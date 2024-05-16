@@ -63,6 +63,8 @@ public:
 	//プレイヤーの位置調整の関数
 	void SetPlayerPosition();
 	void SetPlayerPosition2();
+	void SetPlayerPosition3();
+	void SetPlayerPosition4();
 	
 
 	void Reset();

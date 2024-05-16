@@ -15,6 +15,8 @@ public:
 
 	void OnCollision();
 
+	void Reset();
+
 	//ゲームシーンからアドレスをもらうための関数
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
@@ -34,5 +36,7 @@ private:
 	GameScene* gameScene_ = nullptr;
 
 	bool isDead_ = false;
+
+	bool isOnCollision_ = false;
 };
 
