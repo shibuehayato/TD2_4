@@ -20,7 +20,7 @@ void SpeedUp::Update()
 
 void SpeedUp::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 }
 
 Vector3 SpeedUp::GetPosition()

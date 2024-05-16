@@ -28,7 +28,7 @@ void GameScene::Initialize() {
 
 	TitleTexture_ = TextureManager::Load("scene/title.png");
 	OperationTexture_ = TextureManager::Load("scene/operation.png");
-	ClearTexture_ = TextureManager::Load("scene/clear.png");
+	ClearTexture_ = TextureManager::Load("scene/GameClear.png");
 	GameOverTexture_ = TextureManager::Load("scene/GameOver.png");
 
 	TitleSprite_ = std::make_unique<Sprite>();
@@ -264,10 +264,12 @@ void GameScene::Initialize() {
 	bigswitch2_->Initialize(modelbigswitch_.get(), modelbigbutton2_.get());
 
 	stage3speeddown_ = std::make_unique<Stage3SpeedDown>();
-	stage3speeddown_->Initialize(model_);
+	modelspeeddown_.reset(Model::CreateFromOBJ("ArrowDown", true));
+	stage3speeddown_->Initialize(modelspeeddown_.get());
 
 	speedup_ = std::make_unique<SpeedUp>();
-	speedup_->Initialize(model_);
+	modelspeedup_.reset(Model::CreateFromOBJ("ArrowUp", true));
+	speedup_->Initialize(modelspeedup_.get());
 
 	//ステージ3の回転大砲
 	stage3rotatecannon_ = std::make_unique<Stage3RotateConnon>();
@@ -280,6 +282,9 @@ void GameScene::Initialize() {
 
 	StageSelectsprite_ = std::make_unique<Sprite>();
 	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f}));
+
+	
+
 }
 
 void GameScene::Update() {
@@ -3296,7 +3301,7 @@ void GameScene::Stage2BarrierGeneration(const Vector3& position)
 	// 敵の生成
 	Stage2Barrier* stage2barrier = new Stage2Barrier();
 
-	stage2barrier->Initialize(model_, position);
+	stage2barrier->Initialize(modelbarrier_.get(), position);
 	stage2barrier->SetGameScene(this);
 
 	stage2barriers_.push_back(static_cast<std::unique_ptr<Stage2Barrier>>(stage2barrier));
@@ -3373,7 +3378,7 @@ void GameScene::SpeedDownGeneration(const Vector3& position)
 	// 敵の生成
 	SpeedDown* speeddown = new SpeedDown();
 
-	speeddown->Initialize(model_, position);
+	speeddown->Initialize(modelspeeddown_.get(), position);
 	speeddown->SetGameScene(this);
 
 	speeddowns_.push_back(static_cast<std::unique_ptr<SpeedDown>>(speeddown));

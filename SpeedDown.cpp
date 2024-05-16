@@ -10,18 +10,19 @@ void SpeedDown::Initialize(Model* model, Vector3 position)
 	worldTransform_.translation_ = position;
 
 	textureHandle_ = TextureManager::Load("uvChecker.png");
-
+	worldTransform_.rotation_ = { 0.0f,3.12f,0.0f };
 	//worldTransform_.translation_ = { 0.0f,0.0f,-10.0f };
 }
 
 void SpeedDown::Update()
 {
 	worldTransform_.UpdateMatrix();
+	
 }
 
 void SpeedDown::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection,textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 }
 
 Vector3 SpeedDown::GetPosition()

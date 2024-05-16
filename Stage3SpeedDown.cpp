@@ -7,7 +7,7 @@ void Stage3SpeedDown::Initialize(Model* model)
 	worldTransform_.Initialize();
 
 	worldTransform_.translation_ = {6.0f,0.0f,5.0f};
-
+	worldTransform_.rotation_ = { 0.0f,3.12f,0.0f };
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 
 	//worldTransform_.translation_ = { 0.0f,0.0f,-10.0f };
@@ -20,7 +20,7 @@ void Stage3SpeedDown::Update()
 
 void Stage3SpeedDown::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 }
 
 Vector3 Stage3SpeedDown::GetPosition()

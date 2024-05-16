@@ -37,12 +37,12 @@ void BigSwitch::Update()
 		isScale_ = true;
 	}
 
-	ImGui::Begin("BigSwitch");
+	/*ImGui::Begin("BigSwitch");
 	ImGui::DragFloat3("ButtonPosition", &worldTransformbutton_.translation_.x, 0.1f);
 	ImGui::DragFloat3("ButtonRotation", &worldTransformswitch_.rotation_.x, 0.1f);
 	ImGui::DragFloat3("ButtonScale", &worldTransformbutton_.scale_.x, 0.1f);
 	ImGui::DragFloat3("SwitchPosition", &worldTransformswitch_.translation_.x, 0.1f);
-	ImGui::End();
+	ImGui::End();*/
 
 	
 }

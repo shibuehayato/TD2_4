@@ -11,6 +11,8 @@ void Fire2::Initialize(Model* model, Vector3 position)
 
 	worldTransform_.translation_ = position;
 
+	textureHandle_ = TextureManager::Load("cube.jpg");
+
 	/*for (int i = 0; i < 3; i++)
 	{
 		model_[i] = model;
@@ -46,7 +48,7 @@ void Fire2::Update()
 void Fire2::Draw(ViewProjection& viewProjection)
 {
 
-	model_->Draw(worldTransform_, viewProjection);
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 	/*for (int i = 0; i < 3; i++)
 	{

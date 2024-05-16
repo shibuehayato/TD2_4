@@ -394,8 +394,10 @@ private: // メンバ変数
 	//-----------------------------//
 	//ステージ3のスピードダウン
 	std::unique_ptr<Stage3SpeedDown> stage3speeddown_;
+	
 	//スピードアップ
 	std::unique_ptr<SpeedUp> speedup_;
+	std::unique_ptr<Model> modelspeedup_;
 	//ステージ3の回転大砲
 	std::unique_ptr<Stage3RotateConnon> stage3rotatecannon_;
 	std::list <Stage3RotateCannonBullet*> stage3rotatecannonbullets_;

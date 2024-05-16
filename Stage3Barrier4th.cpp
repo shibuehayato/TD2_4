@@ -12,9 +12,9 @@ void Stage3Barrier4th::Initialize(Model* model, Vector3 position)
 void Stage3Barrier4th::Update()
 {
 	worldTransform_.UpdateMatrix();
-	ImGui::Begin("Barrier3");
+	/*ImGui::Begin("Barrier3");
 	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
-	ImGui::End();
+	ImGui::End();*/
 	if (isOnCollision_ == true)
 	{
 		worldTransform_.translation_.y++;
