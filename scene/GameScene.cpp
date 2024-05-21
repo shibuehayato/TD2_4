@@ -1295,11 +1295,11 @@ void GameScene::Draw() {
 	//マップ文字
 	if (istutorial_ == true || isstage1_ == true || isstage2_ == true||isstage3_==true) {
 			Vector2 position = { 20,650 };
-		if (IsFullMapCamera == true) {
+		if (IsFullMapCamera == true && scene == GAME&&isselect_==false) {
 			MapXSprite_->SetPosition(position);
 			MapXSprite_->Draw();
 		}
-		else if (IsFullMapCamera == false) {
+		else if (IsFullMapCamera == false && scene == GAME && isselect_ == false) {
 			MapXReSprite_->SetPosition(position);
 			MapXReSprite_->Draw();
 		}
