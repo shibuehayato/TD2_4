@@ -525,6 +525,8 @@ private: // メンバ変数
 	//風のパーティクル範囲
 	const Vector3 rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
 	const Vector3 rangeend = { -14.0f,3.5f,26.0f }; //範囲終わり
+	//風音時間
+	float WindMove_ = 0;
 
 	// マップ全体を映すカメラ
 	bool IsFullMapCamera = false;
@@ -543,6 +545,10 @@ private: // メンバ変数
 	uint32_t DamageSE_ = 0;
 	//穴
 	uint32_t HoleSE_ = 0;
+	//テレポート
+	uint32_t TeleportSE_ = 0;
+	//風
+	uint32_t WindSE_ = 0;
 
 	/// <summary>
 	/// ゲームシーン用

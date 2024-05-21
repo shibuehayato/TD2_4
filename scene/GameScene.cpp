@@ -304,6 +304,10 @@ void GameScene::Initialize() {
 	DamageSE_ = audio_->LoadWave("SE//Damage.mp3");
 	//穴
 	HoleSE_ = audio_->LoadWave("SE//Hole.mp3");
+	//テレポート
+	TeleportSE_ = audio_->LoadWave("SE//Teleport.mp3");
+	//風
+	WindSE_ = audio_->LoadWave("SE//Wind.mp3");
 }
 
 void GameScene::Update() {
@@ -643,6 +647,7 @@ void GameScene::Update() {
 			downarrow_->Update();
 			//風ファンの更新
 			cyclone_->Update();
+			WindMove_--;
 			//回転矢印の更新
 			//rotatingarrow_->Update();
 		}
@@ -3487,8 +3492,12 @@ void GameScene::CheckAllCollisions() {
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure&&isstage1_) {
+		if (PositionMeasure <= RadiusMeasure && isstage1_) {
 			player_->WindOnCollision();
+			if (WindMove_ <= 0) {
+				audio_->PlayWave(WindSE_);
+				WindMove_ = 180;
+			}
 		}
 	}
 #pragma endregion
@@ -3937,6 +3946,7 @@ void GameScene::CheckAllCollisions() {
 		// プレイヤーと1つめのワープの交差判定
 		if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
 			player_->WarpOnCollision();
+			audio_->PlayWave(TeleportSE_);
 			warpcooltime_ = 0;
 			movestoptime = 0;
 		}
@@ -3969,6 +3979,7 @@ void GameScene::CheckAllCollisions() {
 		// プレイヤーと2つめのワープの交差判定
 		if (PositionMeasure <= RadiusMeasure && warpcooltime_ >= 10) {
 			player_->WarpOnCollision2();
+			audio_->PlayWave(TeleportSE_);
 			warpcooltime_ = 0;
 			movestoptime = 0;
 		}
@@ -4735,6 +4746,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warpcooltime_ >= 20) {
 				player_->Stage3WarpOnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warpcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4777,6 +4789,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp2ndcooltime_ >= 20) {
 				player_->Stage3Warp2OnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp2ndcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4819,6 +4832,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp2ndcooltime_ >= 20) {
 				player_->Stage3Warp2ndOnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp2ndcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4858,6 +4872,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warpcooltime_ >= 20) {
 				player_->Stage3Warp2nd2OnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warpcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4898,6 +4913,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp3rdcooltime_ >= 20) {
 				player_->Stage3Warp3rdOnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp3rdcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4937,6 +4953,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp3rdcooltime_ >= 20) {
 				player_->Stage3Warp3rd2OnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp3rdcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -4977,6 +4994,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp4thcooltime_ >= 20) {
 				player_->Stage3Warp4thOnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp4thcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -5016,6 +5034,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp4thcooltime_ >= 20) {
 				player_->Stage3Warp4th2OnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp4thcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -5056,6 +5075,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp5thcooltime_ >= 20) {
 				player_->Stage3Warp5thOnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp5thcooltime_ = 0;
 				movestoptime = 0;
 			}
@@ -5095,6 +5115,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと1つめのワープの交差判定
 			if (PositionMeasure <= RadiusMeasure && stage3warp5thcooltime_ >= 20) {
 				player_->Stage3Warp5th2OnCollision();
+				audio_->PlayWave(TeleportSE_);
 				stage3warp5thcooltime_ = 0;
 				movestoptime = 0;
 			}
