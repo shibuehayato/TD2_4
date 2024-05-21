@@ -298,6 +298,12 @@ void GameScene::Initialize() {
 	ReflectionWallSE_ = audio_->LoadWave("SE//ReflectionWall.wav");
 	//バリア反射音
 	ReflectionBarrierSE_ = audio_->LoadWave("SE//ReflectionBarrier.wav");
+	//回復
+	RecoverySE_ = audio_->LoadWave("SE//Recovery.mp3");
+	//ダメージ
+	DamageSE_ = audio_->LoadWave("SE//Damage.mp3");
+	//穴
+	HoleSE_ = audio_->LoadWave("SE//Hole.mp3");
 }
 
 void GameScene::Update() {
@@ -3451,19 +3457,17 @@ void GameScene::CheckAllCollisions() {
 		PosB = recovery_->GetWorldPosition();
 		RadiusB = recovery_->GetRadius();
 
-		
-
 		// 座標AとBの距離を求める
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
 			(PosB.z - PosA.z) * (PosB.z - PosA.z);
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-
-		
+			
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			recovery_->OnCollision();
 			player_->RecoveryOnCollision();
+			audio_->PlayWave(RecoverySE_);
 		}
 		
 	}
@@ -3867,6 +3871,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision2();
 				player_->OnCollision7();
+				audio_->PlayWave(DamageSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3875,6 +3880,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision3();
 				player_->OnCollision7();
+				audio_->PlayWave(DamageSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3883,6 +3889,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision4();
 				player_->OnCollision7();
+				audio_->PlayWave(DamageSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3891,11 +3898,13 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision5();
 				player_->OnCollision7();
+				audio_->PlayWave(DamageSE_);
 			}
 
 			if (player_->GetRadius().x <= 0.5f)
 			{
 				scene = GAMEOVER;
+				audio_->PlayWave(DamageSE_);
 			}
 
 		}
@@ -3988,6 +3997,7 @@ void GameScene::CheckAllCollisions() {
 			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 			// プレイヤーと落とし穴の交差判定
 			if (PositionMeasure <= RadiusMeasure) {
+				audio_->PlayWave(HoleSE_);
 				scene = GAMEOVER;
 			}
 		}
@@ -4592,6 +4602,7 @@ void GameScene::CheckAllCollisions() {
 			if (PositionMeasure <= RadiusMeasure) {
 				stage2recovery_->OnCollision();
 				player_->RecoveryOnCollision();
+				audio_->PlayWave(RecoverySE_);
 			}
 
 		}
@@ -4612,6 +4623,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision2();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4620,6 +4632,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision3();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4628,6 +4641,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision4();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4636,10 +4650,12 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision5();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (player_->GetRadius().x <= 0.5f)
 				{
+					audio_->PlayWave(DamageSE_);
 					scene = GAMEOVER;
 				}
 
@@ -5267,6 +5283,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision2();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5275,6 +5292,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision3();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5283,6 +5301,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision4();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5291,10 +5310,12 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->OnCollision5();
 					player_->OnCollision7();
+					audio_->PlayWave(DamageSE_);
 				}
 
 				if (player_->GetRadius().x <= 0.5f)
 				{
+					audio_->PlayWave(DamageSE_);
 					scene = GAMEOVER;
 				}
 

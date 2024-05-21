@@ -537,7 +537,12 @@ private: // メンバ変数
 	uint32_t ReflectionWallSE_ = 0;
 	//バリア反射音
 	uint32_t ReflectionBarrierSE_ = 0;
-
+	//回復
+	uint32_t RecoverySE_ = 0;
+	//ダメージ
+	uint32_t DamageSE_ = 0;
+	//穴
+	uint32_t HoleSE_ = 0;
 
 	/// <summary>
 	/// ゲームシーン用
