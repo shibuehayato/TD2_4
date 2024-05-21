@@ -1295,7 +1295,11 @@ void GameScene::Draw() {
 		StageSelectsprite_->Draw();
 		stageselect_->Draw();
 	}
-	if (istutorial_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage1_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage2_ == true&&scene==GAME&&isselect_==false&&IsFullMapCamera==false) {
+	if (istutorial_ == true && scene == GAME && isselect_ == false &&
+		IsFullMapCamera == false || isstage1_ == true && scene == GAME && 
+		isselect_ == false && IsFullMapCamera == false || isstage2_ == true&&scene==GAME&&
+		isselect_==false&&IsFullMapCamera==false || isstage3_ == true && scene == GAME && 
+		isselect_ == false && IsFullMapCamera == false) {
 		if (size_ == Big_) {
 			BigSprite_->SetPosition(position);
 			BigSprite_->Draw();
