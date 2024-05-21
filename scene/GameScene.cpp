@@ -54,6 +54,14 @@ void GameScene::Initialize() {
 	MediumSprite_.reset(Sprite::Create(MediumTexture_, { 0, 0 }));
 	SmallSprite_.reset(Sprite::Create(SmallTexture_, { 0, 0 }));
 
+	//マップ文字
+	MapXTexture_ = TextureManager::Load("MapX/MapXRe.png");
+	MapXReTexture_ = TextureManager::Load("MapX/MapX.png");
+	MapXSprite_ = std::make_unique<Sprite>();
+	MapXReSprite_ = std::make_unique<Sprite>();
+	MapXSprite_.reset(Sprite::Create(MapXTexture_, { 0, 0 }));
+	MapXReSprite_.reset(Sprite::Create(MapXReTexture_, { 0, 0 }));
+
 	viewProjection_.translation_ = { 0.0f,130.0f,0.0f };
 	viewProjection_.rotation_ = { -11.0f,0.0f,0.0f };
 	// ビュープロジェクションの初期化
@@ -1262,7 +1270,7 @@ void GameScene::Draw() {
 	//大きさの描画
 	//これで場所替え
 	
-	Vector2 position = { 670,240 };
+	
 	//position = { 605,200 };
 	if (isselect_ == true&&scene==GAME)
 	{
@@ -1270,6 +1278,7 @@ void GameScene::Draw() {
 		stageselect_->Draw();
 	}
 	if (istutorial_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage1_ == true && scene == GAME && isselect_ == false && IsFullMapCamera == false || isstage2_ == true&&scene==GAME&&isselect_==false&&IsFullMapCamera==false) {
+		Vector2 position = { 670,240 };
 		if (size_ == Big_) {
 			BigSprite_->SetPosition(position);
 			BigSprite_->Draw();
@@ -1281,6 +1290,18 @@ void GameScene::Draw() {
 		if (size_ == Small_) {
 			SmallSprite_->SetPosition(position);
 			SmallSprite_->Draw();	
+		}
+	}
+	//マップ文字
+	if (istutorial_ == true || isstage1_ == true || isstage2_ == true||isstage3_==true) {
+			Vector2 position = { 20,650 };
+		if (IsFullMapCamera == true) {
+			MapXSprite_->SetPosition(position);
+			MapXSprite_->Draw();
+		}
+		else if (IsFullMapCamera == false) {
+			MapXReSprite_->SetPosition(position);
+			MapXReSprite_->Draw();
 		}
 	}
 

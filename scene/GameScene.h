@@ -508,6 +508,12 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> MediumSprite_ = nullptr;
 	std::unique_ptr<Sprite> SmallSprite_ = nullptr;
 
+	//マップ文字
+	uint32_t MapXTexture_ = 0;
+	uint32_t MapXReTexture_ = 0;
+	std::unique_ptr<Sprite> MapXSprite_ = nullptr;
+	std::unique_ptr<Sprite> MapXReSprite_ = nullptr;
+
 	std::unique_ptr<Sprite> StageSelectsprite_ = nullptr;
 
 	// 追従カメラ
