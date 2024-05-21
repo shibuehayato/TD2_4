@@ -43,5 +43,6 @@ private:
 	Vector3 velocity_;
 
 	Vector3 ArrowRot;
+
 };
 
