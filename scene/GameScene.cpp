@@ -291,8 +291,13 @@ void GameScene::Initialize() {
 	StageSelectsprite_ = std::make_unique<Sprite>();
 	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f}));
 
-	
+	//音
 
+	//SE
+	//壁反射音
+	ReflectionWallSE_ = audio_->LoadWave("SE//ReflectionWall.wav");
+	//バリア反射音
+	ReflectionBarrierSE_ = audio_->LoadWave("SE//ReflectionBarrier.wav");
 }
 
 void GameScene::Update() {
@@ -3499,6 +3504,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			//左端
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3506,6 +3512,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision3();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			//上
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3513,6 +3520,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 			{
 				player_->OnCollision4();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			//下
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3520,14 +3528,17 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 			{
 				player_->OnCollision5();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			if (PosA.x <= -19.1f)
 			{
 				player_->SetPlayerPosition4();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			else if (PosA.x >= 19.1f)
 			{
 				player_->SetPlayerPosition3();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 		}
@@ -3548,6 +3559,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3555,6 +3567,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision3();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3562,6 +3575,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 			{
 				player_->OnCollision4();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3569,14 +3583,17 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 			{
 				player_->OnCollision5();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			if (PosA.x <= -19.1f)
 			{
 				player_->SetPlayerPosition4();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			else if (PosA.x >= 19.1f)
 			{
 				player_->SetPlayerPosition3();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 		}
 	}
@@ -3595,7 +3612,8 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
-				player_->OnCollision2();
+				player_->OnCollision2(); 
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3603,6 +3621,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision3();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3610,6 +3629,8 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 			{
 				player_->OnCollision4();
+				audio_->PlayWave(ReflectionWallSE_);
+
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3617,6 +3638,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 			{
 				player_->OnCollision5();
+				audio_->PlayWave(ReflectionWallSE_);
 			}
 			if (PosA.x <= -19.1f)
 			{
@@ -3644,6 +3666,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier->IsDead() == false)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3651,6 +3674,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier->IsDead() == false)
 			{
 				player_->OnCollision3();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3658,6 +3682,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && barrier->IsDead() == false)
 			{
 				player_->OnCollision4();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3665,6 +3690,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && barrier->IsDead() == false)
 			{
 				player_->OnCollision5();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 		}
@@ -3685,6 +3711,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier2->IsDead() == false)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3692,6 +3719,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && barrier2->IsDead() == false)
 			{
 				player_->OnCollision3();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3699,6 +3727,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && barrier2->IsDead() == false)
 			{
 				player_->OnCollision4();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -3706,6 +3735,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && barrier2->IsDead() == false)
 			{
 				player_->OnCollision5();
+				audio_->PlayWave(ReflectionBarrierSE_);
 			}
 
 		}
@@ -4631,6 +4661,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage2barrier->IsDead() == false)
 				{
 					player_->OnCollision2();
+					audio_->PlayWave(ReflectionBarrierSE_);
 				}
 
 				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4638,6 +4669,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage2barrier->IsDead() == false)
 				{
 					player_->OnCollision3();
+					audio_->PlayWave(ReflectionBarrierSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4645,6 +4677,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage2barrier->IsDead() == false)
 				{
 					player_->OnCollision4();
+					audio_->PlayWave(ReflectionBarrierSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4652,6 +4685,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage2barrier->IsDead() == false)
 				{
 					player_->OnCollision5();
+					audio_->PlayWave(ReflectionBarrierSE_);
 				}
 
 			}
@@ -5072,6 +5106,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 				{
 					player_->OnCollision2();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 
 				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5079,6 +5114,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 				{
 					player_->OnCollision3();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5086,6 +5122,7 @@ void GameScene::CheckAllCollisions() {
 					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 				{
 					player_->OnCollision4();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5093,14 +5130,17 @@ void GameScene::CheckAllCollisions() {
 					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 				{
 					player_->OnCollision5();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 				if (PosA.x <= -19.1f)
 				{
 					player_->SetPlayerPosition4();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 				else if (PosA.x >= 19.1f)
 				{
 					player_->SetPlayerPosition3();
+					audio_->PlayWave(ReflectionWallSE_);
 				}
 			}
 		}
@@ -5346,6 +5386,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier->IsDead() == false)
 					{
 						player_->OnCollision2();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5353,6 +5394,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier->IsDead() == false)
 					{
 						player_->OnCollision3();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5360,6 +5402,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage3barrier->IsDead() == false)
 					{
 						player_->OnCollision4();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5367,6 +5410,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage3barrier->IsDead() == false)
 					{
 						player_->OnCollision5();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 				}
@@ -5387,6 +5431,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier2nd->IsDead() == false)
 					{
 						player_->OnCollision2();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5394,6 +5439,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier2nd->IsDead() == false)
 					{
 						player_->OnCollision3();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5401,6 +5447,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage3barrier2nd->IsDead() == false)
 					{
 						player_->OnCollision4();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5408,6 +5455,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage3barrier2nd->IsDead() == false)
 					{
 						player_->OnCollision5();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 				}
@@ -5428,6 +5476,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier3rd->IsDead() == false)
 					{
 						player_->OnCollision2();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5435,6 +5484,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier3rd->IsDead() == false)
 					{
 						player_->OnCollision3();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5442,6 +5492,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage3barrier3rd->IsDead() == false)
 					{
 						player_->OnCollision4();
+							audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5449,6 +5500,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage3barrier3rd->IsDead() == false)
 					{
 						player_->OnCollision5();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 				}
@@ -5469,6 +5521,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier4th->IsDead() == false)
 					{
 						player_->OnCollision2();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5476,6 +5529,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && stage3barrier4th->IsDead() == false)
 					{
 						player_->OnCollision3();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5483,6 +5537,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) && stage3barrier4th->IsDead() == false)
 					{
 						player_->OnCollision4();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5490,6 +5545,7 @@ void GameScene::CheckAllCollisions() {
 						PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) && stage3barrier4th->IsDead() == false)
 					{
 						player_->OnCollision5();
+						audio_->PlayWave(ReflectionBarrierSE_);
 					}
 
 				}

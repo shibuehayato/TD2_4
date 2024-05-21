@@ -530,6 +530,15 @@ private: // メンバ変数
 	bool IsFullMapCamera = false;
 	int32_t fullmapcameracooltimer_=0;
 
+	//音
+
+	//SE
+	// 壁反射音
+	uint32_t ReflectionWallSE_ = 0;
+	//バリア反射音
+	uint32_t ReflectionBarrierSE_ = 0;
+
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
