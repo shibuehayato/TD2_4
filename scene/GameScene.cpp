@@ -115,6 +115,8 @@ void GameScene::Initialize() {
 	LoadGoalBlackPopData();
 	LoadGoalWhite2PopData();
 	LoadGoalBlack2PopData();
+	LoadGoalWhite3PopData();
+	LoadGoalBlack3PopData();
 	LoadTutorialGoalWhitePopData();
 	LoadTutorialGoalBlackPopData();
 
@@ -575,15 +577,12 @@ void GameScene::Update() {
 				fire->Update();
 			}
 			
-
-			//?なぜかチュートリアルでも動いちゃう
-			//if (!istutorial_) {
 				//風のギミックの更新
 				for (const std::unique_ptr<Wind>& wind : winds_) {
 					wind->Update();
 				}
 				UpdateWindPopCommands();
-			//}
+
 			//風のパーティクル
 			for (WindParticle* wind : windParticles_) {
 				wind->Update();
@@ -698,6 +697,16 @@ void GameScene::Update() {
 			stage3barrier4th->Update();
 		}
 		UpdateStage3Barrier4thPopCommands();
+		//ゴール3
+		for (const std::unique_ptr<Goal>& goalW : GoalWhites3_) {
+			goalW->Update();
+		}
+		UpdateGoalWhite3PopCommands();
+		for (const std::unique_ptr<Goal>& goalB : GoalBlacks3_) {
+			goalB->Update();
+		}
+		UpdateGoalBlack3PopCommands();
+
 		//ステージ3でのワープ
 		stage3warp_->Update();
 		stage3warp2_->Update();
@@ -1176,6 +1185,14 @@ void GameScene::Draw() {
 			{
 				stage3barrier4th->Draw(viewProjection_);
 			}
+			//ゴール
+			for (const std::unique_ptr<Goal>& goalW : GoalWhites3_) {
+				goalW->Draw(viewProjection_);
+			}
+			for (const std::unique_ptr<Goal>& goalB : GoalBlacks3_) {
+				goalB->Draw(viewProjection_);
+			}
+
 			//ステージ3でのワープ
 			stage3warp_->Draw(viewProjection_);
 			stage3warp2_->Draw(viewProjection_);
@@ -2499,6 +2516,161 @@ void GameScene::GoalBlack2Generation(const Vector3& position)
 	goal->SetGameScene(this);
 
 	GoalBlacks2_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+//ゴールステージ3
+void GameScene::LoadGoalWhite3PopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//White3Pop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	GoalWhite3PopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateGoalWhite3PopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(GoalWhite3PopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			GoalWhite3Generation(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::GoalWhite3Generation(const Vector3& position)
+{
+	// 敵の生成
+	Goal* goal = new Goal();
+
+	goal->Initialize(modelGoalWhite_.get(), position);
+	goal->SetGameScene(this);
+
+	GoalWhites3_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
+}
+
+void GameScene::LoadGoalBlack3PopData()
+{
+	// ファイルを開く
+	std::ifstream file2;
+	std::string filename = "Resources//Black3Pop.csv";
+	file2.open(filename);
+	assert(file2.is_open());
+	// ファイルの内容を文字列ストリームにコピー
+	GoalBlack3PopCommands << file2.rdbuf();
+
+
+	// ファイルを閉じる
+	file2.close();
+}
+
+void GameScene::UpdateGoalBlack3PopCommands()
+{
+	bool iswait = false;
+	int32_t waitTimer = 0;
+
+	// 待機処理
+	if (iswait) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			// 待機完了
+			iswait = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line2;
+
+	// コマンド実行ループ
+	while (getline(GoalBlack3PopCommands, line2)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line2);
+
+		std::string word2;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word2, ',');
+		//"//"から始まる行はコメント
+		if (word2.find("//") == 0) {
+			// コメント行は飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word2.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word2, ',');
+			float x = (float)std::atof(word2.c_str());
+
+			// y座標
+			getline(line_stream, word2, ',');
+			float y = (float)std::atof(word2.c_str());
+
+			// z座標
+			getline(line_stream, word2, ',');
+			float z = (float)std::atof(word2.c_str());
+
+			// 敵を発生させる
+			GoalBlack3Generation(Vector3(x, y, z));
+		}
+	}
+}
+
+void GameScene::GoalBlack3Generation(const Vector3& position)
+{
+	// 敵の生成
+	Goal* goal = new Goal();
+
+	goal->Initialize(modelGoalBlack_.get(), position);
+	goal->SetGameScene(this);
+
+	GoalBlacks3_.push_back(static_cast<std::unique_ptr<Goal>>(goal));
 }
 
 //ゴールチュートリアル
@@ -4136,6 +4308,46 @@ void GameScene::CheckAllCollisions() {
 		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage2_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとゴール白3
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : GoalWhites3_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage3_) {
+			scene = CLEAR;
+			player_->Initialize(modelPlayerHead_.get());
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとゴール黒3
+	// プレイヤーの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	for (const std::unique_ptr<Goal>& goal : GoalBlacks3_) {
+		PosB = goal->GetWorldPosition();
+		RadiusB = goal->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			(PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage3_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
 		}

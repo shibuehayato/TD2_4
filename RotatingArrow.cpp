@@ -11,7 +11,7 @@ void RotatingArrow::Initialize(Model* model, Vector3 position)
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 
-	worldTransform_.translation_ = { 4.0f,0.0f,120.0f };
+	//worldTransform_.translation_ = { 4.0f,0.0f,120.0f };
 
 	velocity_ = { 1.0f, 1.0f, 1.0f };
 	ArrowRot = { 1.0f,1.0f,1.0f };
