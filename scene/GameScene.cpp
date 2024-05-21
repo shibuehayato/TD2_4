@@ -165,10 +165,10 @@ void GameScene::Initialize() {
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_.get());
 
-	// 軸方向表示を有効にする
-	AxisIndicator::GetInstance()->SetVisible(true);
-	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	//// 軸方向表示を有効にする
+	//AxisIndicator::GetInstance()->SetVisible(true);
+	//// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	//AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	//ゴールのモデル
 	modelGoalWhite_.reset(Model::CreateFromOBJ("White", true)); 
@@ -298,8 +298,13 @@ void GameScene::Update() {
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 
 					scene = OPERATION;
+					isblackout = true;
 				}
 			}
+		}
+		if (isblackout)
+		{
+
 		}
 		break;
 	case GameScene::OPERATION: // 操作説明シーン
@@ -496,12 +501,16 @@ void GameScene::Update() {
 				}
 			}
 
-			if (IsFullMapCamera == true&&player_->GetWorldPosition().z<=20.0f) {
+			if (IsFullMapCamera == true&&player_->GetWorldPosition().z<=20.0f&& player_->GetWorldPosition().z >= 0.1f) {
 				viewProjection_.translation_ = { 0,130.0f,0 };
 				viewProjection_.rotation_ = { -11.0f,0,0 };
 			}
 			else if(IsFullMapCamera == true && player_->GetWorldPosition().z >= 20.1f) {
 				viewProjection_.translation_ = { 0,130.0f,20 };
+				viewProjection_.rotation_ = { -11.0f,0,0 };
+			}
+			else if (IsFullMapCamera == true && player_->GetWorldPosition().z <= 0.0f) {
+				viewProjection_.translation_ = { 0,130.0f,-20 };
 				viewProjection_.rotation_ = { -11.0f,0,0 };
 			}
 			if (IsFullMapCamera == true && fullmapcameracooltimer_ <= 10)

@@ -458,6 +458,9 @@ private: // メンバ変数
 	bool isstage3_ = false;
 	bool isselect_ = false;
 	
+	//ステージの暗転を切り替えるフラグ
+	bool isblackout = false;
+	
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;

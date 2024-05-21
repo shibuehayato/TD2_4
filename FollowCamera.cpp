@@ -5,7 +5,7 @@
 void FollowCamera::Initialize()
 {
 	viewProjection_.Initialize();
-	viewProjection_.rotation_ = { 0.4f,0.0f,0.0f };
+	viewProjection_.rotation_ = { 0.7f,0.0f,0.0f };
 }
 
 void FollowCamera::Update()
@@ -21,9 +21,10 @@ void FollowCamera::Update()
 
 		// 座標をコピーしてオフセット分ずらす
 		viewProjection_.translation_ = Add(target_->translation_, offset);
-		viewProjection_.rotation_ = Add(target_->rotation_, rotation);
+		//viewProjection_.rotation_ = Add(target_->rotation_, rotation);
 
 	}
+	
 
 	viewProjection_.UpdateMatrix();
 }

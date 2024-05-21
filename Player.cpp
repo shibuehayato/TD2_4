@@ -40,6 +40,7 @@ void Player::Update() {
 					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed ;
 					KeepMove_.z += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed ;
 				}
+				
 			}
 		}
 
@@ -82,6 +83,9 @@ void Player::Update() {
 		blikingtimer_ = 0;
 	}
 
+	
+	
+	
 
 	// 移動量
 	Vector3 move = { 0,0,0 };
@@ -116,27 +120,22 @@ void Player::Update() {
 			KeepMove_.z +=  speedup2_;
 		}
 
-	
+		
 
 		// 座標移動
 		worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, move);
 	}
 
+	if (isMove == false) {
 
+		worldTransformHead_.rotation_.y = std::atan2(KeepMove_.x, KeepMove_.z);
+		worldTransformHead_.rotation_.y = worldTransformHead_.rotation_.y-1.5f;
+	}
 
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
 
-	//ImGui::Begin("speed");
-	//ImGui::DragInt("speed", &Oncollisiontimer_);
-	//ImGui::DragFloat3("tr", &worldTransformHead_.translation_.x);
-	//
-
-	//ImGui::DragFloat("e", &e);
-	//ImGui::DragFloat3("KeepMove", &KeepMove_.x,0.1f);
-	//ImGui::DragFloat("Position", &speeddown_, 0.1f);
-
-	//ImGui::End();
+	
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
@@ -370,11 +369,10 @@ void Player::ArrowOnCollision()
 void Player::CannonOnCollision()
 {
 	
-	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
-	{
+	
 		
 		KeepMove_.x -= 1.0f;
-	}
+	
 	/*else if(worldTransformHead_.translation_.x<=-10.1f&&worldTransformHead_.translation_.x>=-18.0f||
 		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
 	{
@@ -385,11 +383,10 @@ void Player::CannonOnCollision()
 
 void Player::CannonOnCollision2()
 {
-	if (worldTransformHead_.translation_.x >= -10.0f && worldTransformHead_.translation_.x <= 10.0f)
-	{
+	
 		KeepMove_.x += 1.0f;
 		
-	}
+	
 	/*else if (worldTransformHead_.translation_.x <= -10.1f && worldTransformHead_.translation_.x >= -18.0f ||
 		worldTransformHead_.translation_.x >= 10.1f && worldTransformHead_.translation_.x <= 18.0f)
 	{
