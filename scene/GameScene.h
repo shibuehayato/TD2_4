@@ -553,7 +553,12 @@ private: // メンバ変数
 	int32_t DecisionSE_ = 0;
 	bool Decisionflag_ = true;
 	//スイッチ
-	int32_t SwitchSE_ = 0;
+	int32_t SwitchSE_ = 0;	
+	//ゲームクリア
+	int32_t GameClearSE_ = 0;
+	//ゲームオーバー
+	int32_t GameOverSE_ = 0;
+
 
 
 	/// <summary>

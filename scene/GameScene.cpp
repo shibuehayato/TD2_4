@@ -305,6 +305,11 @@ void GameScene::Initialize() {
 	DecisionSE_ = audio_->LoadWave("SE//Decision.mp3");
 	//スイッチ
 	SwitchSE_ = audio_->LoadWave("SE//Switch.mp3");
+	//ゲームクリア
+	GameClearSE_ = audio_->LoadWave("SE//GameClear.mp3");
+	//ゲームオーバー
+	GameOverSE_ = audio_->LoadWave("SE//GameOver.mp3");
+
 
 	//ステージセレクト
 	stageselect_ = std::make_unique<StageSelect>();
@@ -3948,7 +3953,7 @@ void GameScene::CheckAllCollisions() {
 			if (player_->GetRadius().x <= 0.5f)
 			{
 				scene = GAMEOVER;
-				audio_->PlayWave(DamageSE_);
+				audio_->PlayWave(GameOverSE_);
 			}
 
 		}
@@ -4044,6 +4049,7 @@ void GameScene::CheckAllCollisions() {
 			// プレイヤーと落とし穴の交差判定
 			if (PositionMeasure <= RadiusMeasure) {
 				audio_->PlayWave(HoleSE_);
+				audio_->PlayWave(GameOverSE_);
 				scene = GAMEOVER;
 			}
 		}
@@ -4176,6 +4182,7 @@ void GameScene::CheckAllCollisions() {
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
 			scene = CLEAR;
 			player_->Initialize(modelPlayerHead_.get());
+			audio_->PlayWave(GameClearSE_);
 		}
 	}
 #pragma endregion
@@ -4195,6 +4202,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
 			scene = CLEAR;
+			audio_->PlayWave(GameClearSE_);
 			player_->Initialize(modelPlayerHead_.get());
 		}
 	}
@@ -4215,6 +4223,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage2_) {
 			scene = CLEAR;
+			audio_->PlayWave(GameClearSE_);
 			player_->Initialize(modelPlayerHead_.get());
 		}
 	}
@@ -4235,6 +4244,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage2_) {
 			scene = CLEAR;
+			audio_->PlayWave(GameClearSE_);
 			player_->Initialize(modelPlayerHead_.get());
 		}
 	}
@@ -4255,6 +4265,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
+			audio_->PlayWave(GameClearSE_);
 			player_->Initialize(modelPlayerHead_.get());
 		}
 	}
@@ -4275,6 +4286,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
+			audio_->PlayWave(GameClearSE_);
 			player_->Initialize(modelPlayerHead_.get());
 		}
 	}
@@ -4701,7 +4713,7 @@ void GameScene::CheckAllCollisions() {
 
 				if (player_->GetRadius().x <= 0.5f)
 				{
-					audio_->PlayWave(DamageSE_);
+					audio_->PlayWave(GameOverSE_);
 					scene = GAMEOVER;
 				}
 
@@ -5377,7 +5389,7 @@ void GameScene::CheckAllCollisions() {
 
 				if (player_->GetRadius().x <= 0.5f)
 				{
-					audio_->PlayWave(DamageSE_);
+					audio_->PlayWave(GameOverSE_);
 					scene = GAMEOVER;
 				}
 
