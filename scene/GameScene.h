@@ -549,6 +549,12 @@ private: // メンバ変数
 	uint32_t TeleportSE_ = 0;
 	//風
 	uint32_t WindSE_ = 0;
+	//決定
+	int32_t DecisionSE_ = 0;
+	bool Decisionflag_ = true;
+	//スイッチ
+	int32_t SwitchSE_ = 0;
+
 
 	/// <summary>
 	/// ゲームシーン用

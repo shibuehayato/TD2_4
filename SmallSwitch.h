@@ -20,6 +20,8 @@ public:
 
 	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
+	bool GetIsOnCollision() { return isOncollision_; }
+
 	//ワールド座標を取得
 	Vector3 GetPosition();
 

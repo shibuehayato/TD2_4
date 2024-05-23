@@ -284,13 +284,6 @@ void GameScene::Initialize() {
 	stage3rotatecannon_->Initialize(model_, model_);
 	stage3rotatecannon_->SetGameScene(this);
 
-	stageselect_ = std::make_unique<StageSelect>();
-	stageselect_->Initialize();
-	uint32_t StageSelecttexture_ = TextureManager::Load("choice.png");
-
-	StageSelectsprite_ = std::make_unique<Sprite>();
-	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f}));
-
 	//音
 
 	//SE
@@ -308,6 +301,19 @@ void GameScene::Initialize() {
 	TeleportSE_ = audio_->LoadWave("SE//Teleport.mp3");
 	//風
 	WindSE_ = audio_->LoadWave("SE//Wind.mp3");
+	//決定
+	DecisionSE_ = audio_->LoadWave("SE//Decision.mp3");
+	//スイッチ
+	SwitchSE_ = audio_->LoadWave("SE//Switch.mp3");
+
+	//ステージセレクト
+	stageselect_ = std::make_unique<StageSelect>();
+	stageselect_->Initialize();
+	uint32_t StageSelecttexture_ = TextureManager::Load("choice.png");
+
+	StageSelectsprite_ = std::make_unique<Sprite>();
+	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, { 1280,720 }, { 1.0f,1.0f,1.0f,1.0f }, { 1.0f,1.0f }));
+
 }
 
 void GameScene::Update() {
@@ -320,7 +326,9 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 
+					audio_->PlayWave(DecisionSE_);
 					scene = OPERATION;
+
 				}
 			}
 		}
@@ -332,6 +340,7 @@ void GameScene::Update() {
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					GameReset();
 					stageselect_->Reset();
+					audio_->PlayWave(DecisionSE_);
 					scene = GAME;
 					
 				}
@@ -444,6 +453,10 @@ void GameScene::Update() {
 
 		if (stageselect_->IsTutorial())
 		{
+			if (Decisionflag_ == true) {
+				audio_->PlayWave(DecisionSE_);
+				Decisionflag_ = false;
+			}
 			istutorial_ = true;
 			isstage1_ = false;
 			isstage2_ = false;
@@ -451,6 +464,10 @@ void GameScene::Update() {
 		}
 		else if (stageselect_->IsStage1())
 		{
+			if (Decisionflag_ == true) {
+				audio_->PlayWave(DecisionSE_);
+				Decisionflag_ = false;
+			}
 			istutorial_ = false;
 			isstage1_ = true;
 			isstage2_ = false;
@@ -458,6 +475,10 @@ void GameScene::Update() {
 		}
 		else if (stageselect_->IsStage2())
 		{
+			if (Decisionflag_ == true) {
+				audio_->PlayWave(DecisionSE_);
+				Decisionflag_ = false;
+			}
 			istutorial_ = false;
 			isstage2_ = true;
 			isstage1_ = false;
@@ -465,6 +486,10 @@ void GameScene::Update() {
 		}
 		else if (stageselect_->IsStage3())
 		{
+			if (Decisionflag_ == true) {
+				audio_->PlayWave(DecisionSE_);
+				Decisionflag_ = false;
+			}
 			istutorial_ = false;
 			isstage3_ = true;
 			isstage1_ = false;
@@ -561,8 +586,9 @@ void GameScene::Update() {
 		ImGui::Checkbox("FullMap", &IsFullMapCamera);
 		ImGui::End();*/
 
-		
-		stageselect_->Update();
+		//if (istutorial_ == false && isstage1_ == false && isstage2_ == false && isstage3_ == false) {
+			stageselect_->Update();
+		//}
 		
 
 		if (isstage1_ || isstage2_ || isstage3_)
@@ -929,6 +955,7 @@ void GameScene::Update() {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					audio_->PlayWave(DecisionSE_);
 					scene = TITLE;
 				}
 			}
@@ -939,6 +966,7 @@ void GameScene::Update() {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					audio_->PlayWave(DecisionSE_);
 					scene = TITLE;
 				}
 			}
@@ -3777,6 +3805,9 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
 			{
+				if (smallswitch_->GetIsOnCollision() == false) {
+					audio_->PlayWave(SwitchSE_);
+				}
 				player_->OnCollision2();
 				smallswitch_->OnCollision();
 			}
@@ -3800,7 +3831,7 @@ void GameScene::CheckAllCollisions() {
 
 			PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 		{
-			player_->OnCollision5();
+			player_->OnCollision5(); 
 		}
 
 	}
@@ -3823,6 +3854,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->OnCollision2();
 
+
 			}
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
@@ -3835,6 +3867,9 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x == 1.5f)
 			{
+				if (normalswitch_->GetIsOnCollision() == false) {
+					audio_->PlayWave(SwitchSE_);
+				}
 				player_->OnCollision2();
 				normalswitch_->OnCollision();
 			}
@@ -5205,6 +5240,9 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 1.5f)
 			{
+				if (bigswitch_->GetIsOnCollision() == false) {
+					audio_->PlayWave(SwitchSE_);
+				}
 				player_->OnCollision2();
 				bigswitch_->OnCollision();
 			}
@@ -5258,6 +5296,9 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 1.5f)
 			{
+				if (bigswitch2_->GetIsOnCollision() == false) {
+					audio_->PlayWave(SwitchSE_);
+				}
 				player_->OnCollision2();
 				bigswitch2_->OnCollision();
 			}
@@ -5720,6 +5761,7 @@ void GameScene::GameReset()
 	bigswitch2_->Reset();
 	player_->Reset();
 	scene = GAME;
+	Decisionflag_ = true;
 	//玉の生成
 	ball_ = std::make_unique<Ball>();
 	//3Dモデルの生成

@@ -22,6 +22,8 @@ public:
 
 	void Reset();
 
+	bool GetIsOnCollision() { return isOncollision_; }
+
 	//ワールド座標を取得
 	Vector3 GetPosition();
 

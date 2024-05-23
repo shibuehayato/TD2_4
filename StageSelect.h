@@ -3,6 +3,7 @@
 #include"Sprite.h"
 #include"Input.h"
 #include"ImGuiManager.h"
+#include <Audio.h>
 class StageSelect
 {
 public:
@@ -27,6 +28,7 @@ private:
 	Sprite* sprite[2] = { nullptr,nullptr };
 
 	Input* input_ = nullptr;
+	Audio* audio_ = nullptr;
 
 	bool isTrriger_ = false;
 
@@ -51,5 +53,8 @@ private:
 
 	XINPUT_STATE joyState;
 	XINPUT_STATE prejoyState;
+
+	//選択 音
+	int32_t ChoiceSE_ = 0;
 };
 
