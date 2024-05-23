@@ -558,7 +558,18 @@ private: // メンバ変数
 	int32_t GameClearSE_ = 0;
 	//ゲームオーバー
 	int32_t GameOverSE_ = 0;
+	//矢印
+	int32_t ArrowSE_ = 0;
+	//スピードアップ
+	int32_t SpeedUpSE_ = 0;
+	float SpeedTime_ = 0;
+	//スピードダウン
+	int32_t SpeedDownSE_ = 0;
+	//たま
+	int32_t BallSE_ = 0;
 
+	//BGM
+	uint32_t soundDataHandle_ = 0;
 
 
 	/// <summary>

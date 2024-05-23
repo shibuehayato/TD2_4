@@ -309,6 +309,19 @@ void GameScene::Initialize() {
 	GameClearSE_ = audio_->LoadWave("SE//GameClear.mp3");
 	//ゲームオーバー
 	GameOverSE_ = audio_->LoadWave("SE//GameOver.mp3");
+	//矢印
+	ArrowSE_ = audio_->LoadWave("SE//Arrow.mp3");
+	//スピードアップ
+	SpeedUpSE_ = audio_->LoadWave("SE//Up.mp3");
+	//スピードダウン
+	SpeedDownSE_= audio_->LoadWave("SE//Down.mp3");
+	//玉
+	BallSE_ = audio_->LoadWave("SE//Get.mp3");
+
+	//BGM
+	soundDataHandle_ = audio_->LoadWave("BGM/title.mp3");
+	audio_->PlayWave(soundDataHandle_, true);
+
 
 
 	//ステージセレクト
@@ -595,7 +608,7 @@ void GameScene::Update() {
 			stageselect_->Update();
 		//}
 		
-
+			SpeedTime_--;
 		if (isstage1_ || isstage2_ || isstage3_)
 		{
 			//中スイッチの更新
@@ -3482,6 +3495,7 @@ void GameScene::CheckAllCollisions() {
 		if (PositionMeasure <= RadiusMeasure) {
 			ball_->OnCollision();
 			isballdead_ = true;
+			audio_->PlayWave(BallSE_);
 		}
 	}
 #pragma endregion
@@ -4071,6 +4085,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure&&isstage1_) {
 			arrow->OnCollision(player_.get());
+			audio_->PlayWave(ArrowSE_);
 		}
 	}
 
@@ -4090,6 +4105,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && isstage2_) {
 			stage2rotatingarrow_->OnCollision(player_.get());
+			audio_->PlayWave(ArrowSE_);
 		}
 
 #pragma endregion
@@ -4108,6 +4124,7 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		rightarrow_->OnCollision(player_.get());
+		audio_->PlayWave(ArrowSE_);
 	}
 
 #pragma endregion
@@ -4126,6 +4143,7 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		leftarrow_->OnCollision(player_.get());
+		audio_->PlayWave(ArrowSE_);
 	}
 
 #pragma endregion
@@ -4144,6 +4162,7 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		uparrow_->OnCollision(player_.get());
+		audio_->PlayWave(ArrowSE_);
 	}
 
 #pragma endregion
@@ -4162,6 +4181,7 @@ void GameScene::CheckAllCollisions() {
 	// 弾と弾の交差判定
 	if (PositionMeasure <= RadiusMeasure) {
 		downarrow_->OnCollision(player_.get());
+		audio_->PlayWave(ArrowSE_);
 	}
 
 #pragma endregion
@@ -4307,6 +4327,10 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure||isstage2_) {
 			player_->SpeedDownOnCollision();
+			if (SpeedTime_ <= 0) {
+				SpeedTime_ = 180;
+				audio_->PlayWave(SpeedDownSE_);
+			}
 		}
 	}
 
@@ -5412,6 +5436,10 @@ void GameScene::CheckAllCollisions() {
 			// 弾と弾の交差判定
 			if (PositionMeasure <= RadiusMeasure) {
 				player_->SpeedDownOnCollision();
+				if (SpeedTime_ <= 0) {
+					SpeedTime_ = 180;
+					audio_->PlayWave(SpeedDownSE_);
+				}
 			}
 		
 
@@ -5428,28 +5456,41 @@ void GameScene::CheckAllCollisions() {
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z )
 			{
-				player_->SpeedUpOnCollision();
+				player_->SpeedUpOnCollision(); if (SpeedTime_ <= 0) {
+					audio_->PlayWave(SpeedUpSE_);
+					SpeedTime_ = 180;
+				}
 			}
 
 			else if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
-				player_->SpeedUpOnCollision2();
+				player_->SpeedUpOnCollision2(); if (SpeedTime_ <= 0) {
+					audio_->PlayWave(SpeedUpSE_);
+					SpeedTime_ = 180;
+				}
 			}
 
 			else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) )
 			{
-				player_->SpeedUpOnCollision3();
+				player_->SpeedUpOnCollision3(); if (SpeedTime_ <= 0) {
+					audio_->PlayWave(SpeedUpSE_);
+					SpeedTime_ = 180;
+				}
 			}
 
 			else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f) )
+				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 			{
 				player_->SpeedUpOnCollision4();
+				if (SpeedTime_ <= 0) {
+					audio_->PlayWave(SpeedUpSE_);
+					SpeedTime_ = 180;
+				}
 			}
 			else
 			{
