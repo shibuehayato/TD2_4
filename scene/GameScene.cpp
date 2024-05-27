@@ -317,6 +317,8 @@ void GameScene::Initialize() {
 	SpeedDownSE_= audio_->LoadWave("SE//Down.mp3");
 	//玉
 	BallSE_ = audio_->LoadWave("SE//Get.mp3");
+	//砲台
+	BomSE_ = audio_->LoadWave("SE//Bom.mp3");
 
 	//BGM
 	soundDataHandle_ = audio_->LoadWave("BGM/title.mp3");
@@ -4396,6 +4398,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->CannonOnCollision();
 				cannonbullet->OnCollision();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4404,6 +4407,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->CannonOnCollision2();
 				cannonbullet->OnCollision();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4412,6 +4416,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->CannonOnCollision3();
 				cannonbullet->OnCollision();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4420,6 +4425,7 @@ void GameScene::CheckAllCollisions() {
 			{
 				player_->CannonOnCollision4();
 				cannonbullet->OnCollision();
+				audio_->PlayWave(BomSE_);
 			}
 
 
@@ -4443,6 +4449,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4450,6 +4457,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4457,6 +4465,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(BomSE_);
 			}
 
 			if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4464,6 +4473,7 @@ void GameScene::CheckAllCollisions() {
 				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
 			{
 				player_->OnCollision2();
+				audio_->PlayWave(BomSE_);
 			}
 
 
@@ -4538,6 +4548,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->RotateCannonOnCollision();
 					rotatecannonbullet->OnCollision();
+					audio_->PlayWave(BomSE_);
 				}
 
 				if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4546,6 +4557,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->RotateCannonOnCollision2();
 					rotatecannonbullet->OnCollision();
+					audio_->PlayWave(BomSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4554,6 +4566,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->CannonOnCollision3();
 					rotatecannonbullet->OnCollision();
+					audio_->PlayWave(BomSE_);
 				}
 
 				if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -4562,6 +4575,7 @@ void GameScene::CheckAllCollisions() {
 				{
 					player_->CannonOnCollision4();
 					rotatecannonbullet->OnCollision();
+					audio_->PlayWave(BomSE_);
 				}
 
 
@@ -5752,6 +5766,7 @@ void GameScene::CheckAllCollisions() {
 					{
 						player_->CannonOnCollision();
 						stage3rotatecannonbullet->OnCollision();
+						audio_->PlayWave(BomSE_);
 					}
 
 					if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5760,6 +5775,7 @@ void GameScene::CheckAllCollisions() {
 					{
 						player_->CannonOnCollision2();
 						stage3rotatecannonbullet->OnCollision();
+						audio_->PlayWave(BomSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5768,6 +5784,7 @@ void GameScene::CheckAllCollisions() {
 					{
 						player_->CannonOnCollision3();
 						stage3rotatecannonbullet->OnCollision();
+						audio_->PlayWave(BomSE_);
 					}
 
 					if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
@@ -5776,6 +5793,7 @@ void GameScene::CheckAllCollisions() {
 					{
 						player_->CannonOnCollision4();
 						stage3rotatecannonbullet->OnCollision();
+						audio_->PlayWave(BomSE_);
 					}
 
 

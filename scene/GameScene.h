@@ -567,6 +567,8 @@ private: // メンバ変数
 	int32_t SpeedDownSE_ = 0;
 	//たま
 	int32_t BallSE_ = 0;
+	//砲台
+	int32_t BomSE_ = 0;
 
 	//BGM
 	uint32_t soundDataHandle_ = 0;
