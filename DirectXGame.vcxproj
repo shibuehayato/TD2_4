@@ -116,12 +116,14 @@
     <ClCompile Include="BigSwitch2.cpp" />
     <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="Cannonbullet.cpp" />
+    <ClCompile Include="CannonHead.cpp" />
     <ClCompile Include="Cyclone.cpp" />
     <ClCompile Include="DownArrow.cpp" />
     <ClCompile Include="Fire2.cpp" />
     <ClCompile Include="Flre.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="Howtoplay.cpp" />
     <ClCompile Include="LeftArrow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\MyMath.cpp" />
@@ -147,6 +149,7 @@
     <ClCompile Include="Stage3Barrier2nd.cpp" />
     <ClCompile Include="Stage3Barrier3rd.cpp" />
     <ClCompile Include="Stage3Barrier4th.cpp" />
+    <ClCompile Include="Stage3CannonHead.cpp" />
     <ClCompile Include="Stage3RotateCannonBullet.cpp" />
     <ClCompile Include="Stage3RotateConnon.cpp" />
     <ClCompile Include="Stage3SpeedDown.cpp" />
@@ -201,12 +204,14 @@
     <ClInclude Include="BigSwitch2.h" />
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="Cannonbullet.h" />
+    <ClInclude Include="CannonHead.h" />
     <ClInclude Include="Cyclone.h" />
     <ClInclude Include="DownArrow.h" />
     <ClInclude Include="FIre.h" />
     <ClInclude Include="Fire2.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="Howtoplay.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="LeftArrow.h" />
     <ClInclude Include="math\Matrix4x4.h" />
@@ -235,6 +240,7 @@
     <ClInclude Include="Stage3Barrier2nd.h" />
     <ClInclude Include="Stage3Barrier3rd.h" />
     <ClInclude Include="Stage3Barrier4th.h" />
+    <ClInclude Include="Stage3CannonHead.h" />
     <ClInclude Include="Stage3Fire.h" />
     <ClInclude Include="Stage3RotateCannonBullet.h" />
     <ClInclude Include="Stage3RotateConnon.h" />

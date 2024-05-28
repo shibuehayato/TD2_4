@@ -7,9 +7,15 @@ class Cannonbullet;
 class Player {
 public:
 
-	void Initialize(Model* head);
+	void Initialize(Model* head, Model* arrow);
 	void Update();
 	void Draw(ViewProjection viewProjection);
+
+	/// <summary>
+	/// 親となるワールドトランスフォームをセット
+	/// </summary>
+	/// <param name="parent">親となるワールドトランスフォーム</param>
+	void SetParent(const WorldTransform* parent);
 
 	void OnCollision();
 	//反射するための関数
@@ -99,8 +105,10 @@ public:
 private:
 	// ワールド変換データ
 	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformArrow_;
 	// モデル
 	Model* HeadModel_ = nullptr;
+	Model* arrowmodel_ = nullptr;
 	// 速さ
 	float speed = 0;
 	//反発係数

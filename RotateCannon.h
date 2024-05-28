@@ -8,7 +8,7 @@ class GameScene;
 class RotateCannon
 {
 public:
-	void Initialize(Model* modelHead, Model* model);
+	void Initialize(Model* modelHead, Model* model, Model* modelbullet);
 
 	void Update();
 
@@ -34,7 +34,7 @@ private:
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransform_;
 
-	Model* model_[2] = { nullptr };
+	Model* model_[3] = { nullptr };
 	GameScene* gameScene_ = nullptr;
 	RotateCannonBullet* rotatecannonbullet = nullptr;
 

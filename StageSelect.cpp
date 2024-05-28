@@ -75,7 +75,8 @@ void StageSelect::Update()
 		if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && position.y == 210 && cleckcooltime_>=10) {
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && position.y == 210 && cleckcooltime_>=10&&
+					istutorial_==false&&isstage1_==false&&isstage2_==false&&isstage3_==false) {
 						{
 							istutorial_ = true;
 							isstage1_ = false;
@@ -84,7 +85,8 @@ void StageSelect::Update()
 						}
 				}
 				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A ) && position.y == 410 && cleckcooltime_ >= 10)
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A ) && position.y == 410 && cleckcooltime_ >= 10 &&
+					istutorial_ == false && isstage1_ == false && isstage2_ == false && isstage3_ == false)
 				{
 					istutorial_ = false;
 					isstage1_ = true;
@@ -92,7 +94,8 @@ void StageSelect::Update()
 					isstage3_ = false;
 				}
 				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A ) && position.y == 530 && cleckcooltime_ >= 10)
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A ) && position.y == 530 && cleckcooltime_ >= 10 &&
+					istutorial_ == false && isstage1_ == false && isstage2_ == false && isstage3_ == false)
 				{
 					istutorial_ = false;
 					isstage1_ = false;
@@ -100,7 +103,8 @@ void StageSelect::Update()
 					isstage3_ = false;
 				}
 				else if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
-					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && position.y == 630 && cleckcooltime_ >= 10)
+					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && position.y == 630 && cleckcooltime_ >= 10 &&
+					istutorial_ == false && isstage1_ == false && isstage2_ == false && isstage3_ == false)
 				{
 					istutorial_ = false;
 					isstage1_ = false;

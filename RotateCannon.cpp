@@ -1,15 +1,16 @@
 #include "RotateCannon.h"
 #include<cassert>
 #include"GameScene.h"
-void RotateCannon::Initialize(Model* modelHead, Model* model)
+void RotateCannon::Initialize(Model* modelHead, Model* model, Model* modelbullet)
 {
 	assert(modelHead);
 	assert(model);
 	model_[0] = modelHead;
 	model_[1] = model;
+	model_[2] = modelbullet;
 
 	worldTransform_.Initialize();
-
+	worldTransform_.scale_ = { 1.0f,1.0f,2.0f };
 	worldTransformHead_.Initialize();
 
 	worldTransformHead_.scale_ = { 0.5f,1.0f,1.0f };
@@ -42,21 +43,21 @@ void RotateCannon::Update()
 	if (gameScene_->IsStage2())
 	{
 		worldTransform_.translation_ = { -18.0f,0.0f,46.0f };
-		worldTransformHead_.translation_ = { -17.0f,0.0f,46.0f };
+		worldTransformHead_.translation_ = { -16.0f,0.0f,46.0f };
 	}
 	
 
 	FiringUpdate();
 
 	/*ImGui::Begin("RotateCannon");
-	ImGui::DragFloat3("rotation", &worldTransformHead_.rotation_.x, 0.1f);
+	ImGui::DragFloat3("rotation", &worldTransformHead_.translation_.x, 0.1f);
 	ImGui::End();*/
 
 }
 
 void RotateCannon::Draw(ViewProjection& viewProjection)
 {
-	model_[0]->Draw(worldTransformHead_, viewProjection);
+	//model_[0]->Draw(worldTransformHead_, viewProjection);
 	model_[1]->Draw(worldTransform_, viewProjection);
 }
 
@@ -90,7 +91,7 @@ void RotateCannon::Fire()
 	velocity = Multiply(kBulletSpeed, velocity);
 
 	RotateCannonBullet* newRotateCannonBullet = new RotateCannonBullet();
-	newRotateCannonBullet->Initialize(model_[1], worldTransformHead_.translation_, velocity);
+	newRotateCannonBullet->Initialize(model_[2], worldTransformHead_.translation_, velocity);
 
 	gameScene_->AddRotateCannonBullet(newRotateCannonBullet);
 }

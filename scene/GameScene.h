@@ -69,6 +69,9 @@
 #include"Stage3SpeedDown.h"
 #include"SpeedUp.h"
 #include"Stage3RotateConnon.h"
+#include"CannonHead.h"
+#include"Stage3CannonHead.h"
+#include"Howtoplay.h"
 
 /// <summary>
 /// ゲームシーン
@@ -356,6 +359,7 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Cannon>> cannons_;
 	std::unique_ptr<Model> modelcannon_;
 	std::unique_ptr<Model>modelcannonhead_;
+	std::unique_ptr<Model> modelbullet_;
 	std::list <Cannonbullet*> cannonbullets_;
 	//回転大砲
 	std::unique_ptr<RotateCannon> rotatecannon_;
@@ -412,6 +416,13 @@ private: // メンバ変数
 	//ステージ3の回転大砲
 	std::unique_ptr<Stage3RotateConnon> stage3rotatecannon_;
 	std::list <Stage3RotateCannonBullet*> stage3rotatecannonbullets_;
+
+	std::unique_ptr<CannonHead> cannonhead_;
+	std::unique_ptr<Stage3CannonHead> stage3cannonhead_;
+
+	std::unique_ptr<Howtoplay> howtoplay_;
+	bool ishowtoplay_ = false;
+	int32_t howtoplaycooltime_=0;
 
 	//csvに読み込まれた数値を代入するための変数
 	Vector3 position_;
@@ -473,7 +484,16 @@ private: // メンバ変数
 	
 	//ステージの暗転を切り替えるフラグ
 	bool isblackout = false;
-	
+	bool isblackout_2 = false;
+	bool isclearblackout_ = false;
+	bool istitleblackout_ = false;
+	bool isoverblackout_ = false;
+	//暗転用のカラー変数設定
+	Vector4 titlecolor_ = { 1,1,1,1 };
+	Vector4 operationcolor_ = { 0,0,0,1 };
+	Vector4 clearcolor_ = { 1,1,1,1 };
+	Vector4 gameovercolor_ = { 1,1,1,1 };
+	Vector4 selectcolor_ = { 1,1,1,1 };
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_;

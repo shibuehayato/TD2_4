@@ -7,13 +7,20 @@
 
 
 
-void Player::Initialize(Model* head)
+void Player::Initialize(Model* head,Model* arrow)
 {
 	assert(head);
+	assert(arrow);
 	HeadModel_ = head;
+	arrowmodel_ = arrow;
+
+	SetParent(&worldTransformHead_);
 
 	worldTransformHead_.translation_ = { 0,0,-45.0f };
+	worldTransformArrow_.translation_ = { -3.5f,1.0f,-0.2f };
+	worldTransformArrow_.rotation_ = { 0.0f,1.5f,0.0f };
 	worldTransformHead_.Initialize();
+	worldTransformArrow_.Initialize();
 
 	e = 0.4f;
 	ArrowRot_ = { 0.0f,0.0f,0.0f };
@@ -83,7 +90,9 @@ void Player::Update() {
 		blikingtimer_ = 0;
 	}
 
-	
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("Scale", &worldTransformArrow_.translation_.x, 0.1f);
+	ImGui::End();
 	
 	
 
@@ -134,7 +143,7 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
-
+	worldTransformArrow_.UpdateMatrix();
 	
 }
 
@@ -143,6 +152,10 @@ void Player::Draw(ViewProjection viewProjection) {
 	if (blikingtimer_<=5)
 	{
 		HeadModel_->Draw(worldTransformHead_, viewProjection);
+	}
+	if ((float)joyState.Gamepad.sThumbLX != 0 || (float)joyState.Gamepad.sThumbLY != 0)
+	{
+		arrowmodel_->Draw(worldTransformArrow_, viewProjection);
 	}
 }
 
@@ -153,6 +166,10 @@ void Player::RecoveryOnCollision()
 		worldTransformHead_.scale_.y += 0.5f;
 		worldTransformHead_.scale_.z += 0.5f;
 	}
+}
+void Player::SetParent(const WorldTransform* parent)
+{
+	worldTransformArrow_.parent_ = parent;
 }
 //反射するための関数
 void Player::OnCollision2()

@@ -7,7 +7,7 @@ class GameScene;
 class Cannon
 {
 public:
-	void Initialize(Model* modelHead,Model* model,Vector3 position,Vector3 HeadPosition,Vector3 rotation);
+	void Initialize(Model* modelHead,Model* model,Vector3 position,Vector3 HeadPosition,Vector3 rotation,Model*modelbullet);
 
 	void Update();
 
@@ -31,9 +31,10 @@ public:
 
 private:
 	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformHead2_;
 	WorldTransform worldTransform_;
 
-	Model* model_[2] = { nullptr };
+	Model* model_[3] = { nullptr };
 	GameScene* gameScene_ = nullptr;
 	Cannonbullet* cannonbullet = nullptr;
 

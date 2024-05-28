@@ -36,10 +36,10 @@ void GameScene::Initialize() {
 	ClearSprite_ = std::make_unique<Sprite>();
 	GameOverSprite_ = std::make_unique<Sprite>();
 
-	TitleSprite_.reset(Sprite::Create(TitleTexture_, { 0, 0 }));
-	OperationSprite_.reset(Sprite::Create(OperationTexture_, { 0, 0 }));
-	ClearSprite_.reset(Sprite::Create(ClearTexture_, { 0, 0 }));
-	GameOverSprite_.reset(Sprite::Create(GameOverTexture_, { 0, 0 }));
+	TitleSprite_.reset(Sprite::Create(TitleTexture_, { 0, 0 },titlecolor_));
+	OperationSprite_.reset(Sprite::Create(OperationTexture_, { 0, 0 },operationcolor_));
+	ClearSprite_.reset(Sprite::Create(ClearTexture_, { 0, 0 },clearcolor_));
+	GameOverSprite_.reset(Sprite::Create(GameOverTexture_, { 0, 0 },gameovercolor_));
 
 	//大きさ
 	BigTexture_ = TextureManager::Load("Size/Big.png");
@@ -63,8 +63,9 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	// 3Dモデルの生成
 	modelPlayerHead_.reset(Model::CreateFromOBJ("Player", true));
+	modelArrow_.reset(Model::CreateFromOBJ("Arrow", true));
 	// 自キャラの初期化
-	player_->Initialize(modelPlayerHead_.get());
+	player_->Initialize(modelPlayerHead_.get(),modelArrow_.get());
 	
 
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
@@ -176,7 +177,7 @@ void GameScene::Initialize() {
 	modelGoalWhite_.reset(Model::CreateFromOBJ("White", true)); 
 	modelGoalBlack_.reset(Model::CreateFromOBJ("Black", true));
 
-	modelArrow_.reset(Model::CreateFromOBJ("Arrow", true));
+	
 
 	//右矢印の生成と初期化
 	rightarrow_ = std::make_unique<RightArrow>();
@@ -211,7 +212,10 @@ void GameScene::Initialize() {
 
 	//回転大砲
 	rotatecannon_ = std::make_unique<RotateCannon>();
-	rotatecannon_->Initialize(model_, model_);
+	modelcannon_.reset(Model::CreateFromOBJ("Cannon2", true));
+	modelcannonhead_.reset(Model::CreateFromOBJ("Cannon1", true));
+	modelbullet_.reset(Model::CreateFromOBJ("bullet", true));
+	rotatecannon_->Initialize(modelcannonhead_.get(), modelcannon_.get(),modelbullet_.get());
 	rotatecannon_->SetGameScene(this);
 
 	
@@ -275,7 +279,7 @@ void GameScene::Initialize() {
 
 	//ステージ3の回転大砲
 	stage3rotatecannon_ = std::make_unique<Stage3RotateConnon>();
-	stage3rotatecannon_->Initialize(model_, model_);
+	stage3rotatecannon_->Initialize(modelcannonhead_.get(), modelcannon_.get(), modelbullet_.get());
 	stage3rotatecannon_->SetGameScene(this);
 
 	stageselect_ = std::make_unique<StageSelect>();
@@ -283,10 +287,16 @@ void GameScene::Initialize() {
 	uint32_t StageSelecttexture_ = TextureManager::Load("choice.png");
 
 	StageSelectsprite_ = std::make_unique<Sprite>();
-	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f}));
+	StageSelectsprite_.reset(Sprite::Create(StageSelecttexture_, {1280,720}, selectcolor_, {1.0f,1.0f}));
 
-	
+	cannonhead_ = std::make_unique<CannonHead>();
+	cannonhead_->Initialize(modelcannonhead_.get());
 
+	stage3cannonhead_ = std::make_unique<Stage3CannonHead>();
+	stage3cannonhead_->Initialize(modelcannonhead_.get());
+
+	howtoplay_ = std::make_unique<Howtoplay>();
+	howtoplay_->Initialize();
 }
 
 void GameScene::Update() {
@@ -299,14 +309,29 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 
-					scene = OPERATION;
+
 					isblackout = true;
 				}
 			}
 		}
 		if (isblackout)
 		{
-
+			titlecolor_.x -= 0.01f;
+			titlecolor_.y -= 0.01f;
+			titlecolor_.z -= 0.01f;
+			TitleSprite_->SetColor(titlecolor_);
+		}
+		if (istitleblackout_ && scene == TITLE && titlecolor_.x <= 1.0f && isblackout == false)
+		{
+			titlecolor_.x += 0.01f;
+			titlecolor_.y += 0.01f;
+			titlecolor_.z += 0.01f;
+			TitleSprite_->SetColor(titlecolor_);
+		}
+		if (titlecolor_.x <= -0.1f)
+		{
+			isblackout = false;
+			scene = OPERATION;
 		}
 		break;
 	case GameScene::OPERATION: // 操作説明シーン
@@ -316,22 +341,43 @@ void GameScene::Update() {
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					GameReset();
 					stageselect_->Reset();
-					scene = GAME;
-					
+					isblackout_2 = true;
+					isblackout = true;
 				}
 			}
+		}
+		if (isblackout && scene == OPERATION/*&&isblackout_2*/)
+		{
+			operationcolor_.x -= 0.01f;
+			operationcolor_.y -= 0.01f;
+			operationcolor_.z -= 0.01f;
+			OperationSprite_->SetColor(operationcolor_);
+		}
+		if (operationcolor_.x <= 0.0f && scene == OPERATION && isblackout_2)
+		{
+			isblackout = false;
+			isblackout_2 = false;
+			scene = GAME;
+		}
+		if (isblackout == false && scene == OPERATION && operationcolor_.x <= 1.0f)
+		{
+			operationcolor_.x += 0.01f;
+			operationcolor_.y += 0.01f;
+			operationcolor_.z += 0.01f;
+			OperationSprite_->SetColor(operationcolor_);
 		}
 		break;
 	case GameScene::GAME:
 
 		debugCamera_->Update();
 #ifdef _DEBUG
-		/*ImGui::Begin("viewprojection");
+		ImGui::Begin("viewprojection");
 		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 		ImGui::DragInt("rotation", &warpcooltime_);
 		ImGui::Checkbox("isstage2", &isstage2_);
-		ImGui::End();*/
+		ImGui::DragFloat4("Color", &selectcolor_.x, 0.1f);
+		ImGui::End();
 #endif
 
 #ifdef _DEBUG
@@ -352,10 +398,14 @@ void GameScene::Update() {
 		}
 #endif
 
-	
 
-	// 自キャラの更新
-	player_->Update();
+		if (ishowtoplay_ == false)
+		{
+
+			// 自キャラの更新
+			player_->Update();
+		}
+	
 
 	if (stageselect_->IsTutorial() || stageselect_->IsStage1() || stageselect_->IsStage2() || stageselect_->IsStage3())
 	{
@@ -366,7 +416,19 @@ void GameScene::Update() {
 		isselect_ = true;
 	}
 
-
+	/*if (isselect_&&selectcolor_.x<=1.0f)
+	{
+		selectcolor_.x += 0.01f;
+		selectcolor_.y += 0.01f;
+		selectcolor_.z += 0.01f;
+		StageSelectsprite_->SetColor(selectcolor_);
+	}*/
+	if (isselect_==false&&selectcolor_.w>=0.0f)
+	{
+		
+		selectcolor_.w -= 0.01f;
+		StageSelectsprite_->SetColor(selectcolor_);
+	}
 
 		// 天球の更新
 		skydome_->Update();
@@ -374,7 +436,7 @@ void GameScene::Update() {
 		//チュートリアルのフラグを立てるためのif文
 		if (Input::GetInstance()->GetJoystickState(0, prejoyState)) {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, joyState)) {
-				if (stageselect_->IsTutorial() &&stageselect_->IsCleck())
+				if (stageselect_->IsTutorial() &&stageselect_->IsCleck() && istutorial_ == false)
 				{
 
 
@@ -395,7 +457,7 @@ void GameScene::Update() {
 
 				}
 				//ステージ1のフラグを立てるためのif文
-				else if (stageselect_->IsStage1() && stageselect_->IsCleck())
+				else if (stageselect_->IsStage1() && stageselect_->IsCleck() && isstage1_ == false)
 				{
 
 
@@ -413,12 +475,12 @@ void GameScene::Update() {
 						stage3rotatecannonbullet->OnCollision();
 					}
 				}
-				else if (stageselect_->IsStage2() && stageselect_->IsCleck())
+				else if (stageselect_->IsStage2() && stageselect_->IsCleck() && isstage2_ == false)
 				{
 
 					player_->SetPlayerPosition2();
 				}
-				else if (stageselect_->IsStage3() && stageselect_->IsCleck())
+				else if (stageselect_->IsStage3() && stageselect_->IsCleck() && isstage3_ == false)
 				{
 
 					player_->SetPlayerPosition();
@@ -426,28 +488,28 @@ void GameScene::Update() {
 			}
 		}
 
-		if (stageselect_->IsTutorial())
+		if (stageselect_->IsTutorial()&&selectcolor_.w<=0.0f)
 		{
 			istutorial_ = true;
 			isstage1_ = false;
 			isstage2_ = false;
 			isstage3_ = false;
 		}
-		else if (stageselect_->IsStage1())
+		else if (stageselect_->IsStage1() && selectcolor_.w <= 0.0f)
 		{
 			istutorial_ = false;
 			isstage1_ = true;
 			isstage2_ = false;
 			isstage3_ = false;
 		}
-		else if (stageselect_->IsStage2())
+		else if (stageselect_->IsStage2() && selectcolor_.w <= 0.0f)
 		{
 			istutorial_ = false;
 			isstage2_ = true;
 			isstage1_ = false;
 			isstage3_ = false;
 		}
-		else if (stageselect_->IsStage3())
+		else if (stageselect_->IsStage3() && selectcolor_.w <= 0.0f)
 		{
 			istutorial_ = false;
 			isstage3_ = true;
@@ -500,7 +562,24 @@ void GameScene::Update() {
 							IsFullMapCamera = false;
 						}
 					}
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+						ishowtoplay_ = true;
+					}
+					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)&&howtoplaycooltime_>=10) {
+						ishowtoplay_ = false;
+						howtoplaycooltime_ = 0;
+					}
 				}
+			}
+			if (ishowtoplay_ == true&&howtoplaycooltime_<=10)
+			{
+				howtoplaycooltime_++;
+			}
+			if (ishowtoplay_)
+			{
+				howtoplay_->Update();
 			}
 
 			if (IsFullMapCamera == true&&player_->GetWorldPosition().z<=20.0f&& player_->GetWorldPosition().z >= 0.1f) {
@@ -550,7 +629,7 @@ void GameScene::Update() {
 		ImGui::End();*/
 
 		
-		stageselect_->Update();
+			stageselect_->Update();
 		
 
 		if (isstage1_ || isstage2_ || isstage3_)
@@ -638,6 +717,7 @@ void GameScene::Update() {
 
 	if (isstage2_)
 	{
+		cannonhead_->Update();
 		for (const std::unique_ptr<Stage2>& stage2 : stages2_) {
 			if (stage2 != nullptr) {
 				stage2->Update();
@@ -672,6 +752,7 @@ void GameScene::Update() {
 
 	if (isstage3_)
 	{
+		stage3cannonhead_->Update();
 		for (const std::unique_ptr<Stage3Wall>& stage3wall : stage3walls_)
 		{
 			stage3wall->Update();
@@ -923,9 +1004,22 @@ void GameScene::Update() {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-					scene = TITLE;
+					istitleblackout_ = true;
+					isclearblackout_ = true;
 				}
 			}
+		}
+		if (isclearblackout_ == true && clearcolor_.x <= 1.0f)
+		{
+			clearcolor_.x -= 0.01f;
+			clearcolor_.y -= 0.01f;
+			clearcolor_.z -= 0.01f;
+			ClearSprite_->SetColor(clearcolor_);
+		}
+		if (clearcolor_.x <= 0.0f&&scene==CLEAR)
+		{
+			scene = TITLE;
+			
 		}
 		break;
 	case GameScene::GAMEOVER:
@@ -933,9 +1027,23 @@ void GameScene::Update() {
 			if (Input::GetInstance()->GetJoystickStatePrevious(0, prejoyState)) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
 					!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-					scene = TITLE;
+				
+					istitleblackout_ = true;
+					isoverblackout_ = true;
 				}
 			}
+		}
+		if (isoverblackout_ == true && clearcolor_.x <= 1.0f)
+		{
+			gameovercolor_.x -= 0.01f;
+			gameovercolor_.y -= 0.01f;
+			gameovercolor_.z -= 0.01f;
+			GameOverSprite_->SetColor(gameovercolor_);
+		}
+		if (gameovercolor_.x <= 0.0f && scene == GAMEOVER)
+		{
+			scene = TITLE;
+
 		}
 		break;
 		}
@@ -1000,6 +1108,7 @@ void GameScene::Draw() {
 		if (istutorial_ || isstage1_||isstage2_||isstage3_)
 		{
 			player_->Draw(viewProjection_);
+			
 		}
 
 		//チュートリアルのフラグがたったら実行する
@@ -1080,6 +1189,7 @@ void GameScene::Draw() {
 
 	if (isstage2_)
 	{
+		cannonhead_->Draw(viewProjection_);
 		//ステージの描画
 		for (const auto& stage2 : stages2_) {
 			stage2->Draw(viewProjection_);
@@ -1110,6 +1220,7 @@ void GameScene::Draw() {
 	}
 		if (isstage2_)
 		{
+			
 			//ステージの描画
 			for (const auto& stage2 : stages2_) {
 				stage2->Draw(viewProjection_);
@@ -1165,6 +1276,7 @@ void GameScene::Draw() {
 		}
 		if (isstage3_)
 		{
+			stage3cannonhead_->Draw(viewProjection_);
 			for (const std::unique_ptr<Stage3Wall>& stage3wall : stage3walls_)
 			{
 				stage3wall->Draw(viewProjection_);
@@ -1290,7 +1402,7 @@ void GameScene::Draw() {
 	
 	Vector2 position = { 670,240 };
 	//position = { 605,200 };
-	if (isselect_ == true&&scene==GAME)
+	if (scene==GAME&&selectcolor_.w>=0.0f)
 	{
 		StageSelectsprite_->Draw();
 		stageselect_->Draw();
@@ -1312,6 +1424,11 @@ void GameScene::Draw() {
 			SmallSprite_->SetPosition(position);
 			SmallSprite_->Draw();	
 		}
+		
+	}
+	if (ishowtoplay_)
+	{
+		howtoplay_->Draw();
 	}
 
 
@@ -2932,7 +3049,7 @@ void GameScene::CannonGenerate(const Vector3& position,const Vector3& Headpositi
 	// 敵の生成
 	Cannon* cannon = new Cannon();
 
-	cannon->Initialize(model_, model_,position,Headposition,rotation);
+	cannon->Initialize(modelcannonhead_.get(), modelcannon_.get(),position,Headposition,rotation, modelbullet_.get());
 	cannon->SetGameScene(this);
 
 	cannons_.push_back(static_cast<std::unique_ptr<Cannon>>(cannon));
@@ -4253,7 +4370,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4273,7 +4390,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr&&isstage1_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4293,7 +4410,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage2_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4313,7 +4430,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage2_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4333,7 +4450,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage3_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4353,7 +4470,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure && ball_ == nullptr && isstage3_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4373,7 +4490,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -4393,7 +4510,7 @@ void GameScene::CheckAllCollisions() {
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure &&istutorial_) {
 			scene = CLEAR;
-			player_->Initialize(modelPlayerHead_.get());
+			player_->Initialize(modelPlayerHead_.get(), modelArrow_.get());
 		}
 	}
 #pragma endregion
@@ -5322,7 +5439,7 @@ void GameScene::CheckAllCollisions() {
 			//もしプレイヤーのサイズが中以上だったら
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.5f)
 			{
 				player_->OnCollision2();
 
@@ -5330,7 +5447,7 @@ void GameScene::CheckAllCollisions() {
 			//もしプレイヤーのサイズが小だったら
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 1.5f)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 2.0f)
 			{
 				player_->OnCollision2();
 				bigswitch_->OnCollision();
@@ -5375,7 +5492,7 @@ void GameScene::CheckAllCollisions() {
 			//もしプレイヤーのサイズが中以上だったら
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.0f)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x <= 1.5f)
 			{
 				player_->OnCollision2();
 
@@ -5383,7 +5500,7 @@ void GameScene::CheckAllCollisions() {
 			//もしプレイヤーのサイズが小だったら
 			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 1.5f)
+				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z && player_->GetRadius().x >= 2.0f)
 			{
 				player_->OnCollision2();
 				bigswitch2_->OnCollision();
@@ -5719,7 +5836,7 @@ void GameScene::CheckAllCollisions() {
 						{
 							stage3rotatecannonbullet->OnCollision();
 						}
-
+						
 						/*if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
 							PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z )
@@ -5789,7 +5906,7 @@ void GameScene::CheckAllCollisions() {
 						player_->CannonOnCollision4();
 						stage3rotatecannonbullet->OnCollision();
 					}
-
+					
 
 
 				}
@@ -5825,7 +5942,7 @@ void GameScene::GameReset()
 	bigswitch_->Reset();
 	bigswitch2_->Reset();
 	player_->Reset();
-	scene = GAME;
+	
 	//玉の生成
 	ball_ = std::make_unique<Ball>();
 	//3Dモデルの生成
@@ -5833,6 +5950,20 @@ void GameScene::GameReset()
 	//玉の初期化
 	ball_->Initialize(modelBall_.get());
 	ball_->SetGameScene(this);
+	istutorial_ = false;
+	isstage1_ = false;
+	isstage2_ = false;
+	isstage3_ = false;
+	selectcolor_ = { 1.0f,1.0f,1.0f,1.0f };
+	StageSelectsprite_->SetColor(selectcolor_);
+	clearcolor_ = { 1.0f,1.0f,1.0f,1.0f };
+	ClearSprite_->SetColor(clearcolor_);
+	isclearblackout_ = false;
+	isblackout = false;
+	titlecolor_ = { 0.0f,0.0f,0.0f,1.0f };
+	TitleSprite_->SetColor(titlecolor_);
+	istitleblackout_ = false;
+	isoverblackout_ = false;
 }
 
 void GameScene::AddCannonBullet(Cannonbullet* cannonbullet)

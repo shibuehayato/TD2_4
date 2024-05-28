@@ -1,13 +1,14 @@
 #include "Cannon.h"
 #include<cassert>
 #include"GameScene.h"
-void Cannon::Initialize(Model* modelHead, Model* model,Vector3 position, Vector3 HeadPosition, Vector3 rotation)
+void Cannon::Initialize(Model* modelHead, Model* model, Vector3 position, Vector3 HeadPosition, Vector3 rotation, Model* modelbullet)
 {
 	assert(modelHead);
 	assert(model);
 	model_[0] = modelHead;
 	model_[1] = model;
-	
+	model_[2] = modelbullet;
+
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	//worldTransform_.translation_ = { -18.0f,0.0f,-24.0f };
@@ -17,6 +18,8 @@ void Cannon::Initialize(Model* modelHead, Model* model,Vector3 position, Vector3
 	//worldTransformHead_.translation_ = { -17,0.0f,-24.0f };
 	worldTransformHead_.scale_ = { 0.5f,1.0f,1.0f };
 	worldTransformHead_.rotation_ = rotation;
+
+	
 	//worldTransformHead_.rotation_ = { 0.0f,-8.2f,0.0f };
 	//worldTransformHead_.rotation_ = { 0.0f,-7.3f,0.0f };
 	//worldTransformHead_.translation_ = { -17.0f,0.0f,-10.0f };
@@ -33,16 +36,17 @@ void Cannon::Update()
 
 	FiringUpdate();
 
-	//ImGui::Begin("Cannon");
-	//ImGui::DragFloat3("translationHead", &worldTransformHead_.translation_.x, 1.0f);
-	//ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 1.0f);
-	//ImGui::DragFloat3("Rotation", &worldTransformHead_.rotation_.x, 0.01f);
-	//ImGui::End();
+	/*ImGui::Begin("Cannon");
+	ImGui::DragFloat3("translationHead2", &worldTransformHead_.translation_.x, 1.0f);
+	ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 1.0f);
+	ImGui::DragFloat3("translation", &worldTransform_.rotation_.x, 1.0f);
+	ImGui::DragFloat3("Head2Rotation", &worldTransformHead2_.rotation_.x, 0.01f);
+	ImGui::End();*/
 }
 
 void Cannon::Draw(ViewProjection& viewProjection)
 {
-	model_[0]->Draw(worldTransformHead_, viewProjection);
+	//model_[0]->Draw(worldTransformHead_, viewProjection);
 	model_[1]->Draw(worldTransform_, viewProjection);
 }
 
@@ -74,9 +78,9 @@ void Cannon::Fire()
 
 	velocity = Normalize(velocity);
 	velocity = Multiply(kBulletSpeed, velocity);
-
+	
 	Cannonbullet* newCannonBullet = new Cannonbullet();
-	newCannonBullet->Initialize(model_[1], worldTransformHead_.translation_, velocity);
+	newCannonBullet->Initialize(model_[2], worldTransformHead_.translation_, velocity);
 
 	gameScene_->AddCannonBullet(newCannonBullet);
 }

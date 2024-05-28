@@ -1,19 +1,21 @@
 #include "Stage3RotateConnon.h"
 #include<cassert>
 #include"GameScene.h"
-void Stage3RotateConnon::Initialize(Model* modelHead, Model* model)
+void Stage3RotateConnon::Initialize(Model* modelHead, Model* model, Model* modelbullet)
 {
 	assert(modelHead);
 	assert(model);
 	model_[0] = modelHead;
 	model_[1] = model;
-
+	model_[2] = modelbullet;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { -16.0f, 0.5f, 46.0f };
+	worldTransform_.scale_ = { 1.0f,1.0f,2.0f };
 	worldTransformHead_.Initialize();
-	worldTransformHead_.translation_ = { -15.0f, 0.5f, 46.0f };
+	worldTransformHead_.translation_ = { -14.0f, 0.5f, 46.0f };
 	worldTransformHead_.scale_ = { 0.5f,1.0f,1.0f };
 	worldTransformHead_.rotation_ = { 0.0f,-5.23f,0.0f };
+	
 	FiringInitialize();
 }
 
@@ -44,15 +46,15 @@ void Stage3RotateConnon::Update()
 
 	FiringUpdate();
 
-	/*ImGui::Begin("RotateCannon");
-	ImGui::DragFloat3("rotation", &worldTransformHead_.rotation_.x, 0.1f);
-	ImGui::End();*/
+	ImGui::Begin("RotateCannon");
+	ImGui::DragFloat3("rotation", &worldTransformHead_.translation_.x, 0.1f);
+	ImGui::End();
 
 }
 
 void Stage3RotateConnon::Draw(ViewProjection& viewProjection)
 {
-	model_[0]->Draw(worldTransformHead_, viewProjection);
+	//model_[0]->Draw(worldTransformHead_, viewProjection);
 	model_[1]->Draw(worldTransform_, viewProjection);
 }
 
@@ -86,7 +88,7 @@ void Stage3RotateConnon::Fire()
 	velocity = Multiply(kBulletSpeed, velocity);
 
 	Stage3RotateCannonBullet* newstage3RotateCannonBullet = new Stage3RotateCannonBullet();
-	newstage3RotateCannonBullet->Initialize(model_[1], worldTransformHead_.translation_, velocity);
+	newstage3RotateCannonBullet->Initialize(model_[2], worldTransformHead_.translation_, velocity);
 
 	gameScene_->AddStage3RotateCannonBullet(newstage3RotateCannonBullet);
 }

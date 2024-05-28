@@ -18,6 +18,10 @@ void Stage3RotateCannonBullet::Update()
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}
+	if (worldTransform_.translation_.z <= 30)
+	{
+		isDead_ = true;
+	}
 }
 
 void Stage3RotateCannonBullet::Draw(ViewProjection& viewProjection)
