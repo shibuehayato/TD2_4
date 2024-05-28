@@ -544,6 +544,12 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> MediumSprite_ = nullptr;
 	std::unique_ptr<Sprite> SmallSprite_ = nullptr;
 
+	//マップ文字
+	uint32_t MapXTexture_ = 0;
+	uint32_t MapXReTexture_ = 0;
+	std::unique_ptr<Sprite> MapXSprite_ = nullptr;
+	std::unique_ptr<Sprite> MapXReSprite_ = nullptr;
+
 	std::unique_ptr<Sprite> StageSelectsprite_ = nullptr;
 
 	// 追従カメラ
@@ -555,10 +561,54 @@ private: // メンバ変数
 	//風のパーティクル範囲
 	const Vector3 rangestart = { 3.0f,3.0f,1.5f }; //範囲はじめ
 	const Vector3 rangeend = { -14.0f,3.5f,26.0f }; //範囲終わり
+	//風音時間
+	float WindMove_ = 0;
 
 	// マップ全体を映すカメラ
 	bool IsFullMapCamera = false;
 	int32_t fullmapcameracooltimer_=0;
+
+	//音
+
+	//SE
+	// 壁反射音
+	uint32_t ReflectionWallSE_ = 0;
+	//バリア反射音
+	uint32_t ReflectionBarrierSE_ = 0;
+	//回復
+	uint32_t RecoverySE_ = 0;
+	//ダメージ
+	uint32_t DamageSE_ = 0;
+	//穴
+	uint32_t HoleSE_ = 0;
+	//テレポート
+	uint32_t TeleportSE_ = 0;
+	//風
+	uint32_t WindSE_ = 0;
+	//決定
+	int32_t DecisionSE_ = 0;
+	bool Decisionflag_ = true;
+	//スイッチ
+	int32_t SwitchSE_ = 0;	
+	//ゲームクリア
+	int32_t GameClearSE_ = 0;
+	//ゲームオーバー
+	int32_t GameOverSE_ = 0;
+	//矢印
+	int32_t ArrowSE_ = 0;
+	//スピードアップ
+	int32_t SpeedUpSE_ = 0;
+	float SpeedTime_ = 0;
+	//スピードダウン
+	int32_t SpeedDownSE_ = 0;
+	//たま
+	int32_t BallSE_ = 0;
+	//砲台
+	int32_t BomSE_ = 0;
+
+	//BGM
+	uint32_t soundDataHandle_ = 0;
+
 
 	/// <summary>
 	/// ゲームシーン用

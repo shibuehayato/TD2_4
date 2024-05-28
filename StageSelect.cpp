@@ -1,9 +1,12 @@
-#include "StageSelect.h"
+﻿#include "StageSelect.h"
 #include <TextureManager.h>
 
 void StageSelect::Initialize()
 {
 	uint32_t textureStage = TextureManager::Load("choiceArrow.png");
+	
+	audio_ = Audio::GetInstance();
+	ChoiceSE_ = audio_->LoadWave("SE//Choice.mp3");
 
 	sprite[0] = Sprite::Create(textureStage, position, color_, {1.0f,1.0f});
 
@@ -37,35 +40,41 @@ void StageSelect::Update()
 			position.y += 120.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else if ((float)joyState.Gamepad.sThumbLY != 0 && position.y == 410 && selectspeed >= 0.001f && cooltime >= 10) {
 			position.y -= 200.0f;
 			position.x += 140.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else if ((float)joyState.Gamepad.sThumbLY != 0 && position.y == 210 && selectspeed <= -0.001f && cooltime >= 10) {
 			position.y += 200.0f;
 			position.x -= 140.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else if ((float)joyState.Gamepad.sThumbLY != 0 && position.y == 530 && selectspeed >= 0.001f && cooltime >= 10) {
 			position.y -= 120.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else if ((float)joyState.Gamepad.sThumbLY != 0 && position.y == 530 && selectspeed <= -0.001f && cooltime >= 10) {
 
 			position.y += 100.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else if ((float)joyState.Gamepad.sThumbLY != 0 && position.y == 630 && selectspeed >= 0.001f && cooltime >= 10) {
 
 			position.y -= 100.0f;
 			sprite[0]->SetPosition(position);
 			cooltime = 0;
+			audio_->PlayWave(ChoiceSE_);
 		}
 		else
 		{

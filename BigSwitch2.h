@@ -17,6 +17,7 @@ public:
 	//ステージ2の時の位置調整の関数
 	void Position();
 
+	bool GetIsOnCollision() { return isOncollision_; }
 
 
 	void Reset();
