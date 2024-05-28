@@ -138,5 +138,11 @@ private:
 
 	Cannonbullet* cannonbullet_ = nullptr;
 
+	//離した音
 	uint32_t DisengageSE_ = 0;
+	//溜めてる音
+	uint32_t AccumulateSE_ = 0;
+
+	bool SEFlag = false;
+	float AccumulateTime_ = 0;
 };

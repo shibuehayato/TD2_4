@@ -400,7 +400,9 @@ void GameScene::Update() {
 	
 
 	// 自キャラの更新
-	player_->Update();
+		if (!isselect_) {
+			player_->Update();
+		}
 
 	if (stageselect_->IsTutorial() || stageselect_->IsStage1() || stageselect_->IsStage2() || stageselect_->IsStage3())
 	{
