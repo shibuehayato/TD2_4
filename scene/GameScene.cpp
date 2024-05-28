@@ -352,6 +352,16 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+#ifdef _DEBUG
+	ImGui::Begin("viewprojection");
+	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
+	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
+	ImGui::DragInt("rotation", &warpcooltime_);
+	ImGui::Checkbox("blackout", &isblackout);
+	ImGui::DragFloat4("Color", &operationcolor_.x, 0.1f);
+	ImGui::End();
+#endif
+
 	switch (scene)
 	{
 	case GameScene::TITLE: // タイトルシーン
@@ -363,7 +373,7 @@ void GameScene::Update() {
 
 					isblackout = true;
 					audio_->PlayWave(DecisionSE_);
-					scene = OPERATION;
+					
 
 				}
 			}
@@ -398,7 +408,7 @@ void GameScene::Update() {
 					isblackout_2 = true;
 					isblackout = true;
 					audio_->PlayWave(DecisionSE_);
-					scene = GAME;
+				
 					
 				}
 			}
@@ -427,15 +437,7 @@ void GameScene::Update() {
 	case GameScene::GAME:
 
 		debugCamera_->Update();
-#ifdef _DEBUG
-		ImGui::Begin("viewprojection");
-		ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
-		ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
-		ImGui::DragInt("rotation", &warpcooltime_);
-		ImGui::Checkbox("isstage2", &isstage2_);
-		ImGui::DragFloat4("Color", &selectcolor_.x, 0.1f);
-		ImGui::End();
-#endif
+
 
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_SPACE)) {
@@ -1491,6 +1493,7 @@ void GameScene::Draw() {
 		isselect_ == false && IsFullMapCamera == false || isstage2_ == true&&scene==GAME&&
 		isselect_==false&&IsFullMapCamera==false || isstage3_ == true && scene == GAME && 
 		isselect_ == false && IsFullMapCamera == false) {
+		Vector2 position = { 670,210 };
 		if (size_ == Big_) {
 			BigSprite_->SetPosition(position);
 			BigSprite_->Draw();
@@ -6185,7 +6188,7 @@ void GameScene::GameReset()
 	bigswitch_->Reset();
 	bigswitch2_->Reset();
 	player_->Reset();
-	scene = GAME;
+	
 	Decisionflag_ = true;
 	//玉の生成
 	ball_ = std::make_unique<Ball>();
