@@ -1,6 +1,7 @@
 ﻿#include "model.h"
 #include "WorldTransform.h"
 #include <Input.h>
+#include <Audio.h>
 
 
 class Cannonbullet;
@@ -97,6 +98,7 @@ public:
 	const WorldTransform& GetWorldTransform() { return worldTransformHead_; }
 
 private:
+	Audio* audio_ = nullptr;
 	// ワールド変換データ
 	WorldTransform worldTransformHead_;
 	// モデル
@@ -136,5 +138,5 @@ private:
 
 	Cannonbullet* cannonbullet_ = nullptr;
 
-	
+	uint32_t DisengageSE_ = 0;
 };
