@@ -464,7 +464,7 @@ void GameScene::Update() {
 #endif
 
 
-		if (ishowtoplay_ == false)
+		if (isselect_ == false)
 		{
 
 			// 自キャラの更新
