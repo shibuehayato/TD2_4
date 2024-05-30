@@ -106,6 +106,9 @@ private:
 	//反発係数
 	float e = 0.4f;
 
+	WorldTransform worldTransformArrow_;
+	Model* ArrowModel_ = nullptr;
+
 	Vector3 incident = { 0.2f,0.0f,0.2f };
 	Vector3 normal = { 0.0f,0.5f,0.0f };
 	// 移動できるかフラグ
@@ -118,7 +121,7 @@ private:
 
 	int32_t Oncollisiontimer_;
 
-	//---------------------------//
+	//---------------------------//　　
 
 	//スピードダウンに必要な変数
 	float speeddown_ = 0.0f;

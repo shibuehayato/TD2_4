@@ -15,6 +15,9 @@ void Player::Initialize(Model* head)
 	worldTransformHead_.translation_ = { 0,0,-45.0f };
 	worldTransformHead_.Initialize();
 
+	worldTransformArrow_.translation_ = { 0,0,0 };
+	worldTransformArrow_.Initialize();
+
 	e = 0.4f;
 	ArrowRot_ = { 0.0f,0.0f,0.0f };
 	speeddown_ = 0.01f;
@@ -134,8 +137,6 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	worldTransformHead_.UpdateMatrix();
-
-	
 }
 
 void Player::Draw(ViewProjection viewProjection) { 
