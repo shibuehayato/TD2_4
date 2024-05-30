@@ -9,6 +9,11 @@
 
 void Player::Initialize(Model* head,Model* arrow)
 {
+
+	audio_ = Audio::GetInstance();
+	DisengageSE_ = audio_->LoadWave("SE//Disengage.mp3");
+	AccumulateSE_ = audio_->LoadWave("SE//Accumulate.wav");
+
 	assert(head);
 	assert(arrow);
 	HeadModel_ = head;
@@ -41,7 +46,12 @@ void Player::Update() {
 			if ((float)joyState.Gamepad.sThumbLX != 0 || (float)joyState.Gamepad.sThumbLY != 0) {
 				// スティックを傾けているとき、スピードが加算される	
 				speed += 0.001f;
-
+				SEFlag = true;
+				AccumulateTime_--;
+				if (AccumulateTime_<=0) {
+					audio_->PlayWave(AccumulateSE_);
+					AccumulateTime_ = 200;
+				}
 				// スピードが上がりすぎないようにする
 				if (speed < 0.04f) {
 					KeepMove_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed ;
@@ -135,6 +145,15 @@ void Player::Update() {
 		worldTransformHead_.translation_ = Add(worldTransformHead_.translation_, move);
 	}
 
+	//離したときだけ音鳴る
+	if ((float)joyState.Gamepad.sThumbLX == 0 && (float)joyState.Gamepad.sThumbLY == 0&&isMove==true&& SEFlag==true) {
+		audio_->PlayWave(DisengageSE_);
+
+		audio_->StopWave(AccumulateSE_);
+		AccumulateTime_ = 0;
+
+		SEFlag=false;
+	}
 	if (isMove == false) {
 
 		worldTransformHead_.rotation_.y = std::atan2(KeepMove_.x, KeepMove_.z);
