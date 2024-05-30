@@ -46,9 +46,9 @@ void Stage3RotateConnon::Update()
 
 	FiringUpdate();
 
-	ImGui::Begin("RotateCannon");
+	/*ImGui::Begin("RotateCannon");
 	ImGui::DragFloat3("rotation", &worldTransformHead_.translation_.x, 0.1f);
-	ImGui::End();
+	ImGui::End();*/
 
 }
 

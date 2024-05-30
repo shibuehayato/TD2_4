@@ -1,17 +1,21 @@
 #include "Stage3Warp.h"
 #include<cassert>
+#include"ImGuiManager.h"
 void Stage3Warp::Initialize(Model* model)
 {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { 16.0f,-0.5f,23.0f };
+	worldTransform_.translation_ = { 16.0f,1.5f,23.0f };
 	worldTransform_.rotation_ = { 0.0f,3.2f,0.0f };
 }
 
 void Stage3Warp::Update()
 {
 	worldTransform_.UpdateMatrix();
+	/*ImGui::Begin("Warp");
+	ImGui::DragFloat3("position", &worldTransform_.translation_.x, 1.0f);
+	ImGui::End();*/
 }
 
 void Stage3Warp::Draw(ViewProjection& viewProjection)

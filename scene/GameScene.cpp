@@ -348,18 +348,23 @@ void GameScene::Initialize() {
 
 	howtoplay_ = std::make_unique<Howtoplay>();
 	howtoplay_->Initialize();
+
+	ground_ = std::make_unique<Ground>();
+	ground_->SetGameScene(this);
+	modelground_.reset(Model::CreateFromOBJ("Ground", true));
+	ground_->Initialize(modelground_.get());
 }
 
 void GameScene::Update() {
 
 #ifdef _DEBUG
-	ImGui::Begin("viewprojection");
+	/*ImGui::Begin("viewprojection");
 	ImGui::DragFloat3("translation", &viewProjection_.translation_.x);
 	ImGui::DragFloat3("rotation", &viewProjection_.rotation_.x);
 	ImGui::DragInt("rotation", &warpcooltime_);
 	ImGui::Checkbox("blackout", &isblackout);
 	ImGui::DragFloat4("Color", &operationcolor_.x, 0.1f);
-	ImGui::End();
+	ImGui::End();*/
 #endif
 
 	switch (scene)
@@ -438,6 +443,7 @@ void GameScene::Update() {
 
 		debugCamera_->Update();
 
+		ground_->Update();
 
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_SPACE)) {
@@ -637,7 +643,7 @@ void GameScene::Update() {
 							IsFullMapCamera = false;
 						}
 					}
-					if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
+					/*if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&
 						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
 						ishowtoplay_ = true;
 					}
@@ -645,7 +651,7 @@ void GameScene::Update() {
 						!(prejoyState.Gamepad.wButtons & XINPUT_GAMEPAD_B)&&howtoplaycooltime_>=10) {
 						ishowtoplay_ = false;
 						howtoplaycooltime_ = 0;
-					}
+					}*/
 				}
 			}
 			if (ishowtoplay_ == true&&howtoplaycooltime_<=10)
@@ -1189,7 +1195,7 @@ void GameScene::Draw() {
 		if (istutorial_ || isstage1_||isstage2_||isstage3_)
 		{
 			player_->Draw(viewProjection_);
-			
+			ground_->Draw(viewProjection_);
 		}
 
 		//チュートリアルのフラグがたったら実行する
@@ -4384,21 +4390,25 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 #pragma region プレイヤーと回る矢印
-	// プレイヤーの座標
-	PosA = player_->GetWorldPosition();
-	RadiusA = player_->GetRadius();
-	for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
-		PosB = arrow->GetWorldPosition();
-		RadiusB = arrow->GetRadius();
-		// 座標AとBの距離を求める
-		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
-			(PosB.y - PosA.y) * (PosB.y - PosA.y) +
-			(PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
-		// 弾と弾の交差判定
-		if (PositionMeasure <= RadiusMeasure&&isstage1_) {
-			arrow->OnCollision(player_.get());
-			audio_->PlayWave(ArrowSE_);
+	if (isstage1_ == true)
+	{
+		// プレイヤーの座標
+		PosA = player_->GetWorldPosition();
+		RadiusA = player_->GetRadius();
+
+		for (const std::unique_ptr<RotatingArrow>& arrow : Arrows_) {
+			PosB = arrow->GetWorldPosition();
+			RadiusB = arrow->GetRadius();
+			// 座標AとBの距離を求める
+			PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+				(PosB.y - PosA.y) * (PosB.y - PosA.y) +
+				(PosB.z - PosA.z) * (PosB.z - PosA.z);
+			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
+			// 弾と弾の交差判定
+			if (PositionMeasure <= RadiusMeasure && isstage1_) {
+				arrow->OnCollision(player_.get());
+				audio_->PlayWave(ArrowSE_);
+			}
 		}
 	}
 
@@ -4435,7 +4445,7 @@ void GameScene::CheckAllCollisions() {
 		(PosB.z - PosA.z) * (PosB.z - PosA.z);
 	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
+	if (PositionMeasure <= RadiusMeasure&&isstage1_) {
 		rightarrow_->OnCollision(player_.get());
 		audio_->PlayWave(ArrowSE_);
 	}
@@ -4454,7 +4464,7 @@ void GameScene::CheckAllCollisions() {
 		(PosB.z - PosA.z) * (PosB.z - PosA.z);
 	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
+	if (PositionMeasure <= RadiusMeasure && isstage1_) {
 		leftarrow_->OnCollision(player_.get());
 		audio_->PlayWave(ArrowSE_);
 	}
@@ -4473,7 +4483,7 @@ void GameScene::CheckAllCollisions() {
 		(PosB.z - PosA.z) * (PosB.z - PosA.z);
 	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
+	if (PositionMeasure <= RadiusMeasure && isstage1_) {
 		uparrow_->OnCollision(player_.get());
 		audio_->PlayWave(ArrowSE_);
 	}
@@ -4492,7 +4502,7 @@ void GameScene::CheckAllCollisions() {
 		(PosB.z - PosA.z) * (PosB.z - PosA.z);
 	RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 	// 弾と弾の交差判定
-	if (PositionMeasure <= RadiusMeasure) {
+	if (PositionMeasure <= RadiusMeasure && isstage1_) {
 		downarrow_->OnCollision(player_.get());
 		audio_->PlayWave(ArrowSE_);
 	}
@@ -5805,7 +5815,7 @@ void GameScene::CheckAllCollisions() {
 				(PosB.z - PosA.z) * (PosB.z - PosA.z);
 			RadiusMeasure = (float)(Dot(RadiusA, RadiusB));
 			// 弾と弾の交差判定
-			if (PositionMeasure <= RadiusMeasure) {
+			if (PositionMeasure <= RadiusMeasure&&isstage3_) {
 				player_->SpeedDownOnCollision();
 				if (SpeedTime_ <= 0) {
 					SpeedTime_ = 180;
@@ -5817,55 +5827,57 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion 
 
 #pragma region プレイヤーとステージ3スピードアップ
-
-			// プレイヤーの座標
-			PosA = player_->GetWorldPosition();
-			RadiusA = player_->GetRadius();
-			PosB = speedup_->GetPosition();
-			RadiusB = speedup_->GetScale();
-			if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
-
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z )
+			if (isstage3_)
 			{
-				player_->SpeedUpOnCollision(); if (SpeedTime_ <= 0) {
-					audio_->PlayWave(SpeedUpSE_);
-					SpeedTime_ = 180;
+				// プレイヤーの座標
+				PosA = player_->GetWorldPosition();
+				RadiusA = player_->GetRadius();
+				PosB = speedup_->GetPosition();
+				RadiusB = speedup_->GetScale();
+				if (PosA.x - RadiusA.x <= PosB.x + RadiusB.x && PosA.x >= PosB.x + RadiusB.x &&
+
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->SpeedUpOnCollision(); if (SpeedTime_ <= 0) {
+						audio_->PlayWave(SpeedUpSE_);
+						SpeedTime_ = 180;
+					}
 				}
-			}
 
-			else if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+				else if (PosA.x + RadiusA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
-			{
-				player_->SpeedUpOnCollision2(); if (SpeedTime_ <= 0) {
-					audio_->PlayWave(SpeedUpSE_);
-					SpeedTime_ = 180;
+					PosA.z <= PosB.z + RadiusB.z && PosA.z >= PosB.z - RadiusA.z)
+				{
+					player_->SpeedUpOnCollision2(); if (SpeedTime_ <= 0) {
+						audio_->PlayWave(SpeedUpSE_);
+						SpeedTime_ = 180;
+					}
 				}
-			}
 
-			else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+				else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f) )
-			{
-				player_->SpeedUpOnCollision3(); if (SpeedTime_ <= 0) {
-					audio_->PlayWave(SpeedUpSE_);
-					SpeedTime_ = 180;
+					PosA.z - RadiusA.z <= PosB.z + (RadiusB.z + 0.2f) && PosA.z >= PosB.z + (RadiusA.z + 0.2f))
+				{
+					player_->SpeedUpOnCollision3(); if (SpeedTime_ <= 0) {
+						audio_->PlayWave(SpeedUpSE_);
+						SpeedTime_ = 180;
+					}
 				}
-			}
 
-			else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
+				else if (PosA.x >= PosB.x - RadiusB.x && PosA.x <= PosB.x + RadiusB.x &&
 
-				PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
-			{
-				player_->SpeedUpOnCollision4();
-				if (SpeedTime_ <= 0) {
-					audio_->PlayWave(SpeedUpSE_);
-					SpeedTime_ = 180;
+					PosA.z + RadiusA.z >= PosB.z - (RadiusB.z - 0.2f) && PosA.z <= PosB.z - (RadiusA.z - 0.2f))
+				{
+					player_->SpeedUpOnCollision4();
+					if (SpeedTime_ <= 0) {
+						audio_->PlayWave(SpeedUpSE_);
+						SpeedTime_ = 180;
+					}
 				}
-			}
-			else
-			{
-				player_->NoSpeedOnCollision();
+				else
+				{
+					player_->NoSpeedOnCollision();
+				}
 			}
 			// 弾と弾の交差判定
 			/*if (PositionMeasure <= RadiusMeasure&&isstage3_) {

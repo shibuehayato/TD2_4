@@ -5,7 +5,7 @@ void Stage3Warp2::Initialize(Model* model)
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { -10.0f,-0.5f,2.0f };
+	worldTransform_.translation_ = { -10.0f,1.5f,2.0f };
 	worldTransform_.rotation_ = { 0.0f,3.2f,0.0f };
 }
 

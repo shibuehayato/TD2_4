@@ -90,9 +90,9 @@ void Player::Update() {
 		blikingtimer_ = 0;
 	}
 
-	ImGui::Begin("Player");
-	ImGui::DragFloat3("Scale", &worldTransformArrow_.translation_.x, 0.1f);
-	ImGui::End();
+	/*ImGui::Begin("Player");
+	ImGui::DragFloat3("Scale", &worldTransformHead_.translation_.x, 0.1f);
+	ImGui::End();*/
 	
 	
 

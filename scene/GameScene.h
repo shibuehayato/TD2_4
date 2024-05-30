@@ -72,6 +72,7 @@
 #include"CannonHead.h"
 #include"Stage3CannonHead.h"
 #include"Howtoplay.h"
+#include"Ground.h"
 
 /// <summary>
 /// ゲームシーン
@@ -423,6 +424,9 @@ private: // メンバ変数
 	std::unique_ptr<Howtoplay> howtoplay_;
 	bool ishowtoplay_ = false;
 	int32_t howtoplaycooltime_=0;
+
+	std::unique_ptr<Ground> ground_;
+	std::unique_ptr<Model> modelground_;
 
 	//csvに読み込まれた数値を代入するための変数
 	Vector3 position_;

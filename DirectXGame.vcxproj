@@ -123,6 +123,7 @@
     <ClCompile Include="Flre.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Howtoplay.cpp" />
     <ClCompile Include="LeftArrow.cpp" />
     <ClCompile Include="main.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Fire2.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="Howtoplay.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="LeftArrow.h" />
