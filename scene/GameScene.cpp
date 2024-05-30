@@ -3844,6 +3844,17 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
+#pragma region
+
+	PosA = player_->GetWorldPosition();
+	if (PosA.z >= 67.0f&&isballdead_==false)
+	{
+		player_->OnCollision5();
+		audio_->PlayWave(ReflectionWallSE_);
+	}
+
+#pragma endregion
+
 #pragma region プレイヤーと風
 	// プレイヤーの座標
 	PosA = player_->GetWorldPosition();
@@ -6223,6 +6234,7 @@ void GameScene::GameReset()
 	TitleSprite_->SetColor(titlecolor_);
 	istitleblackout_ = false;
 	isoverblackout_ = false;
+	isballdead_ = false;
 }
 
 void GameScene::AddCannonBullet(Cannonbullet* cannonbullet)
