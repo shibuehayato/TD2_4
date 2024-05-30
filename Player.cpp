@@ -12,7 +12,7 @@ void Player::Initialize(Model* head)
 
 	audio_ = Audio::GetInstance();
 	DisengageSE_ = audio_->LoadWave("SE//Disengage.mp3");
-	AccumulateSE_ = audio_->LoadWave("SE//Accumulate.wav");
+	AccumulateSE_ = audio_->LoadWave("SE//Accumulate.mp3");
 
 	assert(head);
 	HeadModel_ = head;
@@ -43,7 +43,7 @@ void Player::Update() {
 				AccumulateTime_--;
 				if (AccumulateTime_<=0) {
 					audio_->PlayWave(AccumulateSE_);
-					AccumulateTime_ = 200;
+					AccumulateTime_ = 20;
 				}
 				// スピードが上がりすぎないようにする
 				if (speed < 0.04f) {
